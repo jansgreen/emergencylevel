@@ -12,8 +12,8 @@
          <!-- Compiled and minified CSS -->
     
     
-    <link href="/style/style.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet" type="text/css">
     </head>
     <body>
 
@@ -82,7 +82,7 @@
               </div>
             </div>
             </div>
-            <button class="center btn waves-effect waves-light" type="submit" name="action">Submit</button>
+            <button class="btn waves-effect waves-light" type="submit" name="action">Submit</button>
             </form>
           </div>
         </div>

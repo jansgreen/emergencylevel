@@ -103,6 +103,14 @@ def addStaff():
 def room():
     return render_template("room.html")
 
+@app.route('/style')
+def style():
+    return render_template("style.css")
+
+@app.route('/script')
+def script():
+    return render_template("script.js")
+
 
 if __name__ == '__main__':
     app.run(port=5500, debug=True)
