@@ -26,13 +26,15 @@
                 </div>
               </nav>
 
-        <h1 class="indexContainer">Home Page</h1>
+        <h1 id="indexContainer">Home Page</h1>
 
-        
+        <div class="center">
+          <button id="patButton" class="center btn waves-effect waves-light" type="submit" onclick="saludo()">Submit</button>
+          </div>
 
     <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="https://use.fontawesome.com/945a3f5561.js"></script>
-<script href="{{url_for('static', filename = 'scripts/script.js')}}"></script>
+<script src="{{url_for('static', filename = 'scripts/script.js')}}"></script>
 </body>
 </html>

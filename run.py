@@ -103,5 +103,9 @@ def addStaff():
 def room():
     return render_template("room.html")
 
+
+#JS
+
+
 if __name__ == '__main__':
     app.run(port=5500, debug=True)

@@ -1,5 +1,5 @@
+function saludo() {
+  var indexContainers = document.getElementById("indexContainer")
+indexContainers.innerHTML = 'Hola Luis';
   
-
-$(document).ready(function() {
-  $('indexContainer').html("hola Luis");
-})
+}
