@@ -1,0 +1,23 @@
+/*====================================================
+     NAV/MENU AND SUBMENU
+====================================================*/
+.brand-logo{
+margin-left: 20px;
+}
+
+#patButton{
+  width: 10rem;
+  background-color: #4e6cf5;
+  color: solid #ffffff;
+  
+}
+
+.formBorder{
+box-sizing: content-box;
+max-width: 10%;
+display: block;
+background-color: black;
+}
+
+height: 671px;
+    width: 289px;

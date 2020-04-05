@@ -14,13 +14,13 @@
     
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{url_for('static', filename = 'allcss/main.css')}}" rel="stylesheet" type="text/css">
     </head>
     <body>
 
            <nav class="nav-extended">
                 <div class="nav-wrapper">
-                  <a href="{{url_for('index')}}" class="brand-logo">Logo</a>
+                  <a href="{{url_for('index')}}" class="brand-logo"><img src="{{url_for('static', filename = '/img/logo.jpg')}}"></a>
                 </div>
                 <div class="nav-content">
                   <ul class="tabs tabs-transparent">
@@ -35,7 +35,7 @@
     <h2 class="header">Your data was successfully registered, print your Ticket and wait for a doctor.!</h2>
     <div class="card horizontal">
       <div class="card-image hide-on-med-and-down">
-        <img src="https://live.staticflickr.com/7424/10475405806_2c1e13e74c_b.jpg" style="width: 20rem;">
+        <img src="{{url_for('static', filename = '/img/verticalBarraAzul2.jpg')}}">
       </div>
       <div class="card-stacked">
         <div class="card-content">
@@ -53,7 +53,7 @@
                       </h2>
               </div>
             </div>
-            <button class="center btn waves-effect waves-light" type="submit" name="action" onclick="print()">Print</button>
+            <button id="patButton" class="center btn waves-effect waves-light" type="submit" name="action" onclick="print()">Print</button>
             </form>
           </div>
         </div>

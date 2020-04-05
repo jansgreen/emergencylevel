@@ -59,6 +59,7 @@ def addPatient():
     now = datetime.now()
     ticketNum = now.strftime('%d%m%YE%H%M%S')
     flash(ticketNum)
+    flash("Name: " +name + lastName)
     return redirect(url_for("ticket"))
 
 
@@ -98,19 +99,9 @@ def addStaff():
     dbColl.insert_one(dataPost)
     return render_template("staff.html")
 
-
 @app.route('/room')
 def room():
     return render_template("room.html")
-
-@app.route('/style')
-def style():
-    return render_template("style.css")
-
-@app.route('/script')
-def script():
-    return render_template("script.js")
-
 
 if __name__ == '__main__':
     app.run(port=5500, debug=True)

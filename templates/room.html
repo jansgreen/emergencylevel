@@ -12,13 +12,13 @@
          <!-- Compiled and minified CSS -->
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{url_for('static', filename = 'allcss/main.css')}}" rel="stylesheet" type="text/css">
     </head>
     <body>
 
-           <nav class="nav-extended">
+           <nav class="nav-extended red lighten-2">
                 <div class="nav-wrapper">
-                  <a href="{{url_for('index')}}" class="brand-logo">Logo</a>
+                  <a href="{{url_for('index')}}" class="brand-logo"><img src="{{url_for('static', filename = '/img/logo.jpg')}}"></a>
                 </div>
                 <div class="nav-content">
                   <ul class="tabs tabs-transparent">
