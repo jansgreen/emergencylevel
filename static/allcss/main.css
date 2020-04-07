@@ -19,5 +19,18 @@ display: block;
 background-color: black;
 }
 
-height: 671px;
-    width: 289px;
+/*====================================================
+BUTTONS
+====================================================*/
+
+.z-depth-3{
+  width: 120px;
+  height: 120px;
+  background-color: #e57373;
+  padding-top: 50%;
+  padding-bottom: 50%;
+}
+
+.buttScreem{
+  margin-right: 50px;
+}

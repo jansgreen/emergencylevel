@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+      {% block baseContainer %} 
+      <h1 id="indexContainer">Home Page</h1>
+      <h2 class="header">Ticket:
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+            </h2>
+      {% endblock baseContainer%}
+
