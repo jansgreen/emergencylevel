@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+      {% block baseContainer %} 
+      <div class="col s12 m7">
+        <h2 class="header">Welcome to Emergency Level</h2>
+        <div class="card horizontal">
+          <div class="card-image hide-on-med-and-down">
+            <img src="{{url_for('static', filename = '/img/verticalBarraAzul2.jpg')}}">
+          </div>
+          <div class="card-stacked">
+            <div class="card-content">
+              <div class="row center">
+                <a href="{{url_for('patient')}}" class="center btn waves-effect waves-light" type="submit">New Patient?</a>
+              </div>
+                <div class="row center">
+                  <a href="{{url_for('patient')}}" class="center btn waves-effect waves-light" type="submit">I'm a Patient</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      {% endblock baseContainer%}
+
+

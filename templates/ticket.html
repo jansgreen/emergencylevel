@@ -13,12 +13,14 @@
                 <form action="/patient" class="col s12">
                   <div class="row">
                     <h2 class="header">Ticket:
-                      {% with messages = get_flashed_messages() %}
+                      {% with messages = get_flashed_messages(ticketData) %}
+                      {% with messages = get_flashed_messages(fullName) %}
                       {% if messages %}
                       {% for message in messages %}
                       <p>{{ message }}</p>
-                      {% endfor %}
+                       {% endfor %}
                       {% endif %}
+                      {% endwith %}
                       {% endwith %}
                           </h2>
                   </div>

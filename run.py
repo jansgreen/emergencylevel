@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from datetime import datetime
 from datetime import timedelta
 from flask_material import Material
+from bson.objectid import ObjectId
 
 
 app = Flask(__name__)
@@ -14,7 +15,6 @@ client = pymongo.MongoClient(
     "mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
 db = client["userRecord"]
 dbColl = db["userRecord"]
-
 
 
 # SETTING
@@ -29,6 +29,10 @@ def index():
 @app.route('/patient')
 def patient():
     return render_template("patient.html")
+
+@app.route('/PatientScreem')
+def PatientScreem():
+    return render_template("PatientScreem.html")
 
 
 @app.route('/ticket')
@@ -50,8 +54,8 @@ def addPatient():
         Category = "Patient"
         dataPost = {
             "Category": Category,
-            "First Name": name,
-            "Last Name": lastName,
+            "FirstName": name,
+            "LastName": lastName,
             "BOD": BOD,
             "Address": Address,
             "Email": Email,
@@ -63,26 +67,30 @@ def addPatient():
     now = datetime.now()
     ticketNum = now.strftime('%d%m%YE%H%M%S')
     flash(ticketNum)
-    flash("Name: " + name +" "+lastName)
+    fullName= name+" "+lastName
+    flash(fullName)
     return redirect(url_for("ticket"))
 
 
 @app.route('/doctorList')
 def doctorList():
-    DoctorsList = dbColl.find({"Category":"staff"})
-    for DRlistDB in DoctorsList:
-        flash(DRlistDB['First Name'] +" "+ DRlistDB['Last Name']+ " " + DRlistDB['BOD'] +" "+ DRlistDB['Email']+ " " + DRlistDB['Phone']+ " " + DRlistDB['language'] + " "+ DRlistDB['Position'] +" "+ DRlistDB['Tab number'])
-    return render_template("doctorList.html")
+    DoctorsList = dbColl.find({'Category': 'staff'})
+    name = DoctorsList
+    return render_template("doctorList.html", Name = name)
+
 
 @app.route('/staff')
 def staff():
-    return render_template("staff.html")
+    count = dbColl.count()
+    return render_template("staff.html", counts =count,
+                           selectPosition=[{'Position': 'Doctor'}, {'Position': 'Nourse'}, {'Position': 'Hosekeeping'}, {'Position': 'Stretcher-bearer'}])
 
 
 @app.route('/emergencyTeam')
 def emergencyTeam():
-     return render_template("emergencyTeam.html")
-
+    PatientsList = dbColl.find({'Category': 'Patient'})
+    patientListDB = PatientsList
+    return render_template("emergencyTeam.html", PatientList = patientListDB, DoctorNote=[{'Pressure': "<input>"}, {'weight': '<input>'}, {'stability': '<input>'}])
 
 
 @app.route('/board')
@@ -100,20 +108,20 @@ def addStaff():
         Email = request.form['email']
         numPhone = request.form['icon_telephone']
         language = request.form['language']
-        Tabnumber = request.form.get_json('TabDoctors')
-        rooms = request.form['rooms']
-        Position = request.form('Position')  #request.form.to_dict() USALO PARA ASIGNAR PERSONAL A LOS ROOMS
+        Tabnumber = dbColl.count()
+        rooms = request.form['rooms']  # request.form.to_dict() USALO PARA ASIGNAR PERSONAL A LOS ROOMS
+        Position = request.form.get('Position')
         Category = "staff"
         dataPost = {
             "Category": Category,
-            "First Name": name,
-            "Last Name": lastName,
+            "FirstName": name,
+            "LastName": lastName,
             "BOD": BOD,
             "Address": Address,
             "Email": Email,
             "Phone": numPhone,
-            "language":language,
-            "Tab number": Tabnumber,
+            "language": language,
+            "Tabnumber": Tabnumber,
             "rooms": rooms,
             "Position": Position
         }
@@ -124,6 +132,43 @@ def addStaff():
 @app.route('/room')
 def room():
     return render_template("room.html")
+
+@app.route('/Nourse/<string:id>', methods=['POST'])
+def Nourse(id):
+    if request.method == 'POST':
+        Pressure = request.form['Pressure'],
+        weight = request.form['weight'],
+        VitalSigns = request.form['VitalSigns'],
+        Note = request.form['Note']
+        MedicalData = {"Pressure": Pressure, "weight": weight, "VitalSigns": VitalSigns, "Note": Note} 
+    now = datetime.now()
+    MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
+    dbColl.update({"_id":ObjectId(id)}, {'$set': {"MedicalNote."+MedicalDate:{"Nourse":MedicalData}}})
+    return redirect(url_for("emergencyTeam"))
+
+@app.route('/addNourse/<string:id>')
+def addNourse(id):
+    PatientsID = id
+    return render_template("/Nourse.html", PatientId = PatientsID)
+
+@app.route('/Doctor/<string:id>', methods=['POST'])
+def Doctor(id):
+    if request.method == 'POST':
+        Prescription = request.form['Prescription'],
+        Referencia = request.form['Referencia'],
+        Note = request.form['Note']
+    MedicalData = {"Prescription": Prescription, "Referencia": Referencia, "Note": Note} 
+    now = datetime.now()
+    MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
+    dbColl.update({"_id":ObjectId(id)}, {'$set': {"MedicalNote."+MedicalDate:{"Doctor":MedicalData}}})
+    return redirect(url_for("emergencyTeam"))
+
+@app.route('/addDoctor/<string:id>')
+def addDoctor(id):
+    DrPasientsID = id
+    return render_template("/Doctor.html", DrPasientID = DrPasientsID)
+
+
 
 
 if __name__ == '__main__':

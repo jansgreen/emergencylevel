@@ -48,12 +48,11 @@
             <label for="rooms">Rooms</label>
           </div>
           <div class="input-field col s12 m6 l6">
-            <select class="browser-default">
-              <option id="Position" value="" disabled selected name="Position">Choose Potition</option>
-              <option value="1">Doctor</option>
-              <option value="2">Nourse</option>
-              <option value="3">Hosekeeping</option>
-              <option value="4">Stretcher-bearer</option>
+            <select id="Position" class="browser-default" name="Position">
+              <option value=" ">Choose Position</option>
+               {% for pName in selectPosition %}
+              <option value="{{ pName.Position }}">{{ pName.Position }}</option>
+              {% endfor %}
             </select>
           </div>
         </div>
@@ -67,7 +66,7 @@
             <label for="SSN">Security Social Number</label>
           </div>
           <div class="input-field col s12 m6 l6">
-            <p><button id="generate">Generate</button></p>
+            <p id="lab" class="validate" name="lab">{{counts}}</p>
              <p id="TabDoctors" name="output"></p>
           </div>
         </div>
