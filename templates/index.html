@@ -1,29 +1,38 @@
 {% extends "base.html" %}
 
       {% block baseContainer %} 
-
-      <h1 id="indexContainer">Home Page</h1>
-      <div class="center container">
-      <div class="row">
-        <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
-        <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('doctorList')}}">Appoinment</a></div>
-        <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('staff')}}">Staff</a></div>
-        <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('emergencyTeam')}}">Team</a></div>
+    <div class="col s12">
+      <h2 class="header">Welcome to Emergency Level!</h2>
+      <div class="card horizontal">
+        <div class="card-image hide-on-med-and-down">
+          <img src="{{url_for('static', filename = '/img/verticalBarraAzul2.jpg')}}">
+        </div>
+        <div class="card-stacked">
+          <div class="card-content">
+                  <div class="center indexButton">
+                    <div class="row">
+                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('PatientScreem')}}">Patient</a></div>
+                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('doctorList')}}">Appoinment</a></div>
+                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('staff')}}">Staff</a></div>
+                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('emergencyTeam')}}">Team</a></div>
+                    </div>
+                      <div class="row">
+                        <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('room')}}">Room</a></div>
+                        <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('emergencyTeam')}}">Emergency</a></div>
+                        <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('board')}}">Patient</a></div>
+                        <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('room')}}">Patient</a></div>
+                    </div>
+                    <div class="row">
+                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
+                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
+                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
+                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
+                    </div>
+                  </div>
+             </div>
+          </div>
+        </div>
       </div>
-        <div class="row">
-          <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('room')}}">Room</a></div>
-          <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('emergencyTeam')}}">Emergency</a></div>
-          <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('board')}}">Patient</a></div>
-          <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('room')}}">Patient</a></div>
-      </div>
-      <div class="row">
-        <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
-        <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
-        <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
-        <div class="col s1 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
-      </div>
-    </div>
       {% endblock baseContainer%}
-
-
+   
      

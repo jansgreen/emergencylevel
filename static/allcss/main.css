@@ -24,16 +24,34 @@ BUTTONS
 ====================================================*/
 
 .z-depth-3{
-  width: 120px;
-  height: 120px;
   background-color: #e57373;
-  padding-top: 50%;
-  padding-bottom: 50%;
+  display: block;
+ 
 }
 
 .buttScreem{
-  margin-right: 50px;
+  margin-right: 5px;
+  
 }
 .MedicalNotecss{
  display: none;
+}
+
+.indexButton{
+  padding-top: 15%;
+  padding-left: 25%;
+  padding-right: 25%;
+  padding-bottom: 15%;
+  
+}
+
+#DoctorsPicture{
+  border-radius: 50px;
+  background: rgb(240, 89, 172);
+  width: 200px;
+  height: 150px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  -ms-border-radius: 50px;
+  -o-border-radius: 50px;
 }

@@ -1,81 +1,80 @@
 {% extends "base.html" %}
 
-      {% block baseContainer %} 
-
-      <div class="row">
-<div class="col s12 m8 right">
-<h5 class="container header  ">Patients List</h5>
-
-      <table class="container">
-            {% for PatiientList in PatientList %}
-            <thead>
-              <tr>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Bird day</th>
-                  <th>Condition</th>
-                  <th>Note</th>
-                  <th>Ticket</th>
-                  <th>evaluation</th>
-              </tr>
-            </thead>
-    
-            <tbody>
-              <tr>
-                <td>{{ PatiientList.FirstName }}</td>
-                <td>{{ PatiientList.LastName }}</td>
-                <td>{{ PatiientList.BOD }}</td>
-                <td>{{ PatiientList.Condition }}</td>
-                <td>{{ PatiientList.Note }}</td>
-                <td>{{ ticketNums }}</td>
-                <td><a class="btn MedicalNote" href="/addNourse/{{ PatiientList._id }}">Nourse</a></td>
-                <td><a class="btn MedicalNote" href="/addDoctor/{{ PatiientList._id }}">Doctor</a></td>
-              </tr>
-              
-              {% endfor %} 
-              <!-- 
-          </table>
-        </div>      
- <div class="col s12 m4 left">
-  <h4 class="header">Staff:</h4>
-  <div class="card horizontal">
-    <div class="card-stacked">
-      <div class="card-content">
-        <div class="row">
-          <form action="/addNourse/PatiientList._id/" method="POST" class="col s12">
-            <div class="row">
-              <div class="input-field col s12 m6 l6">
-                <input id="Pressure" type="text" class="validate" name="Pressure">
-                <label for="Pressure">Pressure</label>
+{% block baseContainer %}
+<div class="row">
+  <div class="col s5">
+    <div class="card horizontal">
+      <div class="card-stacked">
+        <div class="card-content">
+          <div class="row">
+            <form action="/page/{{id}}" method="POST" class="col s12">
+              <div class="row">
+                <h2 class="header">
+                  {% for ticketTurn in datas %}
+                  {% for Turn in ticketTurn.Emergincy %}
+                  <p>Ticekts: {{ Turn }}</p>
+                  {% endfor %}
+                  <h4>{{ticketTurn.FirstName}}, {{ticketTurn.LastName}}</h4>
+                  <h4>{{ticketTurn.BOD}}</h4>
+                  {% endfor %}
+                  {% for num in Star %}
+                  {{num}}
+                  {%endfor%}
+                </h2>
               </div>
-              <div class="input-field col s12 m6 l6">
-                <input id="weight" type="text" class="validate" name="weight">
-                <label for="weight">weight</label>
-              </div>
+          </div>
+          <div class="row center">
+            <div class="col s6">
+              <a id="patButton" class="btn waves-effect waves-light" href="/page/{{num}}" name = "mas">Call</a>
             </div>
-            <div class="row">
-              <div class="input-field col s12 m6 l6">
-                <input id="VitalSigns" type="text" class="validate" name="VitalSigns">
-                <label for="VitalSigns">Vital Signs</label>
-              </div>
-              <div class="input-field col s12 m6 l6">
-                <input id="Note" type="text" class="validate" name="Note">
-                <label for="Note">Nota</label>
-              </div>
-            </div>
+          </div>
+          </form>
         </div>
       </div>
-      <div class="center">
-        <button id="patButton" class="center btn waves-effect waves-light" type="submit" name="action">Submit</button>
-      </div>
-      </form>
     </div>
   </div>
-</div>
-</div>
- -->
-           
-      {% endblock baseContainer%}
-    
 
- 
+  <div class="col s7 right">
+    <h5 class="container header">Patients List</h5>
+    {% with PatientListVar = get_flashed_messages(PatientsList) %}
+    {% if PatientListVar %}
+    {% for PatiientList in PatientListVar %}
+    <div class="row">
+      <table class="container">
+
+        <thead>
+          <tr>
+            <th>Ticket</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Bird day</th>
+            <th>Condition</th>
+            <th>Note</th>
+            <th>evaluation</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            {% for Emergincy in PatiientList.Emergincy %}
+            <td>{{ Emergincy }}</td>
+            {% endfor %}
+            <td>{{ PatiientList.FirstName }}</td>
+            <td>{{ PatiientList.LastName }}</td>
+            <td>{{ PatiientList.BOD }}</td>
+            <td>{{ PatiientList.Condition }}</td>
+            <td>{{ PatiientList.Note }}</td>
+
+            <td><a class="btn MedicalNote" href="/addNourse/{{ PatiientList._id }}">Nourse</a></td>
+            <td><a class="btn MedicalNote" href="/addDoctor/{{ PatiientList._id }}">Doctor</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+
+</div>
+{% endblock baseContainer%}
