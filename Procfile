@@ -1,1 +1,1 @@
-web: Selenium run:app
+web: gunicorn run:app
