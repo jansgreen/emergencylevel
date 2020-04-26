@@ -1,13 +1,10 @@
 import pymongo
 from pymongo import MongoClient
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash
 from datetime import datetime
 from datetime import timedelta
 from flask_material import Material
 from bson.objectid import ObjectId
-import js2py
-
-
 
 
 
@@ -15,8 +12,7 @@ app = Flask(__name__)
 Material(app)
 
 # MONGODB CONNECTION
-client = pymongo.MongoClient(
-    "mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
+client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
 db = client["userRecord"]
 dbColl = db["userRecord"]
 

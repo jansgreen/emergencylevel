@@ -1,1 +1,1 @@
-web: run:app
+web: Selenium run:app
