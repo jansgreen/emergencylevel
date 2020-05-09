@@ -1,37 +1,133 @@
 {% extends "base.html" %}
 {% block baseContainer %}
-<div class="col s12 m7">
-    <h2 class="header">Staff:</h2>
+<div class="row">
+  <div class="col s12 m6 l4">
+    <h2 class="header">Patient Info</h2>
     <div class="card horizontal">
       <div class="card-stacked">
         <div class="card-content">
           <div class="row">
             <form action="/Doctor/{{DrPasientID}}" method="POST" class="col s12">
               <div class="row">
-                <div class="input-field col s12 m6 l6">
-                  <input id="Prescription" type="text" class="validate" name="Prescription">
-                  <label for="Prescription">Prescription</label>
+                {% for patientData in patientsData %}
+                <div class="row card-content">
+                  {% for RecNum in patientData.Emergincy %}
+                  <h5>Emergincy Record Number: <div name="EmReNu">{{RecNum}}</div></h5>
+                  {% endfor %}
+                  <h5>{{patientData.FirstName}}, {{patientData.LastName}}</h5>
+                  <h5>BOD: {{patientData.BOD}}</h5>
+                  <h5>Language: {{patientData.language}}</h5>
                 </div>
+              </div>
+          </div>
+          <div class="row  center">
+            {% for Medical in patientData.MedicalNote[0] %}
+              <a class="dropdown-trigger btn" data-target="List">{{Medical.MedicalDate}}</a>
+              <ul id="List" Class='dropdown-content'>
+                <li><a href="#">{{Medical.Prescription}}</a></li>
+                <li><a href="#">{{Medical.Referencia}}</a></li>
+                <li><a href="#">{{Medical.Note}}</a></li>
+                <li><a href="#">{{Medical.Medication}}</a></li>
+                <li><a href="#">{{Medical.Test}}</a></li>
+              </ul>
+              
+              {% endfor %}
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+    <div>
+      <div class="row">
+        <h4 class="header">Treatment</h4>
+        <div class="card horizontal"> </div>
+        <div class="card-stacked"> </div>
+        <div class="card-content"> </div>
+      </div>
+      {% endfor %}
+      
+    </div>
+  </div>
+
+  <div class="col s12 m6 l8">
+    <h2 class="header">By Doctor:</h2>
+    <div class="card horizontal">
+      <div class="card-stacked">
+        <div class="card-content">
+          <div class="row">
+            <form action="/Doctor/{{DrPasientID}}" method="POST" class="col s12">
+              {% from "macro.html" import render_field %}
+              <div class="row">
                 <div class="input-field col s12 m6 l6">
-                  <input id="Referencia" type="text" class="validate" name="Referencia">
-                  <label for="Referencia">Referencia</label>
+                  {{ render_field(form.Prescription, placeholder="Prescription", class="validate", id="Prescription") }}
+                </div>
+
+                <div class="input-field col s12 m6 l6">
+                  {{ render_field(form.Referencia, placeholder="Referencia", class="validate", id="Referencia") }}
+
                 </div>
               </div>
               <div class="row">
                 <div class="input-field col s12 m6 l6">
-                  <input id="Note" type="text" class="validate" name="Note">
-                  <label for="Note">Note</label>
+                  {{ render_field(form.Note, placeholder="Note", class="validate", id="Note") }}
                 </div>
+              </div>
+              <div class="row">
+                <h5>Assign Medication</h5>
+                <div class="input-field col s12 m6 l4">
+                  {{ render_field(form.assigMed, placeholder="Medication", class="validate", id="assigMed") }}
+                  <dd>
+                    <div id="newfieldMed"></div>
+                  </dd>
+                </div>
+                <div class="input-field col s12 m6 l4">
+                  {{ render_field(form.Indications, placeholder="Indications", class="validate", id="Indications") }}
+                  <dd>
+                    <div id="newfieldInd"></div>
+                  </dd>
+                </div>
+                <div class="input-field col s12 m6 l4">
+                  <div id="addFields" class="center btn waves-effect waves-light" onclick="addfield()">AddField</div>
+                  <div id="removeFields" class="center btn waves-effect waves-light"
+                    onclick="RemuveField('readyFieldInd'); RemuveFields('readyFieldMed')">RemoveField</div>
+                </div>
+                <div id="fieldsMessages"></div>
+              </div>
+
+              <div class="row">
+                <h5>Assign Test</h5>
+                <div class="input-field col s12 m6 l4">
+                  {{ render_field(form.TestName, placeholder="Test Name", class="validate", id="TestName") }}
+                  <dd>
+                    <div id="newFldTestName"></div>
+                  </dd>
+
+                </div>
+                <div class="input-field col s12 m6 l4">
+                  {{ render_field(form.DoBefore, type="date", class="validate", id="DoBefore") }}
+                  <dd>
+                    <div id="newFldDoBefore"></div>
+                  </dd>
+                </div>
+                <div class="input-field col s12 m6 l4">
+                  <div id="addFields" class="center btn waves-effect waves-light" onclick="addfieldTest()">AddField
+                  </div>
+                  <div id="removeFields" class="center btn waves-effect waves-light"
+                    onclick="RemuveFieldTest('readyFieldTest'); RemuveFieldsDoBe('readyFieldDoBe')">RemoveField</div>
+                </div>
+                <div id="fieldsMessagesTest"></div>
               </div>
           </div>
         </div>
         <div class="center">
-          <button id="patButton" class="center btn waves-effect waves-light" type="submit" name="action">Submit</button>
+          <button id="patButton" class="center btn waves-effect waves-light" type="submit" name="action"
+            value=Register>Submit</button>
         </div>
         </form>
       </div>
     </div>
-  </div>
 
+  </div>
+</div>
 
 {% endblock baseContainer %}

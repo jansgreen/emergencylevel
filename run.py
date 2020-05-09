@@ -1,21 +1,25 @@
 import pymongo
+import stripe
+import mainClass
 from pymongo import MongoClient
 from flask import Flask, render_template, request, redirect, url_for, flash
-from datetime import datetime
-from datetime import timedelta
-from flask_material import Material
+from datetime import datetime, timedelta
 from bson.objectid import ObjectId
+# I delete the import json
 
 
 
 app = Flask(__name__)
-Material(app)
 
 # MONGODB CONNECTION
 client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
 db = client["userRecord"]
 dbColl = db["userRecord"]
 
+# STRIPE API KEY
+secreKey = 'sk_test_RTba6nZ1WHPp4rAX65VasJL600Uc7R8pg2'
+publicKey = 'pk_test_0p4jqeiFYPzrkeRsn0iQdaSO00VNNlhS7K'
+stripe.api_key = secreKey
 
 # SETTING
 app.secret_key = 'mysecretkey'
@@ -47,7 +51,6 @@ def ticket(id):
     print(FullTicket)
     Ticketquery = {"_id": ObjectId(id)}
     newvalues = {"$set": {
-        # {"_id": ObjectId()}, {"Ticket": ticketNumData}, {"Date": dateTicket}
         "Emergincy."+ticketNumData: {'Date': dateTicket}
     }
     }
@@ -89,17 +92,20 @@ def doctorList():
     name = DoctorsList
     return render_template("doctorList.html", Name=name)
 
-@app.route('/pageDoctorList/<int:id>', methods = ['GET'])
+
+@app.route('/pageDoctorList/<int:id>', methods=['GET'])
 def pageDoctorList(id):
     PageNum = int(id)
-    data = dbColl.find({'Emergincy':{'$exists':'true'}}).skip(PageNum).limit(1)
+    data = dbColl.find({'Emergincy': {'$exists': 'true'}}
+                       ).skip(PageNum).limit(1)
     count = data.count()
-    if PageNum == count-1 :
-       PageNums = PageNum - PageNum
+    if PageNum == count-1:
+        PageNums = PageNum - PageNum
     else:
-       PageNums = PageNum + 1
+        PageNums = PageNum + 1
     emergencyTeam()
-    return render_template("doctorList.html",datas = data, num=PageNums)
+    return render_template("doctorList.html", datas=data, num=PageNums)
+
 
 @app.route('/staff')
 def staff():
@@ -110,25 +116,28 @@ def staff():
 
 @app.route('/emergencyTeam')
 def emergencyTeam():
-    TicketsPages = dbColl.find({'Emergincy':{'$exists':'true'}}).limit(5)
+    TicketsPages = dbColl.find({'Emergincy': {'$exists': 'true'}}).limit(5)
     for TicketsPage in TicketsPages:
         flash(TicketsPage)
         pass
     nums = int(0)
     num = nums
-    return render_template("emergencyTeam.html", num = num)
+    return render_template("emergencyTeam.html", num=num)
 
-@app.route('/page/<int:id>', methods = ['GET'])
+
+@app.route('/page/<int:id>', methods=['GET'])
 def page(id):
     PageNum = int(id)
-    data = dbColl.find({'Emergincy':{'$exists':'true'}}).skip(PageNum).limit(1)
+    data = dbColl.find({'Emergincy': {'$exists': 'true'}}
+                       ).skip(PageNum).limit(1)
     count = data.count()
-    if PageNum == count-1 :
-       PageNums = PageNum - PageNum
+    if PageNum == count-1:
+        PageNums = PageNum - PageNum
     else:
-       PageNums = PageNum + 1
+        PageNums = PageNum + 1
     emergencyTeam()
-    return render_template("emergencyTeam.html",datas = data, num=PageNums)
+    return render_template("emergencyTeam.html", datas=data, num=PageNums)
+
 
 @app.route('/ticketTurn')
 def ticketTurn():
@@ -144,16 +153,16 @@ def board():
 @app.route('/addStaff', methods=['POST'])
 def addStaff():
     if request.method == 'POST':
-        name = request.form['first_name']
-        lastName = request.form['last_name']
+        name = request.form['first_name'].istittle()
+        lastName = request.form['last_name'].istittle()
         BOD = request.form['BOB']
-        Address = request.form['address']
-        Email = request.form['email']
+        Address = request.form['address'].istittle()
+        Email = request.form['email'].islow()
         numPhone = request.form['icon_telephone']
-        language = request.form['language']
+        language = request.form['language'].istittle()
         Tabnumber = dbColl.count()
         rooms = request.form['rooms']
-        Position = request.form.get('Position')
+        Position = request.form.get('Position').istittle()
         Category = "staff"
         dataPost = {
             "Category": Category,
@@ -201,23 +210,37 @@ def addNourse(id):
 
 @app.route('/Doctor/<string:id>', methods=['POST'])
 def Doctor(id):
-    if request.method == 'POST':
+    validatorForms = mainClass.validatorForm(request.form)
+    if request.method == 'POST' and validatorForms.validate():
         Prescription = request.form['Prescription'],
         Referencia = request.form['Referencia'],
         Note = request.form['Note']
-    MedicalData = {"Prescription": Prescription,
-                   "Referencia": Referencia, "Note": Note}
-    now = datetime.now()
-    MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
-    dbColl.update({"_id": ObjectId(id)}, {
-                  '$set': {"MedicalNote."+MedicalDate: {"Doctor": MedicalData}}})
+        AssigMed = request.form['assigMed'],
+        Indications = request.form['Indications'],
+        TestName = request.form['TestName'],
+        DoBefore = request.form['DoBefore'],
+        now = datetime.now()
+        MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
+        MedicalData={ 
+               "Prescription": Prescription,
+               "Referencia": Referencia,
+               "Note": Note,
+               "Medication": (AssigMed, Indications),
+               "Test": (TestName, DoBefore),
+               "MedicalDate":MedicalDate
+                  }
+
+        dbColl.update({"_id": ObjectId(id)}, {
+            '$push': {'MedicalNote':[MedicalData]}})
     return redirect(url_for("emergencyTeam"))
 
 
 @app.route('/addDoctor/<string:id>')
 def addDoctor(id):
     DrPasientsID = id
-    return render_template("/Doctor.html", DrPasientID=DrPasientsID)
+    validatorForms = mainClass.validatorForm(request.form)
+    patientData = dbColl.find({'_id': ObjectId(id)})
+    return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
 
 
 @app.route('/Seach', methods=['POST'])
@@ -228,6 +251,26 @@ def Seach():
             {'Email': PatientSeachD, 'Category': 'Patient'})
         PatientDataOuts = PatientData
     return render_template("PatientScreem.html", PatientDataOut=PatientDataOuts)
+
+
+@app.route('/facture')
+def facture():
+    return render_template("/facture.html", publicKeys=publicKey)
+
+
+@app.route('/session', methods=['POST'])
+def session():
+    print(request.form)
+    Crecustomer = stripe.Customer.create(
+        email=request.form['stripeEmail'], source=request.form['stripeToken'])
+    chargeData = stripe.Charge.create(
+        customer=Crecustomer.id,
+        amount=9.99,
+        currency='usd',
+        description='The Producto'
+    )
+    print(chargeData)
+    return render_template("/facture.html")
 
 
 if __name__ == '__main__':
