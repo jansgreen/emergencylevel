@@ -7,6 +7,7 @@ dnspython==1.16.0
 Flask==1.1.2
 Flask-Material==0.1.1
 Flask-Materialize==0.2.4
+gunicorn==20.0.4
 idna==2.9
 isort==4.3.21
 itsdangerous==1.1.0
