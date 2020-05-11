@@ -1,38 +1,74 @@
-{% extends "base.html" %}
+{% extends "material/base.html" %}
+{% block content -%}
 
-      {% block baseContainer %} 
-    <div class="col s12">
-      <h2 class="header">Welcome to Emergency Level!</h2>
+<div class="parallax-container">
+  <div class="parallax"><img src="{{homeImg}}"></div>
+</div>
+<div class="row">
+  <div class="col l4 s12">
+    <h5>cut the waiting time</h5>
+    <p>We have developed a method that allows us to shorten the waiting time in the emergency room, you can get your
+      waiting number from your cell phone while you are on the way.
+      <img class="responsive-img" src="{{url_for('static', filename = 'img/CurTime.jpg')}}">
+
+      Our virtual clinic offers hands-on care for basic illnesses and common conditions you may experience, such as the
+      common cold, sore throat, conjunctivitis, rash, urinary tract infection, and more.</p>
+  </div>
+  <div class="col l4 s12">
+    <h5>Pregnant women should receive the right care at the right time.
+    </h5>
+    <p>     The WHO recommends that pregnant women see their healthcare provider at least eight times during pregnancy to
+      detect and treat potential problems and reduce the likelihood of prenatal or neonatal mortality. Prenatal care
+      also offers an opportunity for health personnel to provide support and information to pregnant women, for example
+      on healthy lifestyles, disease prevention and family planning</p>
+      <p><img class="responsive-img" src="{{url_for('static', filename = 'img/pregna.jpeg')}}"></p>
+  </div>
+  <div class="col l4 s12">
+    <h5>When consumers choose health care</h5>
+    <p><img class="responsive-img" src="{{url_for('static', filename = 'img/carePatient.jpg')}}"></p>
+    <p>   they have very little information about the results that affect them. How long will they be away from work? Will
+      my pain be well controlled? What are the chances of getting an infection if this doctor operates on me? If
+      consumers had as much information about healthcare as they do about consumer products, we would see significant
+      improvements in quality — and a reduction in costs. If consumers, employers, and insurers had access to this data,
+      perhaps we would begin to reduce inequalities and variations in the quality of services provided by different
+      health care organizations. When you buy a plane ticket, does it ever occur to you to check how safe the airline
+      is? No, since security is guaranteed. The airline industry has instituted safety practices to make all airlines
+      safe. You choose your ticket for the price or the service. This is how it should be done with health services.
+      Part of this is being transparent about what we are doing well and where we are failing.</p>
+  </div>
+
+</div>
+{%- endblock content %}
+<!--
+
       <div class="card horizontal">
-        <div class="card-image hide-on-med-and-down">
-          <img src="{{url_for('static', filename = '/img/verticalBarraAzul2.jpg')}}">
-        </div>
-        <div class="card-stacked">
-          <div class="card-content">
-                  <div class="center indexButton">
-                    <div class="row">
-                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('PatientScreem')}}">Patient</a></div>
-                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('doctorList')}}">Appoinment</a></div>
-                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('staff')}}">Staff</a></div>
-                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('emergencyTeam')}}">Team</a></div>
-                    </div>
-                      <div class="row">
-                        <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('room')}}">Room</a></div>
-                        <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('emergencyTeam')}}">Emergency</a></div>
-                        <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('board')}}">Patient</a></div>
-                        <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('room')}}">Patient</a></div>
-                    </div>
-                    <div class="row">
-                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
-                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
-                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
-                      <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
-                    </div>
-                  </div>
-             </div>
-          </div>
-        </div>
+    <div class="imgindex card-image hide-on-med-and-down">
+      <img src="">
+    </div>
+    <div class="card-stacked">
+      <div class="card-content">
+              <div class="center indexButton">
+                <div class="row">
+                  <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('PatientScreem')}}">Patient</a></div>
+                  <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('doctorList')}}">Appoinment</a></div>
+                  <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('staff')}}">Staff</a></div>
+                  <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('emergencyTeam')}}">Team</a></div>
+                </div>
+                  <div class="row">
+                    <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('room')}}">Room</a></div>
+                    <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('emergencyTeam')}}">Emergency</a></div>
+                    <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('board')}}">Patient</a></div>
+                    <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('room')}}">Patient</a></div>
+                </div>
+                <div class="row">
+                  <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
+                  <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
+                  <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
+                  <div class="col s12 m2 13 buttScreem"><a class="btn z-depth-3" href="{{url_for('patient')}}">Patient</a></div>
+                </div>
+              </div>
+         </div>
       </div>
-      {% endblock baseContainer%}
-   
-     
+    </div>
+
+     -->

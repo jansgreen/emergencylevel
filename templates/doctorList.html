@@ -1,7 +1,5 @@
-{% extends "base.html" %}
-{% block baseContainer %}
-
-
+{% extends "material/base.html" %}
+{% block content -%}
 {% for DrList in Name %}
            <div class="container col s12 m7">
             <div class="card horizontal">
@@ -63,6 +61,4 @@
         </div>
       </div>
       {% endfor %}
-
-      {% endblock baseContainer%}
-    
+      {%- endblock content %}    

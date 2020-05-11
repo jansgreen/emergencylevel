@@ -1,5 +1,5 @@
-{% extends "base.html" %}
-{% block baseContainer %}
+{% extends "material/base.html" %}
+{% block content -%}
 <div class="row">
   <div class="col s12 m6 l4">
     <h2 class="header">Patient Info</h2>
@@ -12,7 +12,8 @@
                 {% for patientData in patientsData %}
                 <div class="row card-content">
                   {% for RecNum in patientData.Emergincy %}
-                  <h5>Emergincy Record Number: <div name="EmReNu">{{RecNum}}</div></h5>
+                  <h5>Emergincy Record Number: <div name="EmReNu">{{RecNum}}</div>
+                  </h5>
                   {% endfor %}
                   <h5>{{patientData.FirstName}}, {{patientData.LastName}}</h5>
                   <h5>BOD: {{patientData.BOD}}</h5>
@@ -21,31 +22,86 @@
               </div>
           </div>
           <div class="row  center">
-            {% for Medical in patientData.MedicalNote[0] %}
-              <a class="dropdown-trigger btn" data-target="List">{{Medical.MedicalDate}}</a>
-              <ul id="List" Class='dropdown-content'>
-                <li><a href="#">{{Medical.Prescription}}</a></li>
-                <li><a href="#">{{Medical.Referencia}}</a></li>
-                <li><a href="#">{{Medical.Note}}</a></li>
-                <li><a href="#">{{Medical.Medication}}</a></li>
-                <li><a href="#">{{Medical.Test}}</a></li>
-              </ul>
-              
-              {% endfor %}
+            <h4 class="header">Days:</h4>
+            {% for Medical in patientData["MedicalNote"] %}
+            <br>
+            <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical[0].MedicalDate}}</a>
+            <ul id="List" Class='dropdown-content'>
+              {% for Medical in Medical[0].Prescription %}
+              <li><a href="#!">
+               <h6>Prescription: {{Medical}}</h6> 
+              </a></li>
+                {% endfor %}
+              <hr>
+              <li><a href="#!">
+                {% for Medical in Medical[0].Referencia %}
+                 <h6>Referencia: {{Medical}}</h6> 
+                  {% endfor %}
+               </a></li>
+              <hr>
+              <li><a href="#!">
+                 <h6>Note: {{Medical[0].Note}}</h6> 
+                </a></li>
+              <hr>
+                <li><a href="#!">
+                {% for Medical in Medical[0].Medication %}
+                 <h6>Medication: {{Medical[0]}}</h6> 
+                 {% endfor %}
+                </a></li>
+              <hr>
+              <li><a href="#!">
+                {% for Medical in Medical[0].Test %}
+                 <h6>Test: {{Medical[0]}}</h6> 
+                  {% endfor %}
+                </a></li>
+            </ul>
+
+            {% endfor %}
           </div>
         </div>
       </div>
       </form>
     </div>
     <div>
-      <div class="row">
-        <h4 class="header">Treatment</h4>
-        <div class="card horizontal"> </div>
-        <div class="card-stacked"> </div>
-        <div class="card-content"> </div>
+      <div class="row  center">
+        <h4 class="header">Medical Treatment:</h4>
+        {% for Medical in patientData["MedicalNote"] %}
+        <br>
+        <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical[0].MedicalDate}}</a>
+        <ul id="List" Class='dropdown-content'>
+          {% for Medical in Medical[0].Prescription %}
+          <li><a href="#!">
+           <h6>Prescription: {{Medical}}</h6> 
+          </a></li>
+            {% endfor %}
+          <hr>
+          <li><a href="#!">
+            {% for Medical in Medical[0].Referencia %}
+             <h6>Referencia: {{Medical}}</h6> 
+              {% endfor %}
+           </a></li>
+          <hr>
+          <li><a href="#!">
+             <h6>Note: {{Medical[0].Note}}</h6> 
+            </a></li>
+          <hr>
+            <li><a href="#!">
+            {% for Medical in Medical[0].Medication %}
+             <h6>Medication: {{Medical[0]}}</h6> 
+             {% endfor %}
+            </a></li>
+          <hr>
+          <li><a href="#!">
+            {% for Medical in Medical[0].Test %}
+             <h6>Test: {{Medical[0]}}</h6> 
+              {% endfor %}
+            </a></li>
+        </ul>
+
+        {% endfor %}
       </div>
       {% endfor %}
-      
+
     </div>
   </div>
 
@@ -130,4 +186,4 @@
   </div>
 </div>
 
-{% endblock baseContainer %}
+{%- endblock content %}

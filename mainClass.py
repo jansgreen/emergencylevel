@@ -1,4 +1,4 @@
-from wtforms import Form, BooleanField, StringField, PasswordField, validators
+from wtforms import Form, BooleanField, StringField, validators
 
 
 
@@ -46,3 +46,87 @@ class validatorForm(Form):
 
     ])
 
+
+class Nourse(Form):
+    Diagnosis = StringField(' ',
+                               [
+                                   validators.Required(
+                                       message='this field is empty'),
+                                   validators.Length(
+                                       min=4, max=125, message='this field is empty'),
+
+                               ])
+    Allergies = StringField(' ',
+                             [
+                                 validators.Length(min=4, max=25),
+                                 validators.Required(
+                                     message='this field is empty')
+                             ])
+    Mets = StringField(' ', [
+        validators.Length(min=4, max=25),
+        validators.Required(message='this field is empty')
+    ])
+
+    # Assign Medication
+    BldPressure = StringField(' ', [
+        validators.Length(min=4, max=25, message='this field is empty'),
+        validators.Required()
+
+    ])
+    Breathing = StringField(' ', [
+        validators.Length(min=4, max=25),
+        validators.Required(message='this field is empty')
+
+    ])
+    # Assign Test
+    Pulse = StringField(' ', [
+        validators.Length(min=4, max=25),
+        validators.Required(message='this field is empty')
+
+    ])
+    BdTemperature = StringField(' ', [
+
+        validators.Length(min=4, max=25),
+        validators.Required(message='this field is empty')
+
+    ])
+
+    NrsObservation = StringField(' ', [
+
+        validators.Length(min=4, max=25),
+        validators.Required(message='this field is empty')
+
+    ])
+
+    MdlIssues = StringField(' ', [
+
+        validators.Length(min=4, max=25),
+        validators.Required(message='this field is empty')
+
+    ])
+
+    InttService = StringField(' ', [
+
+        validators.Length(min=4, max=25),
+        validators.Required(message='this field is empty')
+
+    ])
+
+    newFieldtService = StringField(' ', [
+
+        validators.Length(min=4, max=25),
+        validators.Required(message='this field is empty')
+
+    ])
+
+    NewFieldIssues = StringField(' ', [
+
+        validators.Length(min=4, max=25),
+        validators.Required(message='this field is empty')
+
+    ])
+
+    
+
+    
+    

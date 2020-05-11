@@ -1,6 +1,5 @@
-{% extends "base.html" %}
-
-{% block baseContainer %}
+{% extends "material/base.html" %}
+{% block content -%}
 <div class="row">
   <div class="col s5">
     <div class="card horizontal">
@@ -65,7 +64,7 @@
             <td>{{ PatiientList.Condition }}</td>
             <td>{{ PatiientList.Note }}</td>
 
-            <td><a class="btn MedicalNote" href="/addNourse/{{ PatiientList._id }}">Nourse</a></td>
+            <td><a class="btn MedicalNote" href="/addNourse/{{ PatiientList._id }}">Nurse</a></td>
             <td><a class="btn MedicalNote" href="/addDoctor/{{ PatiientList._id }}">Doctor</a></td>
           </tr>
         </tbody>
@@ -77,4 +76,4 @@
   </div>
 
 </div>
-{% endblock baseContainer%}
+{%- endblock content %}

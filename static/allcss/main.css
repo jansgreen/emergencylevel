@@ -50,8 +50,39 @@ BUTTONS
   background: rgb(240, 89, 172);
   width: 200px;
   height: 150px;
-  -webkit-border-radius: 50px;
-  -moz-border-radius: 50px;
-  -ms-border-radius: 50px;
-  -o-border-radius: 50px;
+  -webkit-border-radius:;
+  -moz-border-radius:;
+  -ms-border-radius:;
+  -o-border-radius:;
+}
+
+
+.backgrounImg {
+  display: flexbox;
+  float: left;
+  transform: translate3d(-0%, 0px, 0px);
+  background-size: cover;
+  background-attachment: fixed;
+  max-width: 1440px;
+  -webkit-transform: translate3d(-0%, 0px, 0px);
+  -moz-transform: translate3d(-0%, 0px, 0px);
+  -ms-transform: translate3d(-0%, 0px, 0px);
+  -o-transform: translate3d(-0%, 0px, 0px);
+}
+
+.footerInfo{
+  max-height: 10%;
+  background-color: teal;
+}
+
+.footerIcon{
+
+  padding-right: 40%;
+  padding-left: 40%;
+}
+
+.BarStaff{
+    padding-top: 5%;
+    padding-bottom: 5%;
+
 }

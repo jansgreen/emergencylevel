@@ -1,0 +1,129 @@
+{% macro row() %}<div class="row">{% endmacro %}
+
+  {% macro container() %}<div class="container">{% endmacro %}
+
+    {% macro col(cols=[]) %}<div class="col {{ cols|join(' ') }}">{% endmacro %}
+
+      {% macro enddiv() %}</div>{% endmacro %}
+
+    {% block doc -%}
+    <!DOCTYPE html>
+    <html{% block html_attribs %}{% endblock html_attribs %}>
+      {%- block html %}
+
+      <head>
+        {%- block head %}
+        <title>{% block title %}Emergency Level{% endblock title %}</title>
+        {%- block metas %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        {%- endblock metas %}
+
+        {%- block styles %}
+        <!-- Materialize. Availible at https://github.com/Dogfalo/materialize -->
+        <!-- Flask-Materialize. Available at https://bitbucket.org/cyberspy/flask_materialize -->
+        <link href="{{material_find_resource('css/materialize.css', cdn='material')}}" rel="stylesheet" media="screen">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+        <link href="{{url_for('static', filename = 'allcss/main.css')}}" rel="stylesheet" type="text/css">
+
+        {%- endblock styles %}
+        {%- endblock head %}
+      </head>
+
+      <body {% block body_attribs %}{% endblock body_attribs %}>
+        <header background="{{url_for('static', filename = '/img/homeimg.jpg')}}">
+
+          {% block body -%}
+          {% block navbar %}
+          <nav class="nav-extended">
+            <div class="nav-wrapper">
+              <a href="{{url_for('index')}}" class="brand-logo"><img
+                  src="{{url_for('static', filename = '/img/logo.jpg')}}"></a>
+            </div>
+            <div class="nav-content">
+              <ul class="tabs tabs-transparent">
+                <li class="tab"><a href="{{url_for('PatientScreem')}}">I'm Patient</a></li>
+                <li class="tab"><a href="{{url_for('staff')}}">I'm Employee</a></li>
+                <li class="tab"><a href="{{url_for('room')}}">About</a></li>
+              </ul>
+            </div>
+          </nav>
+          {%- endblock navbar %}
+          {% block content -%}
+          {%- endblock content %}
+
+          {% block scripts %}
+          <script src="{{material_find_resource('jquery.js', cdn='jquery')}}"></script>
+          <script src="{{material_find_resource('js/materialize.js', cdn='material')}}"></script>
+          <script src="{{url_for('room', filename = 'https://use.fontawesome.com/945a3f5561.js')}}"></script>
+          <script src="{{url_for('static', filename = 'scripts/script.js')}}"></script>
+          {%- endblock scripts %}
+          {% block footer %}
+
+          <footer class="page-footer">
+            <div class="container">
+              <div class="row">
+                <div class="col l6 s12">
+                  <h5 class="white-text">Get a health insurance</h5>
+                  <p class="grey-text text-lighten-4">Medicare Advantage plans offer all the benefits and services that
+                    Original Medicare offers, plus many more services — for less money.
+
+                    <a class="grey-text text-lighten-3"
+                      href="https://dsnp.uhccommunityplan.com/call/ny?WT.mc_id=8016938&gclid=CjwKCAjw7-P1BRA2EiwAXoPWA19nxlTTKtT6VsuI6Nc1WwoDvWqlRQO2ZJuOIqOd-OtknOe5N-wt8hoCOHIQAvD_BwE&gclsrc=aw.ds"></a>
+                    <i class="large material-icons footerIcon">beach_access</i></a>
+                      <p class="center">Be Safe</p>
+                </div>
+                <div class="col l6 s12">
+                  <ul>
+                    <div class="row">
+                      <h5 class="white-text">Ours Services</h5>
+                      <li class="col l4 s12">
+                        <a class="grey-text text-lighten-3" href="#!"><i
+                            class="small material-icons footerIcon">assignment</i></a>
+                        <p class="center">My Record</p>
+                      </li>
+                      <li class="col l4 s12">
+                        <a class="grey-text text-lighten-3" href="#!"><i
+                            class="small material-icons footerIcon">credit_card</i></a>
+                        <p class="center">My Bill</p>
+                      </li>
+                      <li class="col l4 s12">
+                        <a class="grey-text text-lighten-3" href="#!"><i
+                            class="small material-icons footerIcon">access_alarm</i></a>
+                        <p class="center">Cur Time</p>
+                      </li>
+                    </div>
+                    <div class="row">
+                      <h5 class="white-text">Ours Doctors</h5>.
+                      </li>
+                      <li class="col l4 s12">
+                        <a class="grey-text text-lighten-3" href="#!"><i
+                            class="small material-icons footerIcon">account_circle</i></a>
+                        <p class="center">Cur Time</p>
+                      </li>
+                    </div>
+
+
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="footer-copyright">
+              <div class="container">
+                © 2020 Copyright Luis Pena (Dev. Student of
+                Code Institute)
+                <a class="grey-text text-lighten-4 right" href="https://www.facebook.com/jansgreen00">Contact Luis
+                  Pena</a>
+              </div>
+            </div>
+          </footer>
+          {%- endblock footer %}
+          {%- endblock body %}
+      </body>
+      {%- endblock html %}
+
+      </html>
+      {% endblock doc -%}

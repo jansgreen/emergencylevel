@@ -1,15 +1,19 @@
 import pymongo
 import stripe
 import mainClass
+import json
+import os
 from pymongo import MongoClient
 from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_materialize import Material  
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
-# I delete the import json
+
 
 
 
 app = Flask(__name__)
+Material(app)
 
 # MONGODB CONNECTION
 client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
@@ -23,12 +27,14 @@ stripe.api_key = secreKey
 
 # SETTING
 app.secret_key = 'mysecretkey'
+imgFolder = os.path.join('static','img')
+app.config['UPLOAD_FOLDER']=imgFolder
 
 
 @app.route('/')
 def index():
-    return render_template("index.html")
-
+    homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
+    return render_template("index.html", homeImg=homeImg)
 
 @app.route('/patient')
 def patient():
@@ -78,11 +84,17 @@ def addPatient():
             "Address": Address,
             "Email": Email,
             "Phone": numPhone,
+            
+        }
+        condition = {
             "Condition": Condition,
             "Note": ntCondition
         }
     _id = dbColl.insert_one(dataPost)
     TicketID = _id.inserted_id
+    dbColl.update({"_id": ObjectId(TicketID)}, {
+        '$set': {"MedicalNote":[condition]}
+    })
     return redirect(url_for("ticket", id=TicketID))
 
 
@@ -188,7 +200,62 @@ def room():
 
 @app.route('/Nourse/<string:id>', methods=['POST'])
 def Nourse(id):
-    if request.method == 'POST':
+    Nourse = mainClass.Nourse(request.form)
+    if request.method == 'POST'and Nourse.validate():
+        AllergiesV = request.form['Mets'],
+        MetsV = request.form['BldPressure'],
+        DiagnosisV = request.form['Allergies'],
+        BldPressureV = request.form['Diagnosis'],
+        BreathingV = request.form['Breathing'],
+        PulseV = request.form['Pulse'],
+        BdTemperatureV = request.form['BdTemperature'],
+        NrsObservationV = request.form['NrsObservation'],
+        MdlIssuesV = request.form['MdlIssues'],
+        InttServiceV = request.form['InttService']
+        
+        now = datetime.now()
+        MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
+        try:
+            NewFieldIssuesV = request.form['NewFieldIssues'],
+            newFieldtServiceV = request.form['newFieldtService'],
+            MedicalData={ 
+                "Nurse": "Nurse",
+                "Diagnosis":DiagnosisV,
+                "BloodPressure":BldPressureV,
+                "Breathing":BreathingV,
+                "Allergies":AllergiesV,
+                "Mets":MetsV,
+                "Pulse":PulseV,
+                "BodyTemperature":BdTemperatureV,
+                "NurseObservation":NrsObservationV,
+                "MedicalIssues":MdlIssuesV,
+                "IntensityService":InttServiceV,
+                "OtherIssues":NewFieldIssuesV,
+                "OtherService":newFieldtServiceV,
+                "Date": MedicalDate,
+                  }
+            pass
+        except:
+             MedicalData={ 
+                "Breathing":BreathingV,
+                "Allergies":AllergiesV,
+                "Mets":MetsV,
+                "Pulse":PulseV,
+                "BodyTemperature":BdTemperatureV,
+                "NurseObservation":NrsObservationV,
+                "MedicalIssues":MdlIssuesV,
+                "IntensityService":InttServiceV,
+                "OtherIssues":NewFieldIssuesV,
+                "OtherService":newFieldtServiceV,
+                "Date": MedicalDate,
+                  }
+        finally:
+            dbColl.update({"_id": ObjectId(id)}, {
+                '$push': {'MedicalNote':[MedicalData]}})
+            pass
+
+
+
         Pressure = request.form['Pressure'],
         weight = request.form['weight'],
         VitalSigns = request.form['VitalSigns'],
@@ -204,8 +271,10 @@ def Nourse(id):
 
 @app.route('/addNourse/<string:id>')
 def addNourse(id):
-    PatientsID = id
-    return render_template("/Nourse.html", PatientId=PatientsID)
+    DrPasientsID = id
+    NourseForm = mainClass.Nourse(request.form)
+    patientData = dbColl.find({'_id': ObjectId(DrPasientsID)})
+    return render_template("/Nourse.html", PatientId=patientData, DrPasientID=DrPasientsID, form=NourseForm)
 
 
 @app.route('/Doctor/<string:id>', methods=['POST'])
@@ -221,7 +290,26 @@ def Doctor(id):
         DoBefore = request.form['DoBefore'],
         now = datetime.now()
         MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
-        MedicalData={ 
+        try:
+            newMed = request.form['newMed'],
+            newInd = request.form['newInd'],
+            readyTestName = request.form['readyTestName'],
+            readyDoBefore = request.form['readyDoBefore'],
+            MedicalData={ 
+                "Doctor": "DoctorName",
+               "Prescription": Prescription,
+               "Referencia": Referencia,
+               "Note": Note,
+               "Medication": (AssigMed, Indications),
+               "OtherMedication":(newMed, newInd),
+               "Test": (TestName, DoBefore),
+               "OtherTest":(readyTestName,readyDoBefore),
+               "MedicalDate":MedicalDate
+                  }
+            pass
+        except:
+             MedicalData={ 
+                "Doctor": "DoctorName",
                "Prescription": Prescription,
                "Referencia": Referencia,
                "Note": Note,
@@ -229,9 +317,11 @@ def Doctor(id):
                "Test": (TestName, DoBefore),
                "MedicalDate":MedicalDate
                   }
+        finally:
+            dbColl.update({"_id": ObjectId(id)}, {
+                '$push': {'MedicalNote':[MedicalData]}})
+            pass
 
-        dbColl.update({"_id": ObjectId(id)}, {
-            '$push': {'MedicalNote':[MedicalData]}})
     return redirect(url_for("emergencyTeam"))
 
 

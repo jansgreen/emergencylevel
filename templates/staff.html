@@ -1,6 +1,63 @@
-{% extends "base.html" %}
+{% extends "material/base.html" %}
+{% block content -%}
 
-{% block baseContainer %}
+<div class="row">
+  <div class="col s12 m6">
+    <div class="card darken-1">
+      <div class="card-content white-text">
+        <span class="card-title"> 
+          <div class="col s12 m6 l3">
+          <a href="{{url_for('patient')}}" class="center btn waves-effect waves-light" type="submit">Login</a>
+        </div></span>
+      </div>
+      <div class="card-action">
+        <a href="#"></a>
+        <a href="#"></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col l4 s12">
+    <h5>We Work</h5>
+    <p>our hospital is really in the heart of our city. The hospital was founded to bring the highest quality of medical
+      care to the neediest communities in NYC. Since we opened our doors in 2015, we have made a valuable
+      impact on the lives and health of tens of thousands of our neighbors. If you are committed to making a difference
+      with your work, then come work with us..</p>
+    <p><img class="responsive-img" src="{{url_for('static', filename = 'img/emergencyteam.jpg')}}"></p>
+  </div>
+  <div class="col l4 s12">
+    <h5>We are the hospital of the future</h5>
+    <p>In a recent publication on the future of healthcare in the United States, POLITICO described our hospital. In the
+      title of our article, MLKCH is referred to as the "hospital of the future".</p>
+    <p><img class="responsive-img" src="{{url_for('static', filename = 'img/weAre.jpg')}}"></p>
+    <p>he has two previous works as an immediate background. The first, as a framework analysis of the elaboration of
+      the standards of the Internal Medicine units, "Vision of Internal Medicine in health in the 21st century" stated
+      that "it is difficult to prepare a document on standards similar to Consultant physicians working with patients,
+      without there being a vision of the characteristics of "Future Physician" or "Future Hospital" and, therefore,
+      focused on the analysis of "threats" and "opportunities" that the environment generates for Internal Medicine in
+      Spain and the National Health System (SNS).</p>
+  </div>
+
+  <div class="col l4 s12">
+    <h5>QUALITY CARE BEGINS
+      WITH QUALITY PEOPLE</h5>
+    <p> A hospital is as good as its medical and administrative staff, and judging by these standards, Martin Luther
+      King,
+      Jr. Community Hospital is exceptional. All of our board-certified or eligible physicians and related healthcare
+      professionals go through a strict credential verification process before joining our staff. In any interaction
+      with a clinical provider in our hospital, patients will experience our values ​​of care, collaboration,
+      responsibility, respect and excellence.
+
+      <img class="responsive-img" src="{{url_for('static', filename = 'img/WeTeam.jpg')}}"></p>
+  </div>
+
+</div>
+{%- endblock content %}
+
+<!--
 <div class="col s12 m7">
   <h2 class="header">Staff:</h2>
   <div class="card horizontal">
@@ -9,6 +66,11 @@
     </div>
     <div class="card-stacked">
       <div class="card-content">
+        <div class="row center">
+          <div class="col s12 m6 l3">
+            <a href="{{url_for('patient')}}" class="center btn waves-effect waves-light" type="submit">Login?</a>
+          </div>
+          </div>
         <div class="row">
           <form action="/addStaff" method="POST" class="col s12">
             <div class="row">
@@ -79,4 +141,5 @@
   </div>
 </div>
 
-{% endblock baseContainer%}
+
+-->

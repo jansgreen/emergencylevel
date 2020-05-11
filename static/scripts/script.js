@@ -26,52 +26,57 @@ $.ajax({
     LIST DROPDOWN
 ====================================================*/
 $('.dropdown-trigger').dropdown();
+/*============================BACKGROUND INDEX*/
+
+$(document).ready(function(){
+    $('.parallax').parallax();
+  });
 
 /*====================================================
-    ADD FIELLDS MEDICATION AND INDICATION
+    ADD FIELLDS DOCTOR
 ====================================================*/
 
 function addfield() {
-	var postfieldMed = document.getElementById("newfieldMed");
-	var postfieldInd = document.getElementById("newfieldInd");
-	var fieldsMess = document.getElementById("fieldsMessages");
-	var newAssigMed = document.createElement('input');
-	var newInd = document.createElement('input');
-	newAssigMed.setAttribute("id", "readyFieldMed");
-	newAssigMed.setAttribute("type", "text");
-	newAssigMed.setAttribute("name", "newMed");
-	newAssigMed.setAttribute("class","value");
-	newAssigMed.setAttribute("placeholder", "Medication");
+	var postfieldIssues = document.getElementById("newfieldMed");
+	var postfieldInttService = document.getElementById("newfieldInd");
+	var fieldsNsMess = document.getElementById("fieldsNsMessages");
+	var newIssues = document.createElement('input');
+	var newInttService = document.createElement('input');
+	newIssues.setAttribute("id", "readyFieldMed");
+	newIssues.setAttribute("type", "text");
+	newIssues.setAttribute("name", "newMed");
+	newIssues.setAttribute("class","value");
+	newIssues.setAttribute("placeholder", "Medication");
 
-	newInd.setAttribute("id", "readyFieldInd");
-	newInd.setAttribute("type", "text");
-	newInd.setAttribute("name", "newInd");
-	newInd.setAttribute("class", "value");
-	newInd.setAttribute("placeholder", "Indication");
+	newInttService.setAttribute("id", "readyFieldInd");
+	newInttService.setAttribute("type", "text");
+	newInttService.setAttribute("name", "newInttService");
+	newInttService.setAttribute("class", "value");
+	newInttService.setAttribute("placeholder", "Indication");
 	
-	if (!newAssigMed && !newInd) {
-		setTimeout(function(){fieldsMess.innerHTML = "Can't add field, try again or contact support!";} , 200);
+	if (!newIssues && !newInttService) {
+		setTimeout(function(){fieldsNsMess.innerHTML = "Can't add field, try again or contact support!";} , 200);
 
 	} else {
-		postfieldMed.appendChild(newAssigMed);
-		postfieldInd.appendChild(newInd);
-		setTimeout(function(){fieldsMess.innerHTML = "field added successfully!";} , 200);
+		postfieldIssues.appendChild(newIssues);
+		postfieldInttService.appendChild(newInttService);
+		setTimeout(function(){fieldsNsMess.innerHTML = "field added successfully!";} , 200);
 				
 	}
 }
 
 function RemuveField(id) {
 	var getFieldInd = document.getElementById(id);
-	var fieldsMess = document.getElementById("fieldsMessages");
+	var fieldsNsMess = document.getElementById("fieldsMessages");
 	if (!getFieldInd){
 
-		fieldsMess.innerHTML = "Did you add field?";
+		fieldsNsMess.innerHTML = "Did you add field?";
 	}else{ 
 	var fieldInd = getFieldInd.parentNode;
 
 	fieldInd.removeChild(getFieldInd);
-	var fieldsMess = document.getElementById("fieldsMessages");
-	setTimeout(function(){fieldsMess.innerHTML = "The Field removed successfully!";} , 200);
+	var fieldsNsMess = document.getElementById("fieldsMessages");
+	setTimeout(function(){fieldsNsMess.innerHTML = "The Field removed successfully!";} , 200);
 	
 	}
 }
@@ -95,7 +100,7 @@ function RemuveFields(id) {
 function addfieldTest() {
 	var newTestName = document.getElementById("newFldTestName");
 	var newDoBefore = document.getElementById("newFldDoBefore");
-	var fieldsMessTest = document.getElementById("fieldsMessagesTest");
+	var fieldNsMessages = document.getElementById("fieldsNsMessagesTest");
 	var newFieldTest = document.createElement('input');
 	var newFieldDoBe = document.createElement('input');
 	newFieldTest.setAttribute("id", "readyFieldTest");
@@ -113,38 +118,105 @@ function addfieldTest() {
 	newFieldDoBe.setAttribute("value", " ");
 	
 	if (!newFieldTest && !newFieldDoBe) {
-		setTimeout(function(){fieldsMessTest.innerHTML = "Can't add field, try again or contact support!";} , 200);
+		setTimeout(function(){fieldNsMessages.innerHTML = "Can't add field, try again or contact support!";} , 200);
 
 	} else {
 		newTestName.appendChild(newFieldTest);
 		newDoBefore.appendChild(newFieldDoBe);
-		setTimeout(function(){fieldsMessTest.innerHTML = "field added successfully!";} , 200);
+		setTimeout(function(){fieldNsMessages.innerHTML = "field added successfully!";} , 200);
 				
 	}
 }
 
-function RemuveFieldTest(id) {
-	var getFieldTest = document.getElementById(id);
-	var fieldsMessTest = document.getElementById("fieldsMessagesTest");
-	if (!getFieldTest){
-		setTimeout(function(){fieldsMessTest.innerHTML = "Did you add field!";} , 200);
-	}else{ 
-	var fieldTest = getFieldTest.parentNode;
 
-	fieldTest.removeChild(getFieldTest);
-	var fieldsMessTest = document.getElementById("fieldsMessagesTest");
-	setTimeout(function(){fieldsMessTest.innerHTML = "The Field removed successfully!";} , 200);
+/*====================================================
+    REMOVE FIELLDS DOCTOR
+====================================================*/
+function RemuveFieldTest(id) {
+	var getfieldsNs = document.getElementById(id);
+	var fieldNsMessages = document.getElementById("fieldsNsMessagesTest");
+	if (!getfieldsNs){
+		setTimeout(function(){fieldNsMessages.innerHTML = "Did you add field!";} , 200);
+	}else{ 
+	var fieldTest = getfieldsNs.parentNode;
+
+	fieldTest.removeChild(getfieldsNs);
+	var fieldNsMessages = document.getElementById("fieldsMessagesTest");
+	setTimeout(function(){fieldNsMessages.innerHTML = "The Field removed successfully!";} , 200);
 	
 	}
 }
 
 function RemuveFieldsDoBe(id) {
-	var getFieldTest = document.getElementById(id);
-	if (!getFieldTest){
+	var getfieldsNs = document.getElementById(id);
+	if (!getfieldsNs){
 
 	}else{ 
-	var fieldTest = getFieldTest.parentNode;
-	fieldTest.removeChild(getFieldTest);
+	var fieldTest = getfieldsNs.parentNode;
+	fieldTest.removeChild(getfieldsNs);
+
+	}
+}
+
+
+/*====================================================
+    ADD FIELLDS NURSE
+====================================================*/
+
+function addfieldNs() {
+	var postfieldIssues = document.getElementById("newMdlIssues");
+	var postfieldInttService = document.getElementById("newInttService");
+	var fieldsNsMess = document.getElementById("fieldsNsMessages");
+	var newIssues = document.createElement('input');
+	var newInttService = document.createElement('input');
+	newIssues.setAttribute("id", "NewFieldIssues");
+	newIssues.setAttribute("type", "text");
+	newIssues.setAttribute("name", "NewFieldIssues");
+	newIssues.setAttribute("class","value");
+	newIssues.setAttribute("placeholder", "Medical Issues");
+
+	newInttService.setAttribute("id", "newFieldtService");
+	newInttService.setAttribute("type", "text");
+	newInttService.setAttribute("name", "newFieldtService");
+	newInttService.setAttribute("class", "value");
+	newInttService.setAttribute("placeholder", "Intensity of Service");
+	
+	if (!newIssues && !newInttService) {
+		setTimeout(function(){fieldsNsMess.innerHTML = "Can't add field, try again or contact support!";} , 200);
+
+	} else {
+		postfieldIssues.appendChild(newIssues);
+		postfieldInttService.appendChild(newInttService);
+		setTimeout(function(){fieldsNsMess.innerHTML = "field added successfully!";} , 200);
+				
+	}
+}
+/*====================================================
+    REMOVE FIELLDS NURSE
+====================================================*/
+
+function RemuveFieldNsIs(id) {
+	var getfieldsNs = document.getElementById(id);
+	var fieldNsMessages = document.getElementById("fieldsNsMessagesTest");
+	if (!getfieldsNs){
+		setTimeout(function(){fieldNsMessages.innerHTML = "Did you add field!";} , 200);
+	}else{ 
+	var fieldTest = getfieldsNs.parentNode;
+
+	fieldTest.removeChild(getfieldsNs);
+	var fieldNsMessages = document.getElementById("fieldsMessagesTest");
+	setTimeout(function(){fieldNsMessages.innerHTML = "The Field removed successfully!";} , 200);
+	
+	}
+}
+
+function RemuveFieldNsInt(id) {
+	var getfieldsNs = document.getElementById(id);
+	if (!getfieldsNs){
+
+	}else{ 
+	var fieldNsTest = getfieldsNs.parentNode;
+	fieldNsTest.removeChild(getfieldsNs);
 
 	}
 }

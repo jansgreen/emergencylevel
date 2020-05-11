@@ -1,60 +1,97 @@
-{% extends "base.html" %}
+{% extends "material/base.html" %}
+{% block content -%}
+<div class="col s12 m7">
+  <h2 class="header">Welcome to Emergency Level</h2>
+  <h5>this is Emergency Level reception screen</h5>
+  <div class="card horizontal">
+    <div class="card-image hide-on-med-and-down">
+      <img src="{{url_for('static', filename = '/img/verticalBarraAzul2.jpg')}}">
+    </div>
+    <div class="card-stacked">
+      <div class="card-content">
+        <div class="row center">
+        <div class="col s12 m6 l3">
+          <a href="{{url_for('patient')}}" class="center btn waves-effect waves-light" type="submit">New Patient?</a>
+        </div>
+        <div class="col s12 m6 l3">
+          <a href="{{url_for('patient')}}" class="center btn waves-effect waves-light" type="submit">my account</a>
+        </div>
 
-      {% block baseContainer %} 
-      <div class="col s12 m7">
-        <h2 class="header">Welcome to Emergency Level</h2>
-       <h5>this is Emergency Level reception screen</h5>
-        <div class="card horizontal">
-          <div class="card-image hide-on-med-and-down">
-            <img src="{{url_for('static', filename = '/img/verticalBarraAzul2.jpg')}}">
-          </div>
-          <div class="card-stacked">
-            <div class="card-content">
-              <div class="row center">
-                <a href="{{url_for('patient')}}" class="center btn waves-effect waves-light" type="submit">New Patient?</a>
+        </div>
+        <hr>
+        <div class="row">
+          <h4 class="header">Fask Tickets</h4>
+          <form action="Seach" method="POST">
+            <div class="input-field col s12 m6 l6">
+              <input id="Patientseach" type="text" class="validate" name="Patientseach" placeholder="Email">
+              <label for="Patientseach">I'm a regular Patient</label>
+              <div class="input-field col s12 m6 l6">
+                <button id="patButton" class="btn waves-effect waves-light" type="submit" name="action">Search</button>
               </div>
-              <hr>
-                <div class="row">
-                  <h4 class="header">I'm a Patient</h4>
-                  <form action="Seach" method="POST">
-                  <div class="input-field col s12 m6 l6">
-                    <input id="Patientseach" type="text" class="validate" name="Patientseach" placeholder="Email">
-                    <label for="Patientseach">I'm a regular Patient</label>
-                    <div class="input-field col s12 m6 l6">
-                      <button id="patButton" class="btn waves-effect waves-light" type="submit" name="action">Search</button>
-                    </div>
-                  </form>
-                  </div>
-                  </div>
-                  <hr>
-                  <table class="container">
-                    {% for PatientData in PatientDataOut %}
-                    <thead>
-                      <tr>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Bird day</th>
-                          <th>Option</th>
-                      </tr>
-                    </thead>
-            
-                    <tbody>
-                      <tr>
-                        <td>{{ PatientData.FirstName }}</td>
-                        <td>{{ PatientData.LastName }}</td>
-                        <td>{{ PatientData.BOD }}</td>
-                        <td><a class="btn MedicalNote" href="/ticket/{{PatientData._id}}">Select</a></td>
-                      </tr>
-                    </tbody>
-                    {% endfor %}
-              </table>
-                  
+          </form>
+        </div>
+      </div>
+      <hr>
+      <table class="container">
+        {% for PatientData in PatientDataOut %}
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Bird day</th>
+            <th>Option</th>
+          </tr>
+        </thead>
 
-                </div>
-              </div>
-              <div> 
-            </div>
-          </div>
-      {% endblock baseContainer%}
+        <tbody>
+          <tr>
+            <td>{{ PatientData.FirstName }}</td>
+            <td>{{ PatientData.LastName }}</td>
+            <td>{{ PatientData.BOD }}</td>
+            <td><a class="btn MedicalNote" href="/ticket/{{PatientData._id}}">Select</a></td>
+          </tr>
+        </tbody>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+  <div>
+  </div>
+</div>
+<div class="row">
+  <div class="col l4 s12">
+    <h5>Fash Way</h5>
+    <p>Here you can get a ticket for the emergency room, in emergency when your turn does not make a presence we will
+      proceed to call the next, for an hour, if in one hour after printing this ticket you do not make this ticket will
+      be null ,
 
+      This menu helps us to maintain order on the waiting line, but at the same time it helps you to wait less time.
 
+      If it is the first time that you visit us, please enter your basic information in the <div
+        class="btn waves-effect waves-light">"New Patient?"</div> button.
+
+      <img class="responsive-img" src="{{url_for('static', filename = 'img/ambulance.jpg')}}"></p>
+  </div>
+  <div class="col l4 s12">
+    <h5>Our team</h5>
+    <p>A member of our staff who will assist you will complete the other information we request when it comes to
+      treatment.
+      Our hospital staff is comprised of only the most talented, active, and dedicated individuals in the chosen
+      profession, committed to the hospital's vision of innovation and collaboration in community healthcare.</p>
+    <p><img class="responsive-img" src="{{url_for('static', filename = 'img/OurNurse.jpg')}}"></p>
+  </div>
+  <div class="col l4 s12">
+    <h5>Our nurses</h5>
+    <p> The nurses at Martin Luther King, Jr. Community Hospital are highly qualified and have specialized knowledge for
+      the departments in which they work. Regardless of the specialty of the service line, each one is committed to
+      prioritizing patient care and ensuring its follow-up according to scheduled care.</p>
+    <p><img class="responsive-img" src="{{url_for('static', filename = 'img/OurStaff.jpg')}}"></p>
+    <p>They are the example of the profession, each of our nurses is highly qualified to assess the patient's condition,
+      communicate with doctors and other health professionals, and provide a thorough evaluation as required.
+
+      Many of our nurses come from the surrounding community and, as with all of our staff members, from doctors to
+      technicians and volunteers, are dedicated to serving our community.</p>
+  </div>
+
+</div>
+{%- endblock content %}
