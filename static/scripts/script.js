@@ -32,6 +32,7 @@ $(document).ready(function(){
     $('.parallax').parallax();
   });
 
+  
 /*====================================================
     ADD FIELLDS DOCTOR
 ====================================================*/
@@ -119,6 +120,8 @@ function addfieldTest() {
 	
 	if (!newFieldTest && !newFieldDoBe) {
 		setTimeout(function(){fieldNsMessages.innerHTML = "Can't add field, try again or contact support!";} , 200);
+		var toastHTML = '<span>I am toast content</span><button class="btn-flat toast-action">Undo</button>';
+		M.toast({html: toastHTML});
 
 	} else {
 		newTestName.appendChild(newFieldTest);
@@ -126,7 +129,7 @@ function addfieldTest() {
 		setTimeout(function(){fieldNsMessages.innerHTML = "field added successfully!";} , 200);
 				
 	}
-}
+} 
 
 
 /*====================================================

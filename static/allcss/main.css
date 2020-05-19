@@ -50,10 +50,10 @@ BUTTONS
   background: rgb(240, 89, 172);
   width: 200px;
   height: 150px;
-  -webkit-border-radius:;
-  -moz-border-radius:;
-  -ms-border-radius:;
-  -o-border-radius:;
+  -webkit-border-radius:0;
+  -moz-border-radius:0;
+  -ms-border-radius:0;
+  -o-border-radius:0;
 }
 
 
@@ -85,4 +85,7 @@ BUTTONS
     padding-top: 5%;
     padding-bottom: 5%;
 
+}
+.ilike-blue-container {
+  @extend .blue-text, .text-lighten-4;
 }

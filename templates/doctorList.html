@@ -1,11 +1,11 @@
 {% extends "material/base.html" %}
+{% from "material/macro.html" import render_field %}
 {% block content -%}
 {% for DrList in Name %}
            <div class="container col s12 m7">
             <div class="card horizontal">
               <div class="card-image hide-on-med-and-down">
-                <img src="{{url_for('static', filename = '/img/Dr.LuisPena.jpg')}}" alt="">
-              </div>
+               </div>
               <div class="card-stacked">
                 <div class="card-content">
                   <div class="row">
@@ -44,9 +44,15 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col s12 m6 l6">
-                     <h4>Lab Number: {{DrList.Tabnumber}}</h4>
+                    <div class="col s12 m4 l3">
+                     <h5>Lab Number: {{DrList.Tabnumber}}</h5>
                     </div>
+                    <div class="col s12 m4 l3">
+                      <div><h5>Make Appoiment: {{ render_field(form.mkAppoiment, placeholder="mkAppoiment", type="date", id="mkAppoiment") }}</h5></div>
+                     </div>
+                     <div class="col s12 m4 l3">
+                      <div><h5>Select Time:{{ render_field(form.mkAppoimentTime, placeholder="mkAppoimentTime", type="time", id="mkAppoimentTime") }}</h5></div>
+                     </div>
                     </div>
                   </div>
                 </div>

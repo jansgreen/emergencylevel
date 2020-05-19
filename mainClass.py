@@ -1,7 +1,10 @@
-from wtforms import Form, BooleanField, StringField, validators
+from wtforms import Form, BooleanField, StringField, validators, PasswordField, SubmitField
+from wtforms.validators import InputRequired, Email, Length
+from flask_wtf import FlaskForm
 
-
-
+#==============================================
+# DOCTOR FORMS VALIDATOR
+#==============================================
 class validatorForm(Form):
     Prescription = StringField(' ',
                                [
@@ -46,7 +49,9 @@ class validatorForm(Form):
 
     ])
 
-
+#==============================================
+# NURSE FORMS VALIDATOR
+#==============================================
 class Nourse(Form):
     Diagnosis = StringField(' ',
                                [
@@ -126,7 +131,28 @@ class Nourse(Form):
 
     ])
 
-    
+#==============================================
+# USER VALIDATOR
+#==============================================
+class UserLog(Form):
+    Username = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
+    Password = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)])
 
-    
+#==============================================
+# DoctorList
+#==============================================
+class DoctorList(Form):
+    mkAppoiment = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)])   
+    mkAppoimentTime = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)])
+
+#==============================================
+# USER REGISTER
+#==============================================
+class Register(Form):
+    firstname = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
+    LastName = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)])
+    BOD = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
+    address = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
+    telephone = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
+    email = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)])
     
