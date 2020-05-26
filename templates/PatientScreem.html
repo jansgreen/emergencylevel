@@ -1,4 +1,5 @@
 {% extends "material/base.html" %}
+{% from "material/macro.html" import render_field %}
 {% block content -%}
 <div class="col s12 m7">
   <h2 class="header">Welcome to Emergency Level</h2>
@@ -14,103 +15,108 @@
         <hr>
         <div class="row">
           <div class="col s12 m6 l3">
-          <h4 class="header">Fask Tickets</h4>
-          <form action="Seach" method="POST">
-            <label for="Patientseach">I'm a regular Patient</label>
-              <input id="Patientseach" type="text" class="validate" name="Patientseach" placeholder="Email">
+            <h4 class="header">Fask Tickets</h4>
+            <form action="/Seach" method="POST">
+              <label for="Patientseach">I'm a regular Patient</label>
+              {{ render_field(Seach.Seach, class='Seach', placeholder='Type your Email and get Fast Ticket')}}
+
               <div class="row">
                 <button id="patButton" class="btn waves-effect waves-light" type="submit" name="action">Search</button>
               </div>
-          </form>
-        </div>
-        <div class="col s12 m6 l6">
-          <div class="card black lighten-5">
-            <div class="card-content white-text">
-              <span class="card-title">My account</span>
-              <label for="Patientseach">I'm a regular Patient</label>
-              <input id="Patientseach" type="text" class="validate" name="Patientseach" placeholder="Username">
-              <input id="Patientseach" type="text" class="validate" name="Patientseach" placeholder="Password">
-            </div>
-            <div class="card-action">
-              <a href="#">I forgot my Username</a>
-              <a href="#">I forgot my Password</a>
-            </div>
+            </form>
           </div>
-    
+          <form action="/mainLog" method="POST">
+            <div class="col s12 m6 l6">
+              <div class="card darken-1">
+                <div class="card-content">
+                  <span class="card-title">My account</span>
+                  <label for="Patientseach">I'm a regular Patient</label>
+                  {{ render_field(form.Username, class='Username', placeholder='Username')}}
+                  {{ render_field(form.Password, class='Password', placeholder='Password')}}
+                </div>
+                <div class="card-action">
+                  <a href="#">I forgot my Username</a>
+                  <a href="#">I forgot my Password</a>
+                  <button class="center btn waves-effect waves-light" type="submit">LogIn</button>
+
+                </div>
+              </div>
+            </div>
           </form>
-        </div>
-        <div class="col s12 m6 l3">
-          {{Category}}
-          <h4 class="header">Register</h4>
-          <a href="patient/{{Category}}" class="center btn waves-effect waves-light" type="submit">New Patient?</a>
+          <div class="col s12 m6 l3">
+            {{Category}}
+            <h4 class="header">Register</h4>
+            <a href="patient/{{id}}" class="center btn waves-effect waves-light" type="submit">New Patient?</a>
+
+          </div>
 
         </div>
+        <hr> 
 
+        <table class="container">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Bird day</th>
+              <th>Option</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>{{ PatientDataOut.FirstName }}</td>
+              <td>{{ PatientDataOut.LastName }}</td>
+              <td>{{ PatientDataOut.BOD }}</td>
+              <td><a class="btn MedicalNote" href="/ticket/{{PatientDataOut._id}}">Select</a></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <hr>
-      <table class="container">
-        {% for PatientData in PatientDataOut %}
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Bird day</th>
-            <th>Option</th>
-          </tr>
-        </thead>
 
-        <tbody>
-          <tr>
-            <td>{{ PatientData.FirstName }}</td>
-            <td>{{ PatientData.LastName }}</td>
-            <td>{{ PatientData.BOD }}</td>
-            <td><a class="btn MedicalNote" href="/ticket/{{PatientData._id}}">Select</a></td>
-          </tr>
-        </tbody>
-        {% endfor %}
-      </table>
+
+
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col l4 s12">
+      <h5>Fash Way</h5>
+      <p>Here you can get a ticket for the emergency room, in emergency when your turn does not make a presence we will
+        proceed to call the next, for an hour, if in one hour after printing this ticket you do not make this ticket
+        will
+        be null ,
+
+        This menu helps us to maintain order on the waiting line, but at the same time it helps you to wait less time.
+
+        If it is the first time that you visit us, please enter your basic information in the <div
+          class="btn waves-effect waves-light">"New Patient?"</div> button.
+
+        <img class="responsive-img" src="{{url_for('static', filename = 'img/ambulance.jpg')}}"></p>
+    </div>
+    <div class="col l4 s12">
+      <h5>Our team</h5>
+      <p>A member of our staff who will assist you will complete the other information we request when it comes to
+        treatment.
+        Our hospital staff is comprised of only the most talented, active, and dedicated individuals in the chosen
+        profession, committed to the hospital's vision of innovation and collaboration in community healthcare.</p>
+      <p><img class="responsive-img" src="{{url_for('static', filename = 'img/OurNurse.jpg')}}"></p>
+    </div>
+    <div class="col l4 s12">
+      <h5>Our nurses</h5>
+      <p> The nurses at Martin Luther King, Jr. Community Hospital are highly qualified and have specialized knowledge
+        for
+        the departments in which they work. Regardless of the specialty of the service line, each one is committed to
+        prioritizing patient care and ensuring its follow-up according to scheduled care.</p>
+      <p><img class="responsive-img" src="{{url_for('static', filename = 'img/OurStaff.jpg')}}"></p>
+      <p>They are the example of the profession, each of our nurses is highly qualified to assess the patient's
+        condition,
+        communicate with doctors and other health professionals, and provide a thorough evaluation as required.
+
+        Many of our nurses come from the surrounding community and, as with all of our staff members, from doctors to
+        technicians and volunteers, are dedicated to serving our community.</p>
     </div>
 
-    
-
   </div>
-</div>
-
-
-<div class="row">
-  <div class="col l4 s12">
-    <h5>Fash Way</h5>
-    <p>Here you can get a ticket for the emergency room, in emergency when your turn does not make a presence we will
-      proceed to call the next, for an hour, if in one hour after printing this ticket you do not make this ticket will
-      be null ,
-
-      This menu helps us to maintain order on the waiting line, but at the same time it helps you to wait less time.
-
-      If it is the first time that you visit us, please enter your basic information in the <div
-        class="btn waves-effect waves-light">"New Patient?"</div> button.
-
-      <img class="responsive-img" src="{{url_for('static', filename = 'img/ambulance.jpg')}}"></p>
-  </div>
-  <div class="col l4 s12">
-    <h5>Our team</h5>
-    <p>A member of our staff who will assist you will complete the other information we request when it comes to
-      treatment.
-      Our hospital staff is comprised of only the most talented, active, and dedicated individuals in the chosen
-      profession, committed to the hospital's vision of innovation and collaboration in community healthcare.</p>
-    <p><img class="responsive-img" src="{{url_for('static', filename = 'img/OurNurse.jpg')}}"></p>
-  </div>
-  <div class="col l4 s12">
-    <h5>Our nurses</h5>
-    <p> The nurses at Martin Luther King, Jr. Community Hospital are highly qualified and have specialized knowledge for
-      the departments in which they work. Regardless of the specialty of the service line, each one is committed to
-      prioritizing patient care and ensuring its follow-up according to scheduled care.</p>
-    <p><img class="responsive-img" src="{{url_for('static', filename = 'img/OurStaff.jpg')}}"></p>
-    <p>They are the example of the profession, each of our nurses is highly qualified to assess the patient's condition,
-      communicate with doctors and other health professionals, and provide a thorough evaluation as required.
-
-      Many of our nurses come from the surrounding community and, as with all of our staff members, from doctors to
-      technicians and volunteers, are dedicated to serving our community.</p>
-  </div>
-
-</div>
-{%- endblock content %}
+  {%- endblock content %}

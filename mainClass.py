@@ -1,6 +1,6 @@
-from wtforms import Form, BooleanField, StringField, validators, PasswordField, SubmitField
+from wtforms import Form, BooleanField, StringField, validators, PasswordField, SubmitField, SelectField
 from wtforms.validators import InputRequired, Email, Length
-from flask_wtf import FlaskForm
+#from flask_wtf import FlaskForm
 
 #==============================================
 # DOCTOR FORMS VALIDATOR
@@ -155,4 +155,17 @@ class Register(Form):
     address = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
     telephone = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
     email = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)])
+
+#==============================================
+# USER SEACH
+#==============================================
+class Seach(Form):
+    Seach = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
+
+#==============================================
+# ALL SEACH
+#==============================================
+class AllSeach(Form):
+    SeachSelect = SelectField('Choose ', choices=['I wants to see all ...','Doctor', 'Patient', 'Nurse', 'DirectorDoctor']) 
+
     

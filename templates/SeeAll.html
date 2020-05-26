@@ -1,0 +1,71 @@
+{% extends "material/base.html" %}
+{% from "material/macro.html" import render_field %}
+
+{% block content -%}
+<div class="row">
+  <div class="col xl3 m4 l3">
+    <div class="card horizontal">
+      <div class="card-stacked">
+        <div class="card-content">
+          <form action="/See/{{id}}" method="POST" class="col s12">
+            <div class="row">
+              {{ seach.csrf_token }}
+              {{ seach.SeachSelect }}
+            </div>
+
+            <div class="row center">
+              <div class="col m6">
+                <button id="patButton" class="btn waves-effect waves-light" name="action">Choose</button>
+              </div>
+              <div class="col m6">
+                <a class="btn MedicalNote" href="/patient/{{'Doctor'}}">Add</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col xl9 m4 l8">
+
+
+    {% for all in AlluserCat %}
+    <h5 class="container header">See all {{all.Category}}</h5>
+
+    <div class="row">
+      <table class="responsive-table">
+
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Bird day</th>
+            <th>{{ all.Category }}</th>
+            <th>Email</th>
+
+
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>{{ all.FirstName }}</td>
+            <td>{{ all.LastName }}</td>
+            <td>{{ all.BOD }}</td>
+            <td>{{ all.Address }}</td>
+            <td>{{ all.Phone }}</td>
+            <td>{{ all.Email }}</td>
+
+            <td><a class="btn MedicalNote" href="/addNourse/{{ all._id }}">Edit</a></td>
+            <td><a class="btn MedicalNote" href="/addNourse/{{ all._id }}">Delete</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+
+  </div>
+
+</div>
+{%- endblock content %}
+

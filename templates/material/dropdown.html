@@ -1,0 +1,8 @@
+<!--MACRO FOUND IN https://gist.github.com/gbaldera/3751301-->
+{% macro dropdown(name, data, selected = [], extra = '') -%}
+<select name="{{ name }}" {{ extra|safe }}>
+    {%- for ind, val in data %}
+    <option value="{{ ind }}" {% if ind in selected %}selected="selected"{% endif %}>{{ val }}</option>
+    {%- endfor %}
+</select>
+{%- endmacro %}

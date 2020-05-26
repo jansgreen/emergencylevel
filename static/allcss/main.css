@@ -89,3 +89,22 @@ BUTTONS
 .ilike-blue-container {
   @extend .blue-text, .text-lighten-4;
 }
+
+.optionIcon{
+background-color: #ff8a80;
+color: white;
+max-width: 150px;
+height: 100px;
+padding: 50px;
+margin: 20px;
+}
+
+.centerpotition{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
+.BoardName{
+  background-color: teal;
+}

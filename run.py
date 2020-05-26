@@ -34,6 +34,7 @@ app.config['UPLOAD_FOLDER']=imgFolder
 
 @app.route('/')
 def index():
+
     if 'Username' in session:
         print("congratulation")
     homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
@@ -42,13 +43,28 @@ def index():
 #======================================================================================= PATIENT AREA
 @app.route('/PatientScreem')
 def PatientScreem():
-    Category = "Patient"
-    return render_template("PatientScreem.html", Category = Category)
+    UserLog = mainClass.UserLog(request.form)
+    Seach = mainClass.Seach(request.form)
+    PatientDataOut =[]
+    _id = ObjectId("2010n2010n2010n2010n2010")
+    return render_template("PatientScreem.html", id = _id, form=UserLog, Seach=Seach, PatientDataOut = PatientDataOut)
 
-@app.route('/patient/<string:string>')
-def patient(string):
+@app.route('/patient/<string:id>', methods = ['GET'])
+def patient(id):
     Register = mainClass.Register(request.form)
-    return render_template("register.html", form=Register, string = string)
+    AllSeach = mainClass.AllSeach(request.form)
+    user = dbColl.find_one({'_id':ObjectId(id)})
+    if user:
+        if user['Category']== 'DirectorDoctor':
+            string = user['Category']
+            return render_template("register.html", form=Register, string = string, seach = AllSeach)
+        elif user['Category']== 'Patient':
+            redirect(url_for('board'))
+            pass
+    else:
+        string = 'Patient'
+        return render_template("register.html", form=Register, string = string, seach = AllSeach)
+    return render_template("index.html")
 
 @app.route('/addRegister/<string:string>', methods=['POST'])
 def addRegister(string):
@@ -60,10 +76,14 @@ def addRegister(string):
         Address = request.form['address']
         Email = request.form['email']
         numPhone = request.form['telephone']
-        Condition = request.form['condition']
-        ntCondition = request.form['ntCondition']
-        Category = string
-        dataPost = {
+        try:
+            Category = request.form['SeachSelect']
+            pass
+        except:
+            Category = string
+            pass
+        finally:
+            dataPost = {
             "Category": Category,
             "FirstName": name,
             "LastName": lastName,
@@ -71,17 +91,12 @@ def addRegister(string):
             "Address": Address,
             "Email": Email,
             "Phone": numPhone,
+            "userAccount": " "
             
         }
-        condition = {
-            "Condition": Condition,
-            "Note": ntCondition
-        }
-    _id = dbColl.insert_one(dataPost)
+            pass
+            _id = dbColl.insert_one(dataPost)
     TicketID = _id.inserted_id
-    dbColl.update({"_id": ObjectId(TicketID)}, {
-        '$set': {"MedicalNote":[condition]}
-    })
     if TicketID: 
         return redirect(url_for("AutoEmail", id=TicketID))          
     return redirect(url_for("ticket", id=TicketID))
@@ -91,7 +106,7 @@ def AutoEmail(id):
     for user in dbColl.find({'_id': ObjectId(id)}):
         print(user)
     if user:
-        EmailMessage = "We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'https://emergencylevel.herokuapp.com/singup/'+id
+        EmailMessage = "We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'http://127.0.0.1:5500/singup/'+id
         subject= 'Emergency, Continue your singup'
         Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
         EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
@@ -100,21 +115,24 @@ def AutoEmail(id):
         EmailSystem.sendmail('emergencylebel@gmail.com', user['Email'], Email)
         EmailSystem.quit()
     print("Felicidades")
-    return  render_template("/index.html")
+    return redirect(url_for("index"))
 
-@app.route('/singup/<string:id>', methods = ['GET', 'POST'])
+@app.route('/singup/<string:id>')
 def singup(id):
+    Register = mainClass.UserLog(request.form)
+    return render_template("singup.html", form = Register, id= id)
+
+@app.route('/addsingup/<string:id>', methods = ['POST'])
+def addsingup(id):
     Register = mainClass.UserLog(request.form)
     if request.method == 'POST' and Register.validate:
         newUser = request.form['Username']
         passcoded = bcrypt.hashpw(request.form['Password'].encode('utf-8'), bcrypt.gensalt())
 
-        dbColl.find({'_id': ObjectId(id)}, {
-                '$push': {session:[newUser, passcoded]}})
+        dbColl.update({'_id': ObjectId(id)}, {
+                '$set': {'userAccount':{"UserName":newUser, "Password":passcoded}}})
         session['Username']= request.form['Username']    
-
-    return render_template("singup.html", form = Register)
-
+    return redirect(url_for("index"))    
 
 #======================================================================================= GENERATOR TICKET
 @app.route('/ticket/<string:id>')
@@ -142,6 +160,9 @@ def doctorList():
     name = DoctorsList
     return render_template("doctorList.html", Name=name, form = DoctorForm)
 
+@app.route('/room')
+def room():
+    return render_template("doctorList.html")
 
 @app.route('/pageDoctorList/<int:id>', methods=['GET'])
 def pageDoctorList(id):
@@ -162,23 +183,11 @@ def staff():
     StaffTeam = mainClass.UserLog(request.form)
     return render_template("staff.html", form=StaffTeam)
 
-@app.route('/mainLog', methods=('GET', 'POST'))
-def mainLog():
-    UserLog = mainClass.UserLog(request.form)
-    if request.method == 'POST' and UserLog.validate:
-        userLog = dbColl.find_one({"Username":request.form['Username']})
-        print(userLog)
-        if userLog:
-            if bcrypt.hashpw(request.form['Password'].encode('utf-8'), userLog['Password'].encode('utf-8')) == userLog['Password'].encode('utf-8'):
-                session['Username'] == request.form['Username']
-                print('Eureca')
-            else:
-                print('Error')
-        else:
-            print('Usuario no encontrado')
-    return render_template("staff.html", form=UserLog )
+@app.route('/board/<string:id>')
+def board(id):
+    return render_template("board.html", id = id)
 
-
+#========================================================= EMERGENCY AREA
 @app.route('/emergencyTeam')
 def emergencyTeam():
     TicketsPages = dbColl.find({'Emergincy': {'$exists': 'true'}}).limit(5)
@@ -209,11 +218,37 @@ def ticketTurn():
     ticketTurn = dbColl.find({"Emergincy": [1]})
     return render_template("emergencyTeam.html", ticketTurns=ticketTurn)
 
+#========================================================= Login AREA
+@app.route('/mainLog', methods=['POST'])
+def mainLog():
+    UserLog = mainClass.UserLog(request.form)
+    if request.method == 'POST' and UserLog.validate:
+        UserName = request.form['Username']
+        password = request.form['Password']
+        userLog = dbColl.find_one({'userAccount.UserName': UserName})
+        print(UserName)
+        print("===================================")
+        print(password)
+        print("===================================")
+        print(userLog['userAccount']['Password'])
 
-@app.route('/board')
-def board():
-    return render_template("board.html")
+        if userLog:
+            if bcrypt.hashpw(password.encode('utf-8'), userLog['userAccount']['Password']) == userLog['userAccount']['Password']:
+                session['Username'] == request.form['Username']
+                data = userLog
+                Category = userLog['Category']
+                id = userLog['_id']
+                flash(" ", Category)
+                print(Category)
 
+                return render_template("board.html", data = data, id = id) 
+            else:
+                print('Error')
+        else:
+            print('Usuario no encontrado')
+    return render_template("staff.html", form=UserLog )
+
+#========================================================= REGISTER STAFF AREA
 
 @app.route('/addStaff', methods=['POST'])
 def addStaff():
@@ -246,10 +281,7 @@ def addStaff():
     return render_template("staff.html")
 
 
-@app.route('/room')
-def room():
-    return render_template("room.html")
-
+#========================================================= Nurse STAFF AREA
 
 @app.route('/Nourse/<string:id>', methods=['POST'])
 def Nourse(id):
@@ -329,6 +361,7 @@ def addNourse(id):
     patientData = dbColl.find({'_id': ObjectId(DrPasientsID)})
     return render_template("/Nourse.html", PatientId=patientData, DrPasientID=DrPasientsID, form=NourseForm)
 
+#========================================================= DOCTOR STAFF AREA
 
 @app.route('/Doctor/<string:id>', methods=['POST'])
 def Doctor(id):
@@ -385,15 +418,34 @@ def addDoctor(id):
     patientData = dbColl.find({'_id': ObjectId(id)})
     return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
 
+#============================================================================================== Seach  AREA
 
 @app.route('/Seach', methods=['POST'])
 def Seach():
-    if request.method == 'POST':
-        PatientSeachD = request.form['Patientseach']
-        PatientData = dbColl.find(
+    Seach = mainClass.Seach(request.form)
+    UserLog = mainClass.UserLog(request.form)
+    if request.method == 'POST' and Seach.validate:
+        PatientSeachD = request.form['Seach']
+        PatientData = dbColl.find_one(
             {'Email': PatientSeachD, 'Category': 'Patient'})
-        PatientDataOuts = PatientData
-    return render_template("PatientScreem.html", PatientDataOut=PatientDataOuts)
+        if PatientData:
+            if PatientData['Email'] == PatientSeachD:
+                data = PatientData
+                seachup = Seach
+                Category = PatientData['Category']
+                print(data)
+
+            else:
+                seachup = Seach
+                data = 'Patient no found'
+        else:
+            seachup = Seach
+            data = 'Patient no found'
+            
+    return render_template("PatientScreem.html", PatientDataOut=data, Seach=seachup, form = UserLog, Category=Category)
+
+
+#============================================================================================== BOARD  AREA
 
 
 @app.route('/facture')
@@ -415,9 +467,37 @@ def bill():
     print(chargeData)
     return render_template("/facture.html")
 
+#========================================================= Nurse STAFF AREA
+
+@app.route('/myProfile/<string:id>')
+def myProfile(id):
+    Profile = dbColl.find_one(
+            {'_id': ObjectId(id)})
+    return render_template("/myProfile.html", Profile = Profile)
+
+@app.route('/MedicalRecord/<string:id>')
+def MedicalRecord(id):
+    Profile = dbColl.find_one(
+            {'_id': ObjectId(id)})
+    return render_template("/MedicalRecord.html", MedicalRecord = Profile)
 
 
+#========================================================= Nurse STAFF AREA
 
+@app.route('/SeeAll/<string:id>', methods = ['GET', 'POST'])
+def SeeAll(id):
+    seach = mainClass.AllSeach(request.form)
+    return render_template("/SeeAll.html", seach=seach, id=id)
+
+@app.route('/See/<string:id>', methods = ['GET', 'POST'])
+def See(id):
+    seach = mainClass.AllSeach(request.form)
+    if request.method=='POST' and seach.validate:
+        showData = request.form['SeachSelect']
+    data= dbColl.find({'Category':showData})
+    print(data)
+    print(seach)
+    return render_template("/SeeAll.html", seach=seach, AlluserCat=data, id=id)
 
 
 if __name__ == '__main__':
