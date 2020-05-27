@@ -1,6 +1,6 @@
 from wtforms import Form, BooleanField, StringField, validators, PasswordField, SubmitField, SelectField
 from wtforms.validators import InputRequired, Email, Length
-#from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm
 
 #==============================================
 # DOCTOR FORMS VALIDATOR

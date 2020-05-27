@@ -65,7 +65,7 @@
             {% endwith %}
             {% with messages = get_flashed_messages(category_filter=['Doctor', 'DirectorDoctor']) %}
             {% if messages %}
-            <td><a class="btn MedicalNote" href="/addDoctor/{{ List._id }}">Doctor</a></td>
+            <td><a class="btn MedicalNote" href="/addDoctor/{{data._id}}/{{ List._id }}">Doctor</a></td>
             {% endif %}
             {% endwith %}
           </tr>

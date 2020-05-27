@@ -11,8 +11,6 @@ from flask_materialize import Material
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 
-
-
 app = Flask(__name__)
 Material(app)
 
@@ -352,13 +350,13 @@ def addNourse(id):
 
 #========================================================= DOCTOR STAFF AREA
 
-@app.route('/Doctor/<string:id>', methods=['POST'])
-def Doctor(id):
+@app.route('/Doctor/<string:Cid>/<string:id>', methods=['POST'])
+def Doctor(Cid, id):
     validatorForms = mainClass.validatorForm(request.form)
     if request.method == 'POST' and validatorForms.validate():
         Prescription = request.form['Prescription'],
         Referencia = request.form['Referencia'],
-        Note = request.form['Note']
+        Note = request.form['Note'],
         AssigMed = request.form['assigMed'],
         Indications = request.form['Indications'],
         TestName = request.form['TestName'],
@@ -393,20 +391,53 @@ def Doctor(id):
                "MedicalDate":MedicalDate
                   }
         finally:
-            dbColl.update({"_id": ObjectId(id)}, {
-                '$push': {'MedicalNote':[MedicalData]}})
-            pass
+            checkedField = dbColl.find_one({"_id": ObjectId(id)})
+            print("Escribiendo documentos")
+            if checkedField:
+                print(checkedField)
+                if checkedField["MedicalNote"]:
+                    dbColl.update({"_id": ObjectId(id)}, {'$push': {'MedicalNote':[MedicalData]}})
+                    print("eL CAMPO MedicalNote EXISTE")
+                    return redirect(url_for('EmergencyStaff', id = Cid))
+                else:
+                    dbColl.update({"_id": ObjectId(id)}, {
+                       '$set': {'MedicalNote':[MedicalData]}})
+                print("El campo MedicalNote no existe y fue creado")
+                return redirect(url_for("EmergencyStaff", id=Cid))
+    return redirect(url_for("EmergencyStaff", id=Cid))
 
-    return redirect(url_for("emergencyTeam"))
 
 
-@app.route('/addDoctor/<string:id>')
-def addDoctor(id):
-    DrPasientsID = id
+@app.route('/addDoctor/<string:idD>/<string:id>', methods = ['GET'])
+def addDoctor(idD, id):
     validatorForms = mainClass.validatorForm(request.form)
-    patientData = dbColl.find({'_id': ObjectId(id)})
-    return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
+    DrPasientsID = dbColl.find_one({'_id': ObjectId(idD)})
+    if DrPasientsID:
+        if DrPasientsID['Category'] == 'Doctor':
+            Category = DrPasientsID['Category']
+            flash(" ", Category)
+            patientData = dbColl.find_one({'_id': ObjectId(id)})
+            return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
 
+        elif DrPasientsID['Category'] == 'Nurse':
+            Category = DrPasientsID['Category']
+            flash(" ", Category)
+            patientData = dbColl.find_one({'_id': ObjectId(id)})
+            return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
+
+        elif DrPasientsID['Category'] == 'DirectorDoctor':
+            Category = DrPasientsID['Category']
+            flash(" ", Category)
+            patientData = dbColl.find_one({'_id': ObjectId(id)})
+            return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
+
+        else:
+            print('Usted no tiene acceso aqui, hubo un error')
+            return redirect(url_for("index"))
+    else:
+        print('No se encontro la informacion de quien requiere')
+        return redirect(url_for("index"))
+            
 #============================================================================================== Seach  AREA
 
 @app.route('/Seach', methods=['POST'])
