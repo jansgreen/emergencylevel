@@ -42,64 +42,31 @@
                     </div>
             </div></a>
             <div class="row">
-
                 <a href="/MyDoctor/{{data._id}}">
                     <div class="col s12 m6 l3 optionIcon z-depth-5">
                         <i class="Medium material-icons">contact_mail</i>
                         <p>My Doctor</p>
                     </div>
                 </a>
-                <a href="/doctorList/{{data._id}}">
+                <a href="/SeeAll/{{data._id}}">
                     <div class="col s12 m6 l3 optionIcon z-depth-5">
-                        <i class="Medium material-icons">contacts</i>
-                        <p>See All Doctor</p>
+                        <i class="Medium material-icons">contact_mail</i>
+                        <p>See All</p>
                     </div>
                 </a>
-                <a href="/doctorList/{{data._id}}">
-                    <div class="col s12 m6 l3 optionIcon z-depth-5">
-                        <i class="Medium material-icons">contacts</i>
-                        <p>See All Nurse</p>
-                    </div>
-                </a>
-            </div>
-
                 {% endif %}
                 {% endwith %}
                 {% with messages = get_flashed_messages(category_filter=['Doctor', 'Nurse', 'DirectorDoctor']) %}
                 {% if messages %}
-                <div class="row">
-                <a href="/AllPatient/{{data._id}}">
-                    <div class="col s12 m6 l3 optionIcon z-depth-5">
-                        <i class="Medium material-icons">airline_seat_flat_angled</i>
-                        <p>See All Patient</p>
-                    </div>
-                </a>
-
-                <a href="/MyDoctor/{{data._id}}">
+                <a href="/EmergencyStaff/{{data._id}}">
                     <div class="col s12 m6 l3 optionIcon z-depth-5">
                         <i class="Medium material-icons">contact_mail</i>
-                        <p>My Doctor</p>
-                    </div>
-                </a>
-                <a href="/doctorList/{{data._id}}">
-                    <div class="col s12 m6 l3 optionIcon z-depth-5">
-                        <i class="Medium material-icons">contacts</i>
-                        <p>See All Doctor</p>
+                        <p>Emergency Room</p>
                     </div>
                 </a>
                 {% endif %}
                 {% endwith %}
-                {% with messages = get_flashed_messages(category_filter=['DirectorDoctor']) %}
-                {% if messages %}
-                <a href="/SeeAll/{{id}}">
-                    <div class="col s12 m6 l3 optionIcon z-depth-5">
-                        <i class="Medium material-icons">contacts</i>
-                        <p>see All Employee</p>
-                    </div>
-                </a>
-                {% endif %}
-                {% endwith %}
-            </div>
+           </div>
           </div>
         </div>
     </div>

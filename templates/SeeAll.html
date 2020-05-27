@@ -55,13 +55,17 @@
             <td>{{ all.Address }}</td>
             <td>{{ all.Phone }}</td>
             <td>{{ all.Email }}</td>
-
+            {% with messages = get_flashed_messages(category_filter=['DirectorDoctor']) %}
+            {% if messages %}
             <td><a class="btn MedicalNote" href="/addNourse/{{ all._id }}">Edit</a></td>
             <td><a class="btn MedicalNote" href="/addNourse/{{ all._id }}">Delete</a></td>
+            {% endif %}
+            {% endwith %}
           </tr>
         </tbody>
       </table>
     </div>
+   
     {% endfor %}
 
   </div>

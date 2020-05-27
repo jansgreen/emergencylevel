@@ -2,29 +2,25 @@
 {% block content -%}
 <div class="row">
   <div class="col s5">
+    <h5 class="header">hi, {{data.Category}} {{data.FirstName}} {{data.LastName}}</h5>
     <div class="card horizontal">
       <div class="card-stacked">
         <div class="card-content">
           <div class="row">
-            <form action="/page/{{id}}" method="POST" class="col s12">
+            <form action="/EmergencyStaff/{{data._id}}" method="GET" class="col s12">
               <div class="row">
-                <h2 class="header">
-                  {% for ticketTurn in datas %}
-                  {% for Turn in ticketTurn.Emergincy %}
-                  <p>Ticekts: {{ Turn }}</p>
+                <h2 class="header">{{num.FirstName}} {{num.LastName}}</h2>
+                <h4 >Bird day: {{num.BOD}}</h4>
+                  {% for Turn in num.Emergincy %}
+                  <h3>Ticekts: {{ Turn }}</h3>
                   {% endfor %}
-                  <h4>{{ticketTurn.FirstName}}, {{ticketTurn.LastName}}</h4>
-                  <h4>{{ticketTurn.BOD}}</h4>
-                  {% endfor %}
-                  {% for num in Star %}
-                  {{num}}
-                  {%endfor%}
+                  
                 </h2>
               </div>
           </div>
           <div class="row center">
             <div class="col s6">
-              <a id="patButton" class="btn waves-effect waves-light" href="/page/{{num}}" name = "mas">Call</a>
+              <button id="patButton" class="btn waves-effect waves-light" name = action>Call</button>
             </div>
           </div>
           </form>
@@ -35,9 +31,7 @@
 
   <div class="col s7 right">
     <h5 class="container header">Patients List</h5>
-    {% with PatientListVar = get_flashed_messages(PatientsList) %}
-    {% if PatientListVar %}
-    {% for PatiientList in PatientListVar %}
+    {% for List in ListBD %}
     <div class="row">
       <table class="container">
 
@@ -55,24 +49,30 @@
 
         <tbody>
           <tr>
-            {% for Emergincy in PatiientList.Emergincy %}
+            {% for Emergincy in List.Emergincy %}
             <td>{{ Emergincy }}</td>
             {% endfor %}
-            <td>{{ PatiientList.FirstName }}</td>
-            <td>{{ PatiientList.LastName }}</td>
-            <td>{{ PatiientList.BOD }}</td>
-            <td>{{ PatiientList.Condition }}</td>
-            <td>{{ PatiientList.Note }}</td>
+            <td>{{ List.FirstName }}</td>
+            <td>{{ List.LastName }}</td>
+            <td>{{ List.BOD }}</td>
+            <td>{{ List.Condition }}</td>
+            <td>{{ List.Note }}</td>
 
-            <td><a class="btn MedicalNote" href="/addNourse/{{ PatiientList._id }}">Nurse</a></td>
-            <td><a class="btn MedicalNote" href="/addDoctor/{{ PatiientList._id }}">Doctor</a></td>
+            {% with messages = get_flashed_messages(category_filter=['Nurse']) %}
+            {% if messages %}
+            <td><a class="btn MedicalNote" href="/addNourse/{{ List._id }}">Nurse</a></td>
+            {% endif %}
+            {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=['Doctor', 'DirectorDoctor']) %}
+            {% if messages %}
+            <td><a class="btn MedicalNote" href="/addDoctor/{{ List._id }}">Doctor</a></td>
+            {% endif %}
+            {% endwith %}
           </tr>
         </tbody>
       </table>
     </div>
     {% endfor %}
-    {% endif %}
-    {% endwith %}
   </div>
 
 </div>

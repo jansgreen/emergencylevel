@@ -46,8 +46,12 @@ def PatientScreem():
     UserLog = mainClass.UserLog(request.form)
     Seach = mainClass.Seach(request.form)
     PatientDataOut =[]
-    _id = ObjectId("2010n2010n2010n2010n2010")
-    return render_template("PatientScreem.html", id = _id, form=UserLog, Seach=Seach, PatientDataOut = PatientDataOut)
+    return render_template("PatientScreem.html", form=UserLog, Seach=Seach, PatientDataOut = PatientDataOut)
+
+@app.route('/PatientRegister')
+def PatientRegister():
+    Register = mainClass.Register(request.form)
+    return render_template("register.html", form=Register)
 
 @app.route('/patient/<string:id>', methods = ['GET'])
 def patient(id):
@@ -106,7 +110,7 @@ def AutoEmail(id):
     for user in dbColl.find({'_id': ObjectId(id)}):
         print(user)
     if user:
-        EmailMessage = "We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'http://127.0.0.1:5500/singup/'+id
+        EmailMessage = user[FirstName]+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'https://emergencylevel.herokuapp.com/singup/'+id
         subject= 'Emergency, Continue your singup'
         Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
         EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
@@ -163,7 +167,7 @@ def doctorList():
 @app.route('/room')
 def room():
     return render_template("doctorList.html")
-
+"""
 @app.route('/pageDoctorList/<int:id>', methods=['GET'])
 def pageDoctorList(id):
     PageNum = int(id)
@@ -175,7 +179,7 @@ def pageDoctorList(id):
     else:
         PageNums = PageNum + 1
     emergencyTeam()
-    return render_template("doctorList.html", datas=data, num=PageNums)
+    return render_template("doctorList.html", datas=data, num=PageNums)"""
 
 
 @app.route('/staff')
@@ -188,35 +192,35 @@ def board(id):
     return render_template("board.html", id = id)
 
 #========================================================= EMERGENCY AREA
-@app.route('/emergencyTeam')
-def emergencyTeam():
-    TicketsPages = dbColl.find({'Emergincy': {'$exists': 'true'}}).limit(5)
-    for TicketsPage in TicketsPages:
-        flash(TicketsPage)
+@app.route('/EmergencyStaff/<string:id>')
+def EmergencyStaff(id):
+    staff = dbColl.find_one({'_id':ObjectId(id)})
+    page_size = 1
+    page_num = 1
+    skips = page_size * (page_num - 1)
+    pages = dbColl.find({'Emergincy': {'$exists': 'true'}}).skip(skips).limit(page_size)
+    for page in pages:
+        print(page)
         pass
-    nums = int(0)
-    num = nums
-    return render_template("emergencyTeam.html", num=num)
+    if staff:
+        patientListBD = dbColl.find({'Emergincy': {'$exists': 'true'}}).limit(5)
+        if staff['Category'] == 'Nurse':
+            Category = staff['Category']
+            flash(" ", Category)
+            return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
+        elif staff['Category'] == 'Doctor':
+            Category = staff['Category']
+            flash(" ", Category)
+            return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
+        elif staff['Category'] == 'DirectorDoctor':
+            Category = staff['Category']
+            flash(" ", Category)
+            return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
+        else:
+            print("hubo un error usted no esta autorizado a esta area")
+            return redirect(url_for("index"))
+    return redirect(url_for("index"))
 
-
-@app.route('/page/<int:id>', methods=['GET'])
-def page(id):
-    PageNum = int(id)
-    data = dbColl.find({'Emergincy': {'$exists': 'true'}}
-                       ).skip(PageNum).limit(1)
-    count = data.count()
-    if PageNum == count-1:
-        PageNums = PageNum - PageNum
-    else:
-        PageNums = PageNum + 1
-    emergencyTeam()
-    return render_template("emergencyTeam.html", datas=data, num=PageNums)
-
-
-@app.route('/ticketTurn')
-def ticketTurn():
-    ticketTurn = dbColl.find({"Emergincy": [1]})
-    return render_template("emergencyTeam.html", ticketTurns=ticketTurn)
 
 #========================================================= Login AREA
 @app.route('/mainLog', methods=['POST'])
@@ -432,7 +436,6 @@ def Seach():
             if PatientData['Email'] == PatientSeachD:
                 data = PatientData
                 seachup = Seach
-                Category = PatientData['Category']
                 print(data)
 
             else:
@@ -442,7 +445,7 @@ def Seach():
             seachup = Seach
             data = 'Patient no found'
             
-    return render_template("PatientScreem.html", PatientDataOut=data, Seach=seachup, form = UserLog, Category=Category)
+    return render_template("PatientScreem.html", PatientDataOut=data, Seach=seachup, form = UserLog)
 
 
 #============================================================================================== BOARD  AREA
@@ -494,10 +497,28 @@ def See(id):
     seach = mainClass.AllSeach(request.form)
     if request.method=='POST' and seach.validate:
         showData = request.form['SeachSelect']
-    data= dbColl.find({'Category':showData})
-    print(data)
-    print(seach)
+        userid = dbColl.find_one({'_id':ObjectId(id)})
+        if userid:
+            if userid['Category']=='Patient' and showData == 'Patient':
+                print("usted no tiene permiso para ver a todos los"+showData)
+                return render_template("/SeeAll.html", seach=seach, AlluserCat=[], id=id)
+            elif userid['Category']=='Patient':
+                data= dbColl.find({'Category':showData})
+                return render_template("/SeeAll.html", seach=seach, AlluserCat=data, id=id)
+            else:
+                data= dbColl.find({'Category':showData})
+                print(data)
+                print(seach)
+                return render_template("/SeeAll.html", seach=seach, AlluserCat=data, id=id)
+        else:
+            print("Hubo un error comuniquese con soporte tecnico")
+            return redirect(url_for('/index'))
+    else:
+        print("Seleccione una opcion")
     return render_template("/SeeAll.html", seach=seach, AlluserCat=data, id=id)
+
+
+ 
 
 
 if __name__ == '__main__':
