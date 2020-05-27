@@ -167,20 +167,6 @@ def doctorList():
 @app.route('/room')
 def room():
     return render_template("doctorList.html")
-"""
-@app.route('/pageDoctorList/<int:id>', methods=['GET'])
-def pageDoctorList(id):
-    PageNum = int(id)
-    data = dbColl.find({'Emergincy': {'$exists': 'true'}}
-                       ).skip(PageNum).limit(1)
-    count = data.count()
-    if PageNum == count-1:
-        PageNums = PageNum - PageNum
-    else:
-        PageNums = PageNum + 1
-    emergencyTeam()
-    return render_template("doctorList.html", datas=data, num=PageNums)"""
-
 
 @app.route('/staff')
 def staff():
@@ -244,7 +230,6 @@ def mainLog():
                 id = userLog['_id']
                 flash(" ", Category)
                 print(Category)
-
                 return render_template("board.html", data = data, id = id) 
             else:
                 print('Error')
