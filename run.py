@@ -110,7 +110,7 @@ def AutoEmail(id):
     for user in dbColl.find({'_id': ObjectId(id)}):
         print(user)
     if user:
-        EmailMessage = user[FirstName]+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'https://emergencylevel.herokuapp.com/singup/'+id
+        EmailMessage = user['FirstName']+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'https://emergencylevel.herokuapp.com/singup/'+id
         subject= 'Emergency, Continue your singup'
         Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
         EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
@@ -223,7 +223,7 @@ def EmergencyStaff(id):
 
 
 #========================================================= Login AREA
-@app.route('/mainLog', methods=['POST'])
+@app.route('/mainLog', methods=['GET','POST'])
 def mainLog():
     UserLog = mainClass.UserLog(request.form)
     if request.method == 'POST' and UserLog.validate:
