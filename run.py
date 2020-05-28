@@ -32,11 +32,19 @@ app.config['UPLOAD_FOLDER']=imgFolder
 
 @app.route('/')
 def index():
-
-    if 'Username' in session:
-        print("congratulation")
-    homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
     return render_template("index.html", homeImg=homeImg)
+#======================================================================================= USER AREA
+
+@app.route('/MyDoctor/<string:id>', methods = ['GET', 'POST'])
+def MyDoctor(id):
+    mydoctordb = dbColl.find_one({"_id": ObjectId(id)})
+    for mydoctor in mydoctordb :
+        if mydoctor['MyDoctors']:
+            print(mydoctor)
+        else:
+            print("No tiene ningun doctor registrado te")
+            pass
+    return redirect(url_for("seeAll", id=id))
 
 #======================================================================================= PATIENT AREA
 @app.route('/PatientScreem')
@@ -173,6 +181,9 @@ def staff():
 
 @app.route('/board/<string:id>')
 def board(id):
+    if 'Username' in session:
+        print("congratulation")
+    homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
     return render_template("board.html", id = id)
 
 #========================================================= EMERGENCY AREA
