@@ -240,7 +240,7 @@ def mainLog():
                 flash(" ", Category)
                 print(Category)
                 if 'Username' in session:
-                    return render_template("board.html", data = data, id = id) 
+                    return redirect(url_for("board", data = data, id = id) )
             else:
                 print('Error')
         else:
