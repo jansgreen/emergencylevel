@@ -32,6 +32,9 @@ app.config['UPLOAD_FOLDER']=imgFolder
 
 @app.route('/')
 def index():
+    if 'Username' in session:
+        print("congratulation")
+    homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
     return render_template("index.html", homeImg=homeImg)
 #======================================================================================= USER AREA
 
@@ -181,9 +184,6 @@ def staff():
 
 @app.route('/board/<string:id>')
 def board(id):
-    if 'Username' in session:
-        print("congratulation")
-    homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
     return render_template("board.html", id = id)
 
 #========================================================= EMERGENCY AREA
@@ -220,6 +220,9 @@ def EmergencyStaff(id):
 #========================================================= Login AREA
 @app.route('/mainLog', methods=['GET','POST'])
 def mainLog():
+    if 'Username' in session:
+        print("congratulation")
+    homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
     UserLog = mainClass.UserLog(request.form)
     if request.method == 'POST' and UserLog.validate:
         UserName = request.form['Username']
