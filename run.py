@@ -220,9 +220,6 @@ def EmergencyStaff(id):
 #========================================================= Login AREA
 @app.route('/mainLog', methods=['GET','POST'])
 def mainLog():
-    if 'Username' in session:
-        print("congratulation")
-    homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
     UserLog = mainClass.UserLog(request.form)
     if request.method == 'POST' and UserLog.validate:
         UserName = request.form['Username']
@@ -242,6 +239,7 @@ def mainLog():
                 id = userLog['_id']
                 flash(" ", Category)
                 print(Category)
+                index()
                 return render_template("board.html", data = data, id = id) 
             else:
                 print('Error')
