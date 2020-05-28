@@ -239,8 +239,8 @@ def mainLog():
                 id = userLog['_id']
                 flash(" ", Category)
                 print(Category)
-                index()
-                return render_template("board.html", data = data, id = id) 
+                if 'Username' in session:
+                    return render_template("board.html", data = data, id = id) 
             else:
                 print('Error')
         else:
