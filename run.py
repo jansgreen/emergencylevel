@@ -26,16 +26,16 @@ stripe.api_key = secreKey
 
 # SETTING
 app.secret_key = 'mysecretkey'
-imgFolder = os.path.join('static','img')
-app.config['UPLOAD_FOLDER']=imgFolder
+#imgFolder = os.path.join('static','img')
+#app.config['UPLOAD_FOLDER']=imgFolder
 
 
 @app.route('/')
 def index():
     if 'Username' in session:
         print("congratulation")
-    homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
-    return render_template("index.html", homeImg=homeImg)
+    #homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
+    return render_template("index.html" """, homeImg=homeImg""")
 #======================================================================================= USER AREA
 
 @app.route('/MyDoctor/<string:id>', methods = ['GET', 'POST'])
@@ -184,7 +184,14 @@ def staff():
 
 @app.route('/board/<string:id>')
 def board(id):
+    if 'Username' in session:
+        print("congratulation")
+        return render_template("board.html", id = id)
+    else:
+        print("You are not user register")
+        return redirect(url_for("index"))
     return render_template("board.html", id = id)
+
 
 #========================================================= EMERGENCY AREA
 @app.route('/EmergencyStaff/<string:id>')
@@ -239,8 +246,7 @@ def mainLog():
                 id = userLog['_id']
                 flash(" ", Category)
                 print(Category)
-                if 'Username' in session:
-                    return redirect(url_for("board", data = data, id = id) )
+                return redirect(url_for("board", data = data, id = id) )
             else:
                 print('Error')
         else:
