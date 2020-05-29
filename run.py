@@ -50,26 +50,26 @@ def PatientRegister():
     Register = mainClass.Register(request.form)
     return render_template("register.html", form=Register)
 
-@app.route('/patient/<string:id>', methods = ['GET'])
-def patient(id):
+@app.route('/register/<string:id>', methods = ['GET'])
+def register(id):
     Register = mainClass.Register(request.form)
     AllSeach = mainClass.AllSeach(request.form)
     user = dbColl.find_one({'_id':ObjectId(id)})
     if user:
         if user['Category']== 'DirectorDoctor':
-            string = user['Category']
-            flash(" ",string)
-            return render_template("register.html", form=Register, seach = AllSeach)
+            Category = user['Category']
+            flash(" ",Category)
+            return render_template("register.html", form=Register, seach = AllSeach, id = id)
         elif user['Category']== 'Patient':
             redirect(url_for('board'))
             pass
     else:
         string = 'Patient'
-        return render_template("register.html", form=Register, string = string, seach = AllSeach)
+        return render_template("register.html", form=Register, string = string, seach = AllSeach, id = id)
     return render_template("index.html")
 
-@app.route('/addRegister/<string:string>', methods=['POST'])
-def addRegister(string):
+@app.route('/addRegister/<string:id>', methods=['POST'])
+def addRegister(id):
     Register = mainClass.Register(request.form)
     if request.method == 'POST' and Register.validate:
         name = request.form['firstname']
@@ -82,7 +82,7 @@ def addRegister(string):
             Category = request.form['SeachSelect']
             pass
         except:
-            Category = string
+            Category = 'Patient'
             pass
         finally:
             dataPost = {
@@ -173,8 +173,8 @@ def staff():
 
 @app.route('/board/<string:id>')
 def board(id):
-    datadb = dbColl.find_one({"_id":ObjectId(id)})
     if 'Username' in session:
+        datadb = dbColl.find_one({"_id":ObjectId(id)})
         if datadb:
            Category = datadb['Category']
            flash(" ",Category)
@@ -185,39 +185,38 @@ def board(id):
     #======================================
     #Prueba
     #======================================
-       
-
     return render_template("board.html", id = id)
 
 
 #========================================================= EMERGENCY AREA
 @app.route('/EmergencyStaff/<string:id>')
 def EmergencyStaff(id):
-    staff = dbColl.find_one({'_id':ObjectId(id)})
-    page_size = 1
-    page_num = 1
-    skips = page_size * (page_num - 1)
-    pages = dbColl.find({'Emergincy': {'$exists': 'true'}}).skip(skips).limit(page_size)
-    for page in pages:
-        print(page)
-        pass
-    if staff:
-        patientListBD = dbColl.find({'Emergincy': {'$exists': 'true'}}).limit(5)
-        if staff['Category'] == 'Nurse':
-            Category = staff['Category']
-            flash(" ", Category)
-            return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
-        elif staff['Category'] == 'Doctor':
-            Category = staff['Category']
-            flash(" ", Category)
-            return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
-        elif staff['Category'] == 'DirectorDoctor':
-            Category = staff['Category']
-            flash(" ", Category)
-            return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
-        else:
-            print("hubo un error usted no esta autorizado a esta area")
-            return redirect(url_for("index"))
+    if 'Username' in session:
+        staff = dbColl.find_one({'_id':ObjectId(id)})
+        page_size = 1
+        page_num = 1
+        skips = page_size * (page_num - 1)
+        pages = dbColl.find({'Emergincy': {'$exists': 'true'}}).skip(skips).limit(page_size)
+        for page in pages:
+            print(page)
+            pass
+        if staff:
+            patientListBD = dbColl.find({'Emergincy': {'$exists': 'true'}}).limit(5)
+            if staff['Category'] == 'Nurse':
+                Category = staff['Category']
+                flash(" ", Category)
+                return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
+            elif staff['Category'] == 'Doctor':
+                Category = staff['Category']
+                flash(" ", Category)
+                return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
+            elif staff['Category'] == 'DirectorDoctor':
+                Category = staff['Category']
+                flash(" ", Category)
+                return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
+            else:
+                print("hubo un error usted no esta autorizado a esta area")
+                return redirect(url_for("index"))
     return redirect(url_for("index"))
 
 
@@ -252,32 +251,33 @@ def mainLog():
 
 @app.route('/addStaff', methods=['POST'])
 def addStaff():
-    if request.method == 'POST':
-        name = request.form['first_name'].istittle()
-        lastName = request.form['last_name'].istittle()
-        BOD = request.form['BOB']
-        Address = request.form['address'].istittle()
-        Email = request.form['email'].islow()
-        numPhone = request.form['icon_telephone']
-        language = request.form['language'].istittle()
-        Tabnumber = dbColl.count()
-        rooms = request.form['rooms']
-        Position = request.form.get('Position').istittle()
-        Category = "staff"
-        dataPost = {
-            "Category": Category,
-            "FirstName": name,
-            "LastName": lastName,
-            "BOD": BOD,
-            "Address": Address,
-            "Email": Email,
-            "Phone": numPhone,
-            "language": language,
-            "Tabnumber": Tabnumber,
-            "rooms": rooms,
-            "Position": Position
-        }
-    dbColl.insert_one(dataPost)
+    if 'Username' in session:
+        if request.method == 'POST':
+            name = request.form['first_name'].istittle()
+            lastName = request.form['last_name'].istittle()
+            BOD = request.form['BOB']
+            Address = request.form['address'].istittle()
+            Email = request.form['email'].islow()
+            numPhone = request.form['icon_telephone']
+            language = request.form['language'].istittle()
+            Tabnumber = dbColl.count()
+            rooms = request.form['rooms']
+            Position = request.form.get('Position').istittle()
+            Category = "staff"
+            dataPost = {
+                "Category": Category,
+                "FirstName": name,
+                "LastName": lastName,
+                "BOD": BOD,
+                "Address": Address,
+                "Email": Email,
+                "Phone": numPhone,
+                "language": language,
+                "Tabnumber": Tabnumber,
+                "rooms": rooms,
+                "Position": Position
+            }
+        dbColl.insert_one(dataPost)
     return render_template("staff.html")
 
 
@@ -285,195 +285,195 @@ def addStaff():
 
 @app.route('/Nourse/<string:id>', methods=['POST'])
 def Nourse(id):
-    Nourse = mainClass.Nourse(request.form)
-    if request.method == 'POST'and Nourse.validate():
-        AllergiesV = request.form['Mets'],
-        MetsV = request.form['BldPressure'],
-        DiagnosisV = request.form['Allergies'],
-        BldPressureV = request.form['Diagnosis'],
-        BreathingV = request.form['Breathing'],
-        PulseV = request.form['Pulse'],
-        BdTemperatureV = request.form['BdTemperature'],
-        NrsObservationV = request.form['NrsObservation'],
-        MdlIssuesV = request.form['MdlIssues'],
-        InttServiceV = request.form['InttService']
-        
+    if 'Username' in session:
+        Nourse = mainClass.Nourse(request.form)
+        if request.method == 'POST'and Nourse.validate():
+            AllergiesV = request.form['Mets'],
+            MetsV = request.form['BldPressure'],
+            DiagnosisV = request.form['Allergies'],
+            BldPressureV = request.form['Diagnosis'],
+            BreathingV = request.form['Breathing'],
+            PulseV = request.form['Pulse'],
+            BdTemperatureV = request.form['BdTemperature'],
+            NrsObservationV = request.form['NrsObservation'],
+            MdlIssuesV = request.form['MdlIssues'],
+            InttServiceV = request.form['InttService']
+            
+            now = datetime.now()
+            MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
+            try:
+                NewFieldIssuesV = request.form['NewFieldIssues'],
+                newFieldtServiceV = request.form['newFieldtService'],
+                MedicalData={ 
+                    "Nurse": "Nurse",
+                    "Diagnosis":DiagnosisV,
+                    "BloodPressure":BldPressureV,
+                    "Breathing":BreathingV,
+                    "Allergies":AllergiesV,
+                    "Mets":MetsV,
+                    "Pulse":PulseV,
+                    "BodyTemperature":BdTemperatureV,
+                    "NurseObservation":NrsObservationV,
+                    "MedicalIssues":MdlIssuesV,
+                    "IntensityService":InttServiceV,
+                    "OtherIssues":NewFieldIssuesV,
+                    "OtherService":newFieldtServiceV,
+                    "Date": MedicalDate,
+                    }
+                pass
+            except:
+                MedicalData={ 
+                    "Breathing":BreathingV,
+                    "Allergies":AllergiesV,
+                    "Mets":MetsV,
+                    "Pulse":PulseV,
+                    "BodyTemperature":BdTemperatureV,
+                    "NurseObservation":NrsObservationV,
+                    "MedicalIssues":MdlIssuesV,
+                    "IntensityService":InttServiceV,
+                    "OtherIssues":NewFieldIssuesV,
+                    "OtherService":newFieldtServiceV,
+                    "Date": MedicalDate,
+                    }
+            finally:
+                dbColl.update({"_id": ObjectId(id)}, {
+                    '$push': {'MedicalNote':[MedicalData]}})
+                pass
+            Pressure = request.form['Pressure'],
+            weight = request.form['weight'],
+            VitalSigns = request.form['VitalSigns'],
+            Note = request.form['Note']
+            MedicalData = {"Pressure": Pressure, "weight": weight,
+                        "VitalSigns": VitalSigns, "Note": Note}
         now = datetime.now()
         MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
-        try:
-            NewFieldIssuesV = request.form['NewFieldIssues'],
-            newFieldtServiceV = request.form['newFieldtService'],
-            MedicalData={ 
-                "Nurse": "Nurse",
-                "Diagnosis":DiagnosisV,
-                "BloodPressure":BldPressureV,
-                "Breathing":BreathingV,
-                "Allergies":AllergiesV,
-                "Mets":MetsV,
-                "Pulse":PulseV,
-                "BodyTemperature":BdTemperatureV,
-                "NurseObservation":NrsObservationV,
-                "MedicalIssues":MdlIssuesV,
-                "IntensityService":InttServiceV,
-                "OtherIssues":NewFieldIssuesV,
-                "OtherService":newFieldtServiceV,
-                "Date": MedicalDate,
-                  }
-            pass
-        except:
-             MedicalData={ 
-                "Breathing":BreathingV,
-                "Allergies":AllergiesV,
-                "Mets":MetsV,
-                "Pulse":PulseV,
-                "BodyTemperature":BdTemperatureV,
-                "NurseObservation":NrsObservationV,
-                "MedicalIssues":MdlIssuesV,
-                "IntensityService":InttServiceV,
-                "OtherIssues":NewFieldIssuesV,
-                "OtherService":newFieldtServiceV,
-                "Date": MedicalDate,
-                  }
-        finally:
-            dbColl.update({"_id": ObjectId(id)}, {
-                '$push': {'MedicalNote':[MedicalData]}})
-            pass
-
-
-
-        Pressure = request.form['Pressure'],
-        weight = request.form['weight'],
-        VitalSigns = request.form['VitalSigns'],
-        Note = request.form['Note']
-        MedicalData = {"Pressure": Pressure, "weight": weight,
-                       "VitalSigns": VitalSigns, "Note": Note}
-    now = datetime.now()
-    MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
-    dbColl.update({"_id": ObjectId(id)}, {
-                  '$set': {"MedicalNote."+MedicalDate: {"Nourse": MedicalData}}})
+        dbColl.update({"_id": ObjectId(id)}, {
+                    '$set': {"MedicalNote."+MedicalDate: {"Nourse": MedicalData}}})
     return redirect(url_for("emergencyTeam"))
 
 
 @app.route('/addNourse/<string:id>')
 def addNourse(id):
-    DrPasientsID = id
-    NourseForm = mainClass.Nourse(request.form)
-    patientData = dbColl.find({'_id': ObjectId(DrPasientsID)})
+    if 'Username' in session:
+        DrPasientsID = id
+        NourseForm = mainClass.Nourse(request.form)
+        patientData = dbColl.find({'_id': ObjectId(DrPasientsID)})
     return render_template("/Nourse.html", PatientId=patientData, DrPasientID=DrPasientsID, form=NourseForm)
 
 #========================================================= DOCTOR STAFF AREA
 
 @app.route('/Doctor/<string:Cid>/<string:id>', methods=['POST'])
 def Doctor(Cid, id):
-    validatorForms = mainClass.validatorForm(request.form)
-    if request.method == 'POST' and validatorForms.validate():
-        Prescription = request.form['Prescription'],
-        Referencia = request.form['Referencia'],
-        Note = request.form['Note'],
-        AssigMed = request.form['assigMed'],
-        Indications = request.form['Indications'],
-        TestName = request.form['TestName'],
-        DoBefore = request.form['DoBefore'],
-        now = datetime.now()
-        MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
-        try:
-            newMed = request.form['newMed'],
-            newInd = request.form['newInd'],
-            readyTestName = request.form['readyTestName'],
-            readyDoBefore = request.form['readyDoBefore'],
-            MedicalData={ 
-                "Doctor": "DoctorName",
-               "Prescription": Prescription,
-               "Referencia": Referencia,
-               "Note": Note,
-               "Medication": (AssigMed, Indications),
-               "OtherMedication":(newMed, newInd),
-               "Test": (TestName, DoBefore),
-               "OtherTest":(readyTestName,readyDoBefore),
-               "MedicalDate":MedicalDate
-                  }
-            pass
-        except:
-             MedicalData={ 
-                "Doctor": "DoctorName",
-               "Prescription": Prescription,
-               "Referencia": Referencia,
-               "Note": Note,
-               "Medication": (AssigMed, Indications),
-               "Test": (TestName, DoBefore),
-               "MedicalDate":MedicalDate
-                  }
-        finally:
-            checkedField = dbColl.find_one({"_id": ObjectId(id)})
-            print("Escribiendo documentos")
-            if checkedField:
-                print(checkedField)
-                if checkedField["MedicalNote"]:
-                    dbColl.update({"_id": ObjectId(id)}, {'$push': {'MedicalNote':[MedicalData]}})
-                    print("eL CAMPO MedicalNote EXISTE")
-                    return redirect(url_for('EmergencyStaff', id = Cid))
-                else:
-                    dbColl.update({"_id": ObjectId(id)}, {
-                       '$set': {'MedicalNote':[MedicalData]}})
-                print("El campo MedicalNote no existe y fue creado")
-                return redirect(url_for("EmergencyStaff", id=Cid))
+    if 'Username' in session:
+        validatorForms = mainClass.validatorForm(request.form)
+        if request.method == 'POST' and validatorForms.validate():
+            Prescription = request.form['Prescription'],
+            Referencia = request.form['Referencia'],
+            Note = request.form['Note'],
+            AssigMed = request.form['assigMed'],
+            Indications = request.form['Indications'],
+            TestName = request.form['TestName'],
+            DoBefore = request.form['DoBefore'],
+            now = datetime.now()
+            MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
+            try:
+                newMed = request.form['newMed'],
+                newInd = request.form['newInd'],
+                readyTestName = request.form['readyTestName'],
+                readyDoBefore = request.form['readyDoBefore'],
+                MedicalData={ 
+                    "Doctor": "DoctorName",
+                "Prescription": Prescription,
+                "Referencia": Referencia,
+                "Note": Note,
+                "Medication": (AssigMed, Indications),
+                "OtherMedication":(newMed, newInd),
+                "Test": (TestName, DoBefore),
+                "OtherTest":(readyTestName,readyDoBefore),
+                "MedicalDate":MedicalDate
+                    }
+                pass
+            except:
+                MedicalData={ 
+                    "Doctor": "DoctorName",
+                "Prescription": Prescription,
+                "Referencia": Referencia,
+                "Note": Note,
+                "Medication": (AssigMed, Indications),
+                "Test": (TestName, DoBefore),
+                "MedicalDate":MedicalDate
+                    }
+            finally:
+                checkedField = dbColl.find_one({"_id": ObjectId(id)})
+                print("Escribiendo documentos")
+                if checkedField:
+                    print(checkedField)
+                    if checkedField["MedicalNote"]:
+                        dbColl.update({"_id": ObjectId(id)}, {'$push': {'MedicalNote':[MedicalData]}})
+                        print("eL CAMPO MedicalNote EXISTE")
+                        return redirect(url_for('EmergencyStaff', id = Cid))
+                    else:
+                        dbColl.update({"_id": ObjectId(id)}, {
+                        '$set': {'MedicalNote':[MedicalData]}})
+                    print("El campo MedicalNote no existe y fue creado")
+                    return redirect(url_for("EmergencyStaff", id=Cid))
     return redirect(url_for("EmergencyStaff", id=Cid))
 
 
 
 @app.route('/addDoctor/<string:idD>/<string:id>', methods = ['GET'])
 def addDoctor(idD, id):
-    validatorForms = mainClass.validatorForm(request.form)
-    DrPasientsID = dbColl.find_one({'_id': ObjectId(idD)})
-    if DrPasientsID:
-        if DrPasientsID['Category'] == 'Doctor':
-            Category = DrPasientsID['Category']
-            flash(" ", Category)
-            patientData = dbColl.find_one({'_id': ObjectId(id)})
-            return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
+    if 'Username' in session:
+        validatorForms = mainClass.validatorForm(request.form)
+        DrPasientsID = dbColl.find_one({'_id': ObjectId(idD)})
+        if DrPasientsID:
+            if DrPasientsID['Category'] == 'Doctor':
+                Category = DrPasientsID['Category']
+                flash(" ", Category)
+                patientData = dbColl.find_one({'_id': ObjectId(id)})
+                return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
 
-        elif DrPasientsID['Category'] == 'Nurse':
-            Category = DrPasientsID['Category']
-            flash(" ", Category)
-            patientData = dbColl.find_one({'_id': ObjectId(id)})
-            return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
+            elif DrPasientsID['Category'] == 'Nurse':
+                Category = DrPasientsID['Category']
+                flash(" ", Category)
+                patientData = dbColl.find_one({'_id': ObjectId(id)})
+                return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
 
-        elif DrPasientsID['Category'] == 'DirectorDoctor':
-            Category = DrPasientsID['Category']
-            flash(" ", Category)
-            patientData = dbColl.find_one({'_id': ObjectId(id)})
-            return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
+            elif DrPasientsID['Category'] == 'DirectorDoctor':
+                Category = DrPasientsID['Category']
+                flash(" ", Category)
+                patientData = dbColl.find_one({'_id': ObjectId(id)})
+                return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
 
+            else:
+                print('Usted no tiene acceso aqui, hubo un error')
+                return redirect(url_for("index"))
         else:
-            print('Usted no tiene acceso aqui, hubo un error')
+            print('No se encontro la informacion de quien requiere')
             return redirect(url_for("index"))
-    else:
-        print('No se encontro la informacion de quien requiere')
-        return redirect(url_for("index"))
             
 #============================================================================================== Seach  AREA
 
 @app.route('/Seach', methods=['POST'])
 def Seach():
-    Seach = mainClass.Seach(request.form)
-    UserLog = mainClass.UserLog(request.form)
-    if request.method == 'POST' and Seach.validate:
-        PatientSeachD = request.form['Seach']
-        PatientData = dbColl.find_one(
-            {'Email': PatientSeachD, 'Category': 'Patient'})
-        if PatientData:
-            if PatientData['Email'] == PatientSeachD:
-                 data = PatientData
-                 seachup = Seach
-                 print(data)
-
+    if 'Username' in session:
+        Seach = mainClass.Seach(request.form)
+        UserLog = mainClass.UserLog(request.form)
+        if request.method == 'POST' and Seach.validate:
+            PatientSeachD = request.form['Seach']
+            PatientData = dbColl.find_one(
+                {'Email': PatientSeachD, 'Category': 'Patient'})
+            if PatientData:
+                if PatientData['Email'] == PatientSeachD:
+                    data = PatientData
+                    seachup = Seach
+                    print(data)
+                else:
+                    seachup = Seach
+                    data = 'Patient no found'
             else:
                 seachup = Seach
                 data = 'Patient no found'
-        else:
-            seachup = Seach
-            data = 'Patient no found'
-            
     return render_template("PatientScreem.html", PatientDataOut=data, Seach=seachup, form = UserLog)
 
 
@@ -481,16 +481,17 @@ def Seach():
 
 @app.route('/bill', methods=['POST'])
 def bill():
-    print(request.form)
-    Crecustomer = stripe.Customer.create(
-        email=request.form['stripeEmail'], source=request.form['stripeToken'])
-    chargeData = stripe.Charge.create(
-        customer=Crecustomer.id,
-        amount=9.99,
-        currency='usd',
-        description='The Producto'
+    if 'Username' in session:
+        print(request.form)
+        Crecustomer = stripe.Customer.create(
+            email=request.form['stripeEmail'], source=request.form['stripeToken'])
+        chargeData = stripe.Charge.create(
+            customer=Crecustomer.id,
+            amount=9.99,
+            currency='usd',
+            description='The Producto'
     )
-    print(chargeData)
+        print(chargeData)
     return render_template("/facture.html")
 
 #========================================================= Nurse STAFF AREA
@@ -498,8 +499,8 @@ def bill():
 
 @app.route('/MedicalRecord/<string:id>')
 def MedicalRecord(id):
-    Profile = dbColl.find_one(
-            {'_id': ObjectId(id)})
+    if 'Username' in session:
+        Profile = dbColl.find_one({'_id': ObjectId(id)})
     return render_template("/MedicalRecord.html", MedicalRecord = Profile)
 
 
@@ -507,7 +508,8 @@ def MedicalRecord(id):
 
 @app.route('/SeeAll/<string:id>', methods = ['GET', 'POST'])
 def SeeAll(id):
-    seach = mainClass.AllSeach(request.form)
+    if 'Username' in session:
+        seach = mainClass.AllSeach(request.form)
     return render_template("/SeeAll.html", seach=seach, id=id)
 
 @app.route('/See/<string:id>', methods = ['GET', 'POST'])
@@ -544,33 +546,38 @@ def See(id):
 
 @app.route('/MyDoctor/<string:id>', methods = ['GET', 'POST'])
 def MyDoctor(id):
-    myInfo = dbColl.find_one({"_id": ObjectId(id)})
-    if myInfo:
-        mydoctor = myInfo['myDoctors']
-    return render_template("myDoctors.html", AlluserCat = myInfo, id = id, myDr=mydoctor)
+    if 'Username' in session:
+        myInfo = dbColl.find_one({"_id": ObjectId(id)})
+        if myInfo:
+            mydoctor = myInfo['myDoctors']
+        return render_template("myDoctors.html", AlluserCat = myInfo, id = id, myDr=mydoctor)
 
 @app.route('/setMyDoctor/<string:id>/<string:Drid>')
 def setMyDoctor(id, Drid):
-    specialist = "Cirujano"
-    getDoctor = dbColl.find_one({"_id":ObjectId(id)})
-    if getDoctor:
-        dbColl.update({"_id":ObjectId(Drid)},{'$set':{'myDoctors.'+specialist:getDoctor}})
-        return redirect(url_for('board', id=Drid))
-    return render_template('seeAll.html', id=Drid)
+    if 'Username' in session:
+        specialist = "Cirujano"
+        getDoctor = dbColl.find_one({"_id":ObjectId(id)})
+        if getDoctor:
+            dbColl.update({"_id":ObjectId(Drid)},{'$set':{'myDoctors.'+specialist:getDoctor}})
+            return redirect(url_for('board', id=Drid))
+        return render_template('seeAll.html', id=Drid)
 
 
 
 @app.route('/facture/<string:id>')
 def facture(id):
+    if 'Username' in session:
+        pass
     return render_template("/facture.html", id=id)
 
 
 @app.route('/myProfile/<string:id>')
 def myProfile(id):
-    Profile = dbColl.find_one({'_id': ObjectId(id)})
-    if Profile:
+    if 'Username' in session:
+        Profile = dbColl.find_one({'_id': ObjectId(id)})
+        if Profile:
+            return render_template("/myProfile.html", Profile = Profile)
         return render_template("/myProfile.html", Profile = Profile)
-    return render_template("/myProfile.html", Profile = Profile)
 
 
 
