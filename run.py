@@ -26,16 +26,16 @@ stripe.api_key = secreKey
 
 # SETTING
 app.secret_key = 'mysecretkey'
-#imgFolder = os.path.join('static','img')
-#app.config['UPLOAD_FOLDER']=imgFolder
+imgFolder = os.path.join('static','img')
+app.config['UPLOAD_FOLDER']=imgFolder
 
 
 @app.route('/')
 def index():
     if 'Username' in session:
         print("congratulation")
-    #homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
-    return render_template("index.html" """, homeImg=homeImg""")
+    homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
+    return render_template("index.html", homeImg=homeImg)
 #======================================================================================= USER AREA
 
 @app.route('/MyDoctor/<string:id>', methods = ['GET', 'POST'])
@@ -185,8 +185,9 @@ def staff():
 @app.route('/board/<string:id>')
 def board(id):
     if 'Username' in session:
+        data = dbColl.find_one({"_id":ObjectId(id)})
         print("congratulation")
-        return render_template("board.html", id = id)
+        return render_template("board.html", id = id, data=data)
     else:
         print("You are not user register")
         return redirect(url_for("index"))
@@ -240,7 +241,7 @@ def mainLog():
 
         if userLog:
             if bcrypt.hashpw(password.encode('utf-8'), userLog['userAccount']['Password']) == userLog['userAccount']['Password']:
-                session['Username'] == request.form['Username']
+                session['Username'] = request.form['Username']
                 data = userLog
                 Category = userLog['Category']
                 id = userLog['_id']
@@ -468,9 +469,9 @@ def Seach():
             {'Email': PatientSeachD, 'Category': 'Patient'})
         if PatientData:
             if PatientData['Email'] == PatientSeachD:
-                data = PatientData
-                seachup = Seach
-                print(data)
+                 data = PatientData
+                 seachup = Seach
+                 print(data)
 
             else:
                 seachup = Seach
