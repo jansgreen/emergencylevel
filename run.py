@@ -36,18 +36,6 @@ def index():
         print("congratulation")
     homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
     return render_template("index.html", homeImg=homeImg)
-#======================================================================================= USER AREA
-
-@app.route('/MyDoctor/<string:id>', methods = ['GET', 'POST'])
-def MyDoctor(id):
-    mydoctordb = dbColl.find_one({"_id": ObjectId(id)})
-    for mydoctor in mydoctordb :
-        if mydoctor['MyDoctors']:
-            print(mydoctor)
-        else:
-            print("No tiene ningun doctor registrado te")
-            pass
-    return redirect(url_for("seeAll", id=id))
 
 #======================================================================================= PATIENT AREA
 @app.route('/PatientScreem')
@@ -70,7 +58,8 @@ def patient(id):
     if user:
         if user['Category']== 'DirectorDoctor':
             string = user['Category']
-            return render_template("register.html", form=Register, string = string, seach = AllSeach)
+            flash(" ",string)
+            return render_template("register.html", form=Register, seach = AllSeach)
         elif user['Category']== 'Patient':
             redirect(url_for('board'))
             pass
@@ -184,13 +173,20 @@ def staff():
 
 @app.route('/board/<string:id>')
 def board(id):
+    datadb = dbColl.find_one({"_id":ObjectId(id)})
     if 'Username' in session:
-        data = dbColl.find_one({"_id":ObjectId(id)})
-        print("congratulation")
-        return render_template("board.html", id = id, data=data)
+        if datadb:
+           Category = datadb['Category']
+           flash(" ",Category)
+        return render_template("board.html", id = id, data = datadb)
     else:
         print("You are not user register")
         return redirect(url_for("index"))
+    #======================================
+    #Prueba
+    #======================================
+       
+
     return render_template("board.html", id = id)
 
 
@@ -242,12 +238,10 @@ def mainLog():
         if userLog:
             if bcrypt.hashpw(password.encode('utf-8'), userLog['userAccount']['Password']) == userLog['userAccount']['Password']:
                 session['Username'] = request.form['Username']
-                data = userLog
                 Category = userLog['Category']
                 id = userLog['_id']
                 flash(" ", Category)
-                print(Category)
-                return redirect(url_for("board", data = data, id = id) )
+                return redirect(url_for("board", id =id) )
             else:
                 print('Error')
         else:
@@ -485,12 +479,6 @@ def Seach():
 
 #============================================================================================== BOARD  AREA
 
-
-@app.route('/facture')
-def facture():
-    return render_template("/facture.html", publicKeys=publicKey)
-
-
 @app.route('/bill', methods=['POST'])
 def bill():
     print(request.form)
@@ -507,11 +495,6 @@ def bill():
 
 #========================================================= Nurse STAFF AREA
 
-@app.route('/myProfile/<string:id>')
-def myProfile(id):
-    Profile = dbColl.find_one(
-            {'_id': ObjectId(id)})
-    return render_template("/myProfile.html", Profile = Profile)
 
 @app.route('/MedicalRecord/<string:id>')
 def MedicalRecord(id):
@@ -529,31 +512,66 @@ def SeeAll(id):
 
 @app.route('/See/<string:id>', methods = ['GET', 'POST'])
 def See(id):
-    seach = mainClass.AllSeach(request.form)
-    if request.method=='POST' and seach.validate:
-        showData = request.form['SeachSelect']
-        userid = dbColl.find_one({'_id':ObjectId(id)})
-        if userid:
-            if userid['Category']=='Patient' and showData == 'Patient':
-                print("usted no tiene permiso para ver a todos los"+showData)
-                return render_template("/SeeAll.html", seach=seach, AlluserCat=[], id=id)
-            elif userid['Category']=='Patient':
-                data= dbColl.find({'Category':showData})
-                return render_template("/SeeAll.html", seach=seach, AlluserCat=data, id=id)
+    if 'Username' in session:
+        seach = mainClass.AllSeach(request.form)
+        if request.method=='POST' and seach.validate:
+            showData = request.form['SeachSelect']
+            userid = dbColl.find_one({'_id':ObjectId(id)})
+            if userid:
+                if userid['Category']=='Patient' and showData == 'Patient':
+                    Category = userid['Category']
+                    flash(" ", Category )
+                    print("usted no tiene permiso para ver a todos los"+showData)
+                    return render_template("/SeeAll.html", seach=seach, AlluserCat=[], id=id)
+                elif userid['Category']=='Patient':
+                    data= dbColl.find({'Category':showData})
+                    Category = userid['Category']
+                    flash(" ", Category )
+                    return render_template("/SeeAll.html", seach=seach, AlluserCat=data, id=id)
+                else:
+                    data= dbColl.find({'Category':showData})
+                    Category = userid['Category']
+                    flash(" ", Category )
+                    return render_template("/SeeAll.html", seach=seach, AlluserCat=data, id=id)
             else:
-                data= dbColl.find({'Category':showData})
-                print(data)
-                print(seach)
-                return render_template("/SeeAll.html", seach=seach, AlluserCat=data, id=id)
+                print("Hubo un error comuniquese con soporte tecnico")
+                return redirect(url_for('/index'))
         else:
-            print("Hubo un error comuniquese con soporte tecnico")
-            return redirect(url_for('/index'))
-    else:
-        print("Seleccione una opcion")
-    return render_template("/SeeAll.html", seach=seach, AlluserCat=data, id=id)
+            print("Seleccione una opcion")
+        return render_template("/SeeAll.html", seach=seach, AlluserCat=[], id=id)
+
+#======================================================================================= USER AREA
+
+@app.route('/MyDoctor/<string:id>', methods = ['GET', 'POST'])
+def MyDoctor(id):
+    myInfo = dbColl.find_one({"_id": ObjectId(id)})
+    if myInfo:
+        mydoctor = myInfo['myDoctors']
+    return render_template("myDoctors.html", AlluserCat = myInfo, id = id, myDr=mydoctor)
+
+@app.route('/setMyDoctor/<string:id>/<string:Drid>')
+def setMyDoctor(id, Drid):
+    specialist = "Cirujano"
+    getDoctor = dbColl.find_one({"_id":ObjectId(id)})
+    if getDoctor:
+        dbColl.update({"_id":ObjectId(Drid)},{'$set':{'myDoctors.'+specialist:getDoctor}})
+        return redirect(url_for('board', id=Drid))
+    return render_template('seeAll.html', id=Drid)
 
 
- 
+
+@app.route('/facture/<string:id>')
+def facture(id):
+    return render_template("/facture.html", id=id)
+
+
+@app.route('/myProfile/<string:id>')
+def myProfile(id):
+    Profile = dbColl.find_one({'_id': ObjectId(id)})
+    if Profile:
+        return render_template("/myProfile.html", Profile = Profile)
+    return render_template("/myProfile.html", Profile = Profile)
+
 
 
 if __name__ == '__main__':

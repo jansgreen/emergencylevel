@@ -1,0 +1,70 @@
+{% extends "material/base.html" %}
+{% from "material/macro.html" import render_field %}
+
+{% block content -%}
+<div class="row">
+  <div class="col xl3 m4 l3">
+    <div class="card horizontal">
+      <div class="card-stacked">
+        <div class="card-content">
+            <div class="row center">
+                <h6>{{AlluserCat.FirstName}} {{AlluserCat.LastName}}</h6>
+                <h6>{{ AlluserCat.BOD }}</h6>
+                <h6>{{ AlluserCat.Address }}</h6>
+                <h6>{{ AlluserCat.Phone }}</h6>
+                <h6>{{ AlluserCat.Email }}</h6>
+                <h6>{{ AlluserCat.myDoctors.Cirujano.FirstName }}</h6>
+
+                <td><a class="btn MedicalNote" href="/SeeAll/{{AlluserCat._id}}">add a Doctor</a></td>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col xl9 m4 l8">
+
+
+    <h5 class="container header">Your Doctors</h5>
+    {% for dr in AlluserCat.myDoctors %}
+
+    <div class="row">
+      <table class="responsive-table">
+
+        <thead>
+          <tr>
+            <th>Especialist</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Bird day</th>
+            <th>Email</th>
+
+
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>{{ dr }}</td>
+            <td>{{ dr.FirstName }}</td>
+            <td>{{ dr.LastName }}</td>
+            <td>{{ dr.BOD }}</td>
+            <td>{{ dr.Address }}</td>
+            <td>{{ dr.Phone }}</td>
+            <td>{{ dr.Email }}</td>
+            {% with messages = get_flashed_messages(category_filter=['DirectorDoctor']) %}
+            {% if messages %}
+            <td><a class="btn MedicalNote" href="/addNourse/{{ all._id }}">Make Appoiments</a></td>
+            <td><a class="btn MedicalNote" href="/addNourse/{{ all._id }}">Delete</a></td>
+            {% endif %}
+            {% endwith %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {% endfor%}
+
+  </div>
+
+</div>
+{%- endblock content %}
+

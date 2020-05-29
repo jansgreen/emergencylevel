@@ -11,6 +11,7 @@
             <div class="row">
               {{ seach.csrf_token }}
               {{ seach.SeachSelect }}
+              
             </div>
 
             <div class="row center">
@@ -18,7 +19,7 @@
                 <button id="patButton" class="btn waves-effect waves-light" name="action">Choose</button>
               </div>
               <div class="col m6">
-                <a class="btn MedicalNote" href="/patient/{{'Doctor'}}">Add</a>
+                <a class="btn MedicalNote" href="/patient/{{id._id}}">Add</a>
               </div>
             </div>
           </form>
@@ -55,6 +56,10 @@
             <td>{{ all.Address }}</td>
             <td>{{ all.Phone }}</td>
             <td>{{ all.Email }}</td>
+            {% if all.Category == 'Doctor' %}
+            <td><a class="btn MedicalNote" href="/setMyDoctor/{{all._id}}/{{id}}">Add this doctor</a></td>
+            {% endif %}
+
             {% with messages = get_flashed_messages(category_filter=['DirectorDoctor']) %}
             {% if messages %}
             <td><a class="btn MedicalNote" href="/addNourse/{{ all._id }}">Edit</a></td>

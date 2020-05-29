@@ -3,36 +3,22 @@
 
 <div class="row">
     <div class="col s12 m8 ">
-        <div class="card-panel teal">
-            <div class="row">
-                <a href="/facture"><div class="col 12 m6 l3 optionIcon z-depth-5">
-                    <i class="Medium material-icons">person</i>
-                    <p class="row">My Profile</p>
-                </div></a>
-                <a href="/facture"><div class="col 12 m6 l3 optionIcon z-depth-5">
-                    <i class="Medium material-icons">credit_card</i>
-                    <p class="row">My Bill </p>
-                </div></a>
-                <a href="/MedicalRecord"><div class="col s12 m6 l3 optionIcon z-depth-5">
-                    <i class="Medium material-icons">assignment</i>
-                    <p>My Medical Record</p>
-                </div>
-            </div></a>
+        <div class="card-panel white">
+                    <div class="responsive-ta">
+                        <h5>First Name  : {{Profile.FirstName}}</h5>
+                        <h5>Last Name   : {{Profile.LastName}}</h5>
+                        <h5>Bird of Day : {{Profile.BOD}}</h5>
+                        <h5>Address     : {{Profile.Address}}</h5>
+                        <h5>Phone       : {{Profile.Phone}}</h5>
+                        <h5>Email       : {{Profile.Email}}</h5>
+                        {% if Category != 'Patient'  %}
+                        <h5>Potition    : {{Profile.Category}}</h5>
+                        {% endif %}
+                    </div>
 
-            <div class="row">
-                <a href="/facture"><div class="col s12 m6 l3 optionIcon z-depth-5">
-                    <i class="Medium material-icons">contact_mail</i>
-                    <p>My Doctor</p>
-                </div></a>
-                <a href="/facture"><div class="col s12 m6 l3 optionIcon z-depth-5">
-                    <i class="Medium material-icons">contacts</i>
-                    <p>See All Doctor</p>
-                </div></a>
-                <a href="/facture"><div class="col s12 m6 l3 optionIcon z-depth-5">
-                    <i class="Medium material-icons">airline_seat_flat_angled</i>
-                    <p>See All Patient</p>
-                </div></a>
-            </div>
+
+
+
         </div>
     </div>
 </div>
