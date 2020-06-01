@@ -19,7 +19,7 @@
         <!--SHOW A INFO ABOUT THE DAY PATIENT HAVE IN EMERGENCY-->
         <div class="row">
           <h5 class="header">Recordby Days:</h5>
-          {% if PatientId %}
+          {% if patientsData.DoctorNote %}
           {% for Medical in patientsData.DoctorNote %}
           <br>
           <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical.Date}}</a>

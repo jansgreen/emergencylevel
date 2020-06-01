@@ -53,58 +53,56 @@ def PatientRegister():
 @app.route('/register/<string:id>', methods = ['GET'])
 def register(id):
     Register = mainClass.Register(request.form)
-    AllSeach = mainClass.AllSeach(request.form)
     user = dbColl.find_one({'_id':ObjectId(id)})
     if user:
         if user['Category']== 'DirectorDoctor':
             Category = user['Category']
             flash(" ",Category)
-            return render_template("register.html", form=Register, seach = AllSeach, id = id)
+            return render_template("register.html", form=Register, id = id)
         elif user['Category']== 'Patient':
             redirect(url_for('board'))
             pass
     else:
         string = 'Patient'
-        return render_template("register.html", form=Register, string = string, seach = AllSeach, id = id)
+        return render_template("register.html", form=Register, string = string, id = id)
     return render_template("index.html")
 
-@app.route('/addRegister/<string:id>', methods=['POST'])
+@app.route('/addRegister/<string:id>', methods=['GET', 'POST'])
 def addRegister(id):
-    Register = mainClass.Register(request.form)
-    if request.method == 'POST' and Register.validate:
-        name = request.form['firstname']
-        lastName = request.form['LastName']
-        BOD = request.form['BOD']
-        Address = request.form['address']
-        Email = request.form['email']
-        numPhone = request.form['telephone']
-        try:
-            Category = request.form['SeachSelect'],
-            specialty = request.form['specialty']
-            pass
-        except:
-            Category = 'Patient'
-            specialty = 'N/A'
-            pass
-        finally:
-            dataPost = {
-            "Category": Category,
-            "FirstName": name,
-            "LastName": lastName,
-            "BOD": BOD,
-            "Address": Address,
-            "Email": Email,
-            "Phone": numPhone,
-            "userAccount": " ",
-            "Specialty"   : specialty
-            
-        }
-            pass
-            _id = dbColl.insert_one(dataPost)
-    TicketID = _id.inserted_id
-    if TicketID: 
-        return redirect(url_for("AutoEmail", id=TicketID))          
-    return redirect(url_for("ticket", id=TicketID))
+    if 'Username' in session:
+        Register = mainClass.Register(request.form)
+        if request.method == 'POST' and Register.validate:
+            name = request.form['firstname']
+            lastName = request.form['LastName']
+            BOD = request.form['BOD']
+            Address = request.form['address']
+            Email = request.form['email']
+            numPhone = request.form['telephone']
+            try:
+                Category = request.form.get('Category')
+                specialty = request.form['specialty']
+            except:
+                Category = 'Patient'
+                specialty = 'N/A'
+            finally:
+                dataPost = {
+                "Category": Category,
+                "FirstName": name,
+                "LastName": lastName,
+                "BOD": BOD,
+                "Address": Address,
+                "Email": Email,
+                "Phone": numPhone,
+                "userAccount": " ",
+                "Specialty"   : specialty
+                
+            }
+                pass
+                _id = dbColl.insert_one(dataPost)
+        TicketID = _id.inserted_id
+        if TicketID: 
+            return redirect(url_for("AutoEmail", id=TicketID))          
+        return redirect(url_for("ticket", id=TicketID))
 
 @app.route('/AutoEmail/<string:id>')
 def AutoEmail(id):

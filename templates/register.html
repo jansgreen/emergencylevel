@@ -45,8 +45,8 @@
           {% with messages = get_flashed_messages(category_filter=['DirectorDoctor']) %}
           {% if messages %}
           <div class="input-field col s12 m6 l6">
-            {{ seach.csrf_token }}
-            {{ seach.SeachSelect }}
+            {{ form.csrf_token }}
+            {{ form.Category }}
           </div>
           <div class="input-field col s12 m6 l6">
           <label id="icon_telephone" >Specialty</label><br>
