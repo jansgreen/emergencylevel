@@ -113,7 +113,7 @@
         <div class="card-content">
           <div class="row">
             <h2 class="header"></h2>
-            <form action="/Doctor/{{DrPasientID}}" method="POST" class="col s12">
+            <form action="/addDoctor/{{data._id}}/{{ List._id }}" method="POST" class="col s12">
               {% from "macro.html" import render_field %}
               <div class="row">
                 <div class="input-field col s12 m6 l6">

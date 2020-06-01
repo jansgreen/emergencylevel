@@ -48,6 +48,10 @@
             {{ seach.csrf_token }}
             {{ seach.SeachSelect }}
           </div>
+          <div class="input-field col s12 m6 l6">
+          <label id="icon_telephone" >Specialty</label><br>
+          {{ render_field(form.specialty, class="validate", id="specialty") }}
+        </div>
           {% endif %}
           {% endwith %}
         </div>

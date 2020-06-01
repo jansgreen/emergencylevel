@@ -79,10 +79,12 @@ def addRegister(id):
         Email = request.form['email']
         numPhone = request.form['telephone']
         try:
-            Category = request.form['SeachSelect']
+            Category = request.form['SeachSelect'],
+            specialty = request.form['specialty']
             pass
         except:
             Category = 'Patient'
+            specialty = 'N/A'
             pass
         finally:
             dataPost = {
@@ -93,7 +95,8 @@ def addRegister(id):
             "Address": Address,
             "Email": Email,
             "Phone": numPhone,
-            "userAccount": " "
+            "userAccount": " ",
+            "Specialty"   : specialty
             
         }
             pass
@@ -105,18 +108,19 @@ def addRegister(id):
 
 @app.route('/AutoEmail/<string:id>')
 def AutoEmail(id):
-    for user in dbColl.find({'_id': ObjectId(id)}):
-        print(user)
-    if user:
-        EmailMessage = user['FirstName']+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'https://emergencylevel.herokuapp.com/singup/'+id
-        subject= 'Emergency, Continue your singup'
-        Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
-        EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
-        EmailSystem.starttls()
-        EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
-        EmailSystem.sendmail('emergencylebel@gmail.com', user['Email'], Email)
-        EmailSystem.quit()
-    print("Felicidades")
+    if 'Username' in session:
+        for user in dbColl.find({'_id': ObjectId(id)}):
+            print(user)
+        if user:
+            EmailMessage = user['FirstName']+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'http://127.0.0.1:5500/singup/'+id
+            subject= 'Emergency, Continue your singup'
+            Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
+            EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
+            EmailSystem.starttls()
+            EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
+            EmailSystem.sendmail('emergencylebel@gmail.com', user['Email'], Email)
+            EmailSystem.quit()
+        print("Felicidades")
     return redirect(url_for("index"))
 
 @app.route('/singup/<string:id>')
@@ -283,11 +287,12 @@ def addStaff():
 
 #========================================================= Nurse STAFF AREA
 
-@app.route('/Nourse/<string:id>', methods=['POST'])
-def Nourse(id):
+@app.route('/Nourse/<string:Cid>/<string:id>', methods=['POST'])
+def Nourse(Cid, id):
     if 'Username' in session:
         Nourse = mainClass.Nourse(request.form)
         if request.method == 'POST'and Nourse.validate():
+            DrInfo = dbColl.find_one({"_id": ObjectId(Cid)})
             AllergiesV = request.form['Mets'],
             MetsV = request.form['BldPressure'],
             DiagnosisV = request.form['Allergies'],
@@ -304,8 +309,9 @@ def Nourse(id):
             try:
                 NewFieldIssuesV = request.form['NewFieldIssues'],
                 newFieldtServiceV = request.form['newFieldtService'],
-                MedicalData={ 
-                    "Nurse": "Nurse",
+                MedicalData={
+                    "Date" : MedicalDate, 
+                    "Nurse": DrInfo,
                     "Diagnosis":DiagnosisV,
                     "BloodPressure":BldPressureV,
                     "Breathing":BreathingV,
@@ -322,7 +328,9 @@ def Nourse(id):
                     }
                 pass
             except:
-                MedicalData={ 
+                MedicalData={
+                    "Date" : MedicalDate, 
+                    "Nurse": DrInfo,
                     "Breathing":BreathingV,
                     "Allergies":AllergiesV,
                     "Mets":MetsV,
@@ -336,19 +344,17 @@ def Nourse(id):
                     "Date": MedicalDate,
                     }
             finally:
-                dbColl.update({"_id": ObjectId(id)}, {
-                    '$push': {'MedicalNote':[MedicalData]}})
-                pass
-            Pressure = request.form['Pressure'],
-            weight = request.form['weight'],
-            VitalSigns = request.form['VitalSigns'],
-            Note = request.form['Note']
-            MedicalData = {"Pressure": Pressure, "weight": weight,
-                        "VitalSigns": VitalSigns, "Note": Note}
-        now = datetime.now()
-        MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
-        dbColl.update({"_id": ObjectId(id)}, {
-                    '$set': {"MedicalNote."+MedicalDate: {"Nourse": MedicalData}}})
+                checkedField = dbColl.find_one({"_id": ObjectId(id)})
+                print("Escribiendo documentos")
+                if checkedField:
+                    if "NurseNote":
+                        dbColl.update_one({"_id": ObjectId(id)}, {'$push':  {'NurseNote':MedicalData}})
+                        print("eL CAMPO MedicalNote EXISTE")
+                        return redirect(url_for('EmergencyStaff', id = Cid))
+                    else:
+                        dbColl.update_one({"_id": ObjectId(id)}, {'$set': {'NurseNote':MedicalData}})
+                        print("El campo MedicalNote no existe y fue creado")
+                        return redirect(url_for("EmergencyStaff", id=Cid))
     return redirect(url_for("emergencyTeam"))
 
 
@@ -365,8 +371,9 @@ def addNourse(id):
 @app.route('/Doctor/<string:Cid>/<string:id>', methods=['POST'])
 def Doctor(Cid, id):
     if 'Username' in session:
+        DrInfo = dbColl.find_one({"_id": ObjectId(Cid)})
         validatorForms = mainClass.validatorForm(request.form)
-        if request.method == 'POST' and validatorForms.validate():
+        if request.method == 'POST' and validatorForms.validate:
             Prescription = request.form['Prescription'],
             Referencia = request.form['Referencia'],
             Note = request.form['Note'],
@@ -381,8 +388,9 @@ def Doctor(Cid, id):
                 newInd = request.form['newInd'],
                 readyTestName = request.form['readyTestName'],
                 readyDoBefore = request.form['readyDoBefore'],
-                MedicalData={ 
-                    "Doctor": "DoctorName",
+                MedicalData={
+                    "Date" : MedicalDate, 
+                    "Doctor": DrInfo,
                 "Prescription": Prescription,
                 "Referencia": Referencia,
                 "Note": Note,
@@ -392,32 +400,30 @@ def Doctor(Cid, id):
                 "OtherTest":(readyTestName,readyDoBefore),
                 "MedicalDate":MedicalDate
                     }
-                pass
             except:
                 MedicalData={ 
-                    "Doctor": "DoctorName",
+                     "Date" : MedicalDate, 
+                    "Doctor": DrInfo,
                 "Prescription": Prescription,
                 "Referencia": Referencia,
                 "Note": Note,
                 "Medication": (AssigMed, Indications),
                 "Test": (TestName, DoBefore),
-                "MedicalDate":MedicalDate
                     }
             finally:
                 checkedField = dbColl.find_one({"_id": ObjectId(id)})
                 print("Escribiendo documentos")
                 if checkedField:
-                    print(checkedField)
-                    if checkedField["MedicalNote"]:
-                        dbColl.update({"_id": ObjectId(id)}, {'$push': {'MedicalNote':[MedicalData]}})
+                    if "DoctorNote":
+                        dbColl.update_one({"_id": ObjectId(id)}, {'$push':{'DoctorNote':MedicalData}})
                         print("eL CAMPO MedicalNote EXISTE")
                         return redirect(url_for('EmergencyStaff', id = Cid))
                     else:
-                        dbColl.update({"_id": ObjectId(id)}, {
-                        '$set': {'MedicalNote':[MedicalData]}})
-                    print("El campo MedicalNote no existe y fue creado")
-                    return redirect(url_for("EmergencyStaff", id=Cid))
+                        dbColl.update_one({"_id": ObjectId(id)}, {'$set': {'DoctorNote':MedicalData}})
+                        print("El campo MedicalNote no existe y fue creado")
+                        return redirect(url_for("EmergencyStaff", id=Cid))
     return redirect(url_for("EmergencyStaff", id=Cid))
+
 
 
 
@@ -432,7 +438,6 @@ def addDoctor(idD, id):
                 flash(" ", Category)
                 patientData = dbColl.find_one({'_id': ObjectId(id)})
                 return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
-
             elif DrPasientsID['Category'] == 'Nurse':
                 Category = DrPasientsID['Category']
                 flash(" ", Category)
@@ -444,7 +449,6 @@ def addDoctor(idD, id):
                 flash(" ", Category)
                 patientData = dbColl.find_one({'_id': ObjectId(id)})
                 return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
-
             else:
                 print('Usted no tiene acceso aqui, hubo un error')
                 return redirect(url_for("index"))
@@ -548,20 +552,27 @@ def See(id):
 def MyDoctor(id):
     if 'Username' in session:
         myInfo = dbColl.find_one({"_id": ObjectId(id)})
-        if myInfo:
-            mydoctor = myInfo['myDoctors']
-        return render_template("myDoctors.html", AlluserCat = myInfo, id = id, myDr=mydoctor)
+        return render_template("myDoctors.html", AlluserCat = myInfo, id = id,)
 
 @app.route('/setMyDoctor/<string:id>/<string:Drid>')
 def setMyDoctor(id, Drid):
     if 'Username' in session:
-        specialist = "Cirujano"
         getDoctor = dbColl.find_one({"_id":ObjectId(id)})
-        if getDoctor:
-            dbColl.update({"_id":ObjectId(Drid)},{'$set':{'myDoctors.'+specialist:getDoctor}})
+        myInfo = dbColl.find_one({"_id":ObjectId(Drid)})
+        if getDoctor and myInfo:
+            dbColl.update({"_id":ObjectId(Drid)}, {'$set':{'myDoctors':getDoctor}})
             return redirect(url_for('board', id=Drid))
-        return render_template('seeAll.html', id=Drid)
+        else:
+            DrMessage = "We not have any doctor"
+            flash(DrMessage)
+        return redirect(url_for('board', id=Drid))
 
+@app.route('/delete/<string:myid>')
+def delete(myid):
+    if 'Username' in session:
+        dbColl.update({"_id":ObjectId(myid)}, {'$unset':{'myDoctors':{'$exists':'true'}}})
+        pass
+    return redirect(url_for('board', id=myid))
 
 
 @app.route('/facture/<string:id>')

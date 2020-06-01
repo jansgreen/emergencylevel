@@ -16,81 +16,81 @@
           <h5>BOD: {{patientsData.BOD}}</h5>
           <h5>Language: {{patientsData.language}}</h5>
         </div>
-
         <!--SHOW A INFO ABOUT THE DAY PATIENT HAVE IN EMERGENCY-->
         <div class="row">
           <h5 class="header">Recordby Days:</h5>
-          {% for Medical in patientsData["MedicalNote"] %}
+          {% if PatientId %}
+          {% for Medical in patientsData.DoctorNote %}
           <br>
-          <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical[0].MedicalDate}}</a>
+          <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical.Date}}</a>
           <ul id="List" Class='dropdown-content'>
-            {% for Medical in Medical[0].Prescription %}
             <li><a href="#!">
-                <h6>Prescription: {{Medical}}</h6>
+                <h6>By doctor:</h6>
+                <h6>{{Medical.Doctor.FirstName}} {{Medical.Doctor.LastName}}</h6>
+
               </a></li>
-            {% endfor %}
-            <hr>
-            <li><a href="#!">
-                {% for Medical in Medical[0].Referencia %}
-                <h6>Referencia: {{Medical}}</h6>
-                {% endfor %}
+              <li><a href="#!">
+                <h6>Prescription: {{Medical.Prescription[0]}}</h6>
               </a></li>
             <hr>
             <li><a href="#!">
-                <h6>Note: {{Medical[0].Note}}</h6>
+                <h6>Referencia: {{Medical.Referencia[0]}}</h6>
               </a></li>
             <hr>
             <li><a href="#!">
-                {% for Medical in Medical[0].Medication %}
-                <h6>Medication: {{Medical[0]}}</h6>
-                {% endfor %}
+                <h6>Note: {{Medical.Note}}</h6>
               </a></li>
             <hr>
             <li><a href="#!">
-                {% for Medical in Medical[0].Test %}
-                <h6>Test: {{Medical[0]}}</h6>
-                {% endfor %}
+                <h6>Medication: {{Medical.Medication[0][0]}} {{Medical.Medication[1][0]}}</h6>
+              </a></li>
+            <hr>
+            <li><a href="#!">
+                <h6>Test: {{Medical.Test[0][0]}} {{Medical.Test[1][0]}}</h6>
               </a></li>
           </ul>
           {% endfor %}
+          {% endif %}
         </div>
 
         <!--SHOW A INFO ABOUT THE DAY PATIENT HAVE IN EMERGENCY-->
         <div class="row ">
           <h5 class="header">Medical Treatment by day:</h5>
-          {% for Medical in patientsData["MedicalNote"] %}
+          {% if PatientId %}
+          {% for Medical in PatientId.NurseNote %}
           <br>
-          <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical[0].MedicalDate}}</a>
+          <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical.MedicalDate}}</a>
           <ul id="List" Class='dropdown-content'>
-            {% for Medical in Medical[0].Prescription %}
+            {% for Medical in Medical.Prescription %}
             <li><a href="#!">
                 <h6>Prescription: {{Medical}}</h6>
               </a></li>
             {% endfor %}
             <hr>
             <li><a href="#!">
-                {% for Medical in Medical[0].Referencia %}
+                {% for Medical in Medical.Referencia %}
                 <h6>Referencia: {{Medical}}</h6>
                 {% endfor %}
               </a></li>
             <hr>
             <li><a href="#!">
-                <h6>Note: {{Medical[0].Note}}</h6>
+                <h6>Note: {{Medical.Note}}</h6>
               </a></li>
             <hr>
             <li><a href="#!">
-                {% for Medical in Medical[0].Medication %}
-                <h6>Medication: {{Medical[0]}}</h6>
+                {% for Medical in Medical.Medication %}
+                <h6>Medication: {{Medical}}</h6>
                 {% endfor %}
               </a></li>
             <hr>
             <li><a href="#!">
-                {% for Medical in Medical[0].Test %}
-                <h6>Test: {{Medical[0]}}</h6>
+                {% for Medical in Medical.Test %}
+                <h6>Test: {{Medical}}</h6>
                 {% endfor %}
               </a></li>
           </ul>
           {% endfor %}
+          {% endif %}
         </div>
       </div>
     </div>
@@ -192,192 +192,3 @@
 
 {%- endblock content %}
 
-<!--
-
-  <div class="col s12 m6 l4">
-    <h2 class="header">Patient Info</h2>
-    <div class="card horizontal">
-      <div class="card-stacked">
-        <div class="card-content">
-
-          <div class="row">
-            <form action="/Doctor/{{DrPasientID}}" method="POST" class="col s12">
-              <div class="row">
-                <div class="row card-content">
-                  {% for RecNum in patientsData.Emergincy %}
-                  <h5>Emergincy Record Number: <div name="EmReNu">{{RecNum}}</div>
-                  </h5>
-                  {% endfor %}
-                  <h5>{{patientsData.FirstName}}, {{patientsData.LastName}}</h5>
-                  <h5>BOD: {{patientsData.BOD}}</h5>
-                  <h5>Language: {{patientsData.language}}</h5>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div class="row  center">
-            <h4 class="header">Days:</h4>
-            {% for Medical in patientsData["MedicalNote"] %}
-            <br>
-            <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical[0].MedicalDate}}</a>
-            <ul id="List" Class='dropdown-content'>
-              {% for Medical in Medical[0].Prescription %}
-              <li><a href="#!">
-                  <h6>Prescription: {{Medical}}</h6>
-                </a></li>
-              {% endfor %}
-              <hr>
-              <li><a href="#!">
-                  {% for Medical in Medical[0].Referencia %}
-                  <h6>Referencia: {{Medical}}</h6>
-                  {% endfor %}
-                </a></li>
-              <hr>
-              <li><a href="#!">
-                  <h6>Note: {{Medical[0].Note}}</h6>
-                </a></li>
-              <hr>
-              <li><a href="#!">
-                  {% for Medical in Medical[0].Medication %}
-                  <h6>Medication: {{Medical[0]}}</h6>
-                  {% endfor %}
-                </a></li>
-              <hr>
-              <li><a href="#!">
-                  {% for Medical in Medical[0].Test %}
-                  <h6>Test: {{Medical[0]}}</h6>
-                  {% endfor %}
-                </a></li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row  center">
-    <h4 class="header">Medical Treatment:</h4>
-    {% for Medical in patientsData["MedicalNote"] %}
-    <br>
-    <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical[0].MedicalDate}}</a>
-    <ul id="List" Class='dropdown-content'>
-      {% for Medical in Medical[0].Prescription %}
-      <li><a href="#!">
-          <h6>Prescription: {{Medical}}</h6>
-        </a></li>
-      {% endfor %}
-      <hr>
-      <li><a href="#!">
-          {% for Medical in Medical[0].Referencia %}
-          <h6>Referencia: {{Medical}}</h6>
-          {% endfor %}
-        </a></li>
-      <hr>
-      <li><a href="#!">
-          <h6>Note: {{Medical[0].Note}}</h6>
-        </a></li>
-      <hr>
-      <li><a href="#!">
-          {% for Medical in Medical[0].Medication %}
-          <h6>Medication: {{Medical[0]}}</h6>
-          {% endfor %}
-        </a></li>
-      <hr>
-      <li><a href="#!">
-          {% for Medical in Medical[0].Test %}
-          <h6>Test: {{Medical[0]}}</h6>
-          {% endfor %}
-        </a></li>
-    </ul>
-
-    {% endfor %}
-  </div>
-  {% endfor %}
-
-  <div class="col s12 m6 l8">
-    <h4 class="header">{{DrPasientID.FirstName}} {{DrPasientID.LastName}}</h4>
-    <div class="card horizontal">
-      <div class="card-stacked">
-        <div class="card-content">
-          <div class="row">
-            <form action="/Doctor/{{DrPasientID}}" method="POST" class="col s12">
-              <div class="row">
-                <div class="input-field col s12 m6 l6">
-                  {{ render_field(form.Prescription, placeholder="Prescription", class="validate", id="Prescription") }}
-                </div>
-
-                <div class="input-field col s12 m6 l6">
-                  {{ render_field(form.Referencia, placeholder="Referencia", class="validate", id="Referencia") }}
-
-                </div>
-              </div>
-              <div class="row">
-                <div class="input-field col s12 m6 l6">
-                  {{ render_field(form.Note, placeholder="Note", class="validate", id="Note") }}
-                </div>
-              </div>
-              <div class="row">
-                <h5>Assign Medication</h5>
-                <div class="input-field col s12 m6 l4">
-                  {{ render_field(form.assigMed, placeholder="Medication", class="validate", id="assigMed") }}
-                  <dd>
-                    <div id="newfieldMed"></div>
-                  </dd>
-                </div>
-                <div class="input-field col s12 m6 l4">
-                  {{ render_field(form.Indications, placeholder="Indications", class="validate", id="Indications") }}
-                  <dd>
-                    <div id="newfieldInd"></div>
-                  </dd>
-                </div>
-                <div class="input-field col s12 m6 l4">
-                  <div id="addFields" class="center btn waves-effect waves-light" onclick="addfield()">AddField</div>
-                  <div id="removeFields" class="center btn waves-effect waves-light"
-                    onclick="RemuveField('readyFieldInd'); RemuveFields('readyFieldMed')">RemoveField</div>
-                </div>
-                <div id="fieldsMessages"></div>
-              </div>
-
-              <div class="row">
-                <h5>Assign Test</h5>
-                <div class="input-field col s12 m6 l4">
-                  {{ render_field(form.TestName, placeholder="Test Name", class="validate", id="TestName") }}
-                  <dd>
-                    <div id="newFldTestName"></div>
-                  </dd>
-
-                </div>
-                <div class="input-field col s12 m6 l4">
-                  {{ render_field(form.DoBefore, type="date", class="validate", id="DoBefore") }}
-                  <dd>
-                    <div id="newFldDoBefore"></div>
-                  </dd>
-                </div>
-                <div class="input-field col s12 m6 l4">
-                  <div id="addFields" class="center btn waves-effect waves-light" onclick="addfieldTest()">AddField
-                  </div>
-                  <div id="removeFields" class="center btn waves-effect waves-light"
-                    onclick="RemuveFieldTest('readyFieldTest'); RemuveFieldsDoBe('readyFieldDoBe')">RemoveField</div>
-                </div>
-                <div id="fieldsMessagesTest"></div>
-              </div>
-          </div>
-        </div>
-        <div class="center">
-          <button id="patButton" class="center btn waves-effect waves-light" type="submit" name="action"
-            value=Register>Submit</button>
-        </div>
-        </form>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
-
-
-
--->

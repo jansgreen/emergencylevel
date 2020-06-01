@@ -13,7 +13,8 @@
                 <h6>{{ AlluserCat.Address }}</h6>
                 <h6>{{ AlluserCat.Phone }}</h6>
                 <h6>{{ AlluserCat.Email }}</h6>
-                <h6>{{ AlluserCat.myDoctors.Cirujano.FirstName }}</h6>
+
+
 
                 <td><a class="btn MedicalNote" href="/SeeAll/{{AlluserCat._id}}">add a Doctor</a></td>
             </div>
@@ -22,46 +23,42 @@
     </div>
   </div>
   <div class="col xl9 m4 l8">
-
-
     <h5 class="container header">Your Doctors</h5>
-    {% for dr in AlluserCat.myDoctors %}
+    {% if AlluserCat.myDoctors %}
 
     <div class="row">
       <table class="responsive-table">
 
         <thead>
           <tr>
-            <th>Especialist</th>
+            <th>Specialist</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Bird day</th>
+            <th>Address</th>
+            <th>Phone</th>
             <th>Email</th>
-
-
-          </tr>
+         </tr>
         </thead>
-
         <tbody>
           <tr>
-            <td>{{ dr }}</td>
-            <td>{{ dr.FirstName }}</td>
-            <td>{{ dr.LastName }}</td>
-            <td>{{ dr.BOD }}</td>
-            <td>{{ dr.Address }}</td>
-            <td>{{ dr.Phone }}</td>
-            <td>{{ dr.Email }}</td>
-            {% with messages = get_flashed_messages(category_filter=['DirectorDoctor']) %}
-            {% if messages %}
-            <td><a class="btn MedicalNote" href="/addNourse/{{ all._id }}">Make Appoiments</a></td>
-            <td><a class="btn MedicalNote" href="/addNourse/{{ all._id }}">Delete</a></td>
-            {% endif %}
-            {% endwith %}
+            <td>{{ AlluserCat.myDoctors.Specialty }}</td>
+            <td>{{ AlluserCat.myDoctors.FirstName }}</td>
+            <td>{{ AlluserCat.myDoctors.LastName }}</td>
+            <td>{{ AlluserCat.myDoctors.BOD }}</td>
+            <td>{{ AlluserCat.myDoctors.Address }}</td>
+            <td>{{ AlluserCat.myDoctors.Phone }}</td>
+            <td>{{ AlluserCat.myDoctors.Email }}</td>
+
+            <td><a class="btn MedicalNote" href="/delete/{{ AlluserCat._id }}">Make Appoiments</a></td>
+            <td><a class="btn MedicalNote" href="/delete/{{ AlluserCat._id }}">Delete</a></td>
+
           </tr>
         </tbody>
       </table>
     </div>
-    {% endfor%}
+  
+    {% endif %}
 
   </div>
 

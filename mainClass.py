@@ -155,6 +155,8 @@ class Register(Form):
     address = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
     telephone = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
     email = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)])
+    specialty = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)])
+
 
 #==============================================
 # USER SEACH
