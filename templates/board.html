@@ -2,7 +2,7 @@
 {% block content -%}
 
 <div class="row">
-    <div class="col s12 m4 ">
+    <div class="col s12 m5 ">
         <div class="row">
             <div class="col s12 m7">
                 <div class="card">
@@ -18,9 +18,9 @@
 
     </div>
 
-    <div class="col s12 m8 ">
+    <div class="col s12 m5 ">
         <div class="card-panel teal">
-            <div class="row">
+            <div class="row ">
                 {% with messages = get_flashed_messages(category_filter=['Patient', 'Doctor', 'Nurse', 'DirectorDoctor']) %}
                 {% if messages %}
                 <a href="/myProfile/{{data._id}}">
@@ -29,18 +29,17 @@
                         <p class="row">My Profile</p>
                     </div>
                 </a>
-                <a href="/facture/{{data._id}}">
-                    <div class="col 12 m6 l3 optionIcon z-depth-5">
-                        <i class="Medium material-icons">credit_card</i>
-                        <p class="row">My Bill </p>
+                {% with messages = get_flashed_messages(category_filter=['Doctor', 'Nurse', 'DirectorDoctor']) %}
+                {% if messages %}
+                <a href="/EmergencyStaff/{{data._id}}">
+                    <div class="col s12 m6 l3 optionIcon z-depth-5">
+                        <i class="Medium material-icons">contact_mail</i>
+                        <p>Emergency Room</p>
                     </div>
                 </a>
-                <a href="/MedicalRecord/{{data._id}}">
-                    <div class="col s12 m6 l3 optionIcon z-depth-5">
-                        <i class="Medium material-icons">assignment</i>
-                        <p>My Medical Record</p>
-                    </div>
-            </div></a>
+                {% endif %}
+                {% endwith %}
+            </div>
             <div class="row">
                 <a href="/MyDoctor/{{data._id}}">
                     <div class="col s12 m6 l3 optionIcon z-depth-5">
@@ -56,19 +55,12 @@
                 </a>
                 {% endif %}
                 {% endwith %}
-                {% with messages = get_flashed_messages(category_filter=['Doctor', 'Nurse', 'DirectorDoctor']) %}
-                {% if messages %}
-                <a href="/EmergencyStaff/{{data._id}}">
-                    <div class="col s12 m6 l3 optionIcon z-depth-5">
-                        <i class="Medium material-icons">contact_mail</i>
-                        <p>Emergency Room</p>
-                    </div>
-                </a>
-                {% endif %}
-                {% endwith %}
            </div>
           </div>
         </div>
     </div>
 </div>
+
+
+
 {%- endblock content %}

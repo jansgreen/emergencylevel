@@ -1,70 +1,47 @@
 {% extends "material/base.html" %}
 {% from "material/macro.html" import render_field %}
 {% block content -%}
-{% for DrList in Name %}
-           <div class="container col s12 m7">
-            <div class="card horizontal">
-              <div class="card-image hide-on-med-and-down">
-               </div>
-              <div class="card-stacked">
-                <div class="card-content">
-                  <div class="row">
-                    <table id class="col s12">
-                      <div class="row">
-                        <div class="col s12 m6 l6">
-                          <h4>{{ DrList.FirstName }} </h4>
-                        </div>
-                        <div class="col s12 m6 l6">
-                          <p>Info:</p>
-                          <h4>{{ DrList.Phone }} </h4>
-                        </div>
-                        <div class="col s12 m6 l6">
-                          <h4>{{ DrList.LastName }}</h4>
-                        </div>
-                        <div class="col s12 m6 l6">
-                          <h4>{{ DrList.Email }}</h4>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col s12 m6 l6">
-                          <p>Language Speak:</p>
-                          <h4>{{ DrList.language }}</h4>
-                        </div>
-                        <div class="col s12 m6 l6">
-                              <h4>{{ DrList.Address }}</h4>
-                        </div>
-                      </div>
-                  </div>
-                  <div class="row">
-                    <div class="d col s12 m6 l6">
-                     <h4></h4>
-                    </div>
-                    <div class="col s12 m6 l6">
-                     <h4></h4>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col s12 m4 l3">
-                     <h5>Lab Number: {{DrList.Tabnumber}}</h5>
-                    </div>
-                    <div class="col s12 m4 l3">
-                      <div><h5>Make Appoiment: {{ render_field(form.mkAppoiment, placeholder="mkAppoiment", type="date", id="mkAppoiment") }}</h5></div>
-                     </div>
-                     <div class="col s12 m4 l3">
-                      <div><h5>Select Time:{{ render_field(form.mkAppoimentTime, placeholder="mkAppoimentTime", type="time", id="mkAppoimentTime") }}</h5></div>
-                     </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="center">
-                  <button id="patButton" class="center btn waves-effect waves-light" type="submit" name="action" onclick="ajax()">Make</button>
-                  <div id = "dataprueba"></div>
-                </div>
-              </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-      {%- endblock content %}    
+<div class="row">
+  <div class="col l4 s12">
+    <h5>Organizational and Functional Levels</h5>
+    <p>
+      Structurally, it is made up of three (3) organizational and functional levels, to cover the health needs of more than 10 million citizens with the right to health.
+      <img class="responsive-img" src="{{url_for('static', filename = 'img/CurTime.jpg')}}">
+
+      
+      Central level, which has the management function of all regional health services
+      Regional Level, structured by Nine (9) Regional Health Services (SRS), which in turn constitute public health care services.
+      Operational Level, which has the function of providing health services to the population.</p>
+  </div>
+  <div class="col l4 s12">
+    <h5>Mission and Vision.
+    </h5>
+    <p>Mission: 
+      Promote the development and strengthening of the provision of health services, through the Regional Services
+      organized in Network, according to the values and principles of the Care Model, to contribute to the health of
+      individuals, families and communities.
+
+      Vision:
+      To be recognized by society as a highly effective institution in the management of the provision of health
+      services in an environment of equity, effectiveness, efficiency, quality and transparency.</p>
+    <p><img class="responsive-img" src="{{url_for('static', filename = 'img/pregna.jpeg')}}"></p>
+  </div>
+  <div class="col l4 s12">
+    <h5>Institutional values</h5>
+    <p><img class="responsive-img" src="{{url_for('static', filename = 'img/carePatient.jpg')}}"></p>
+    <p>Institutional values
+
+      Equity: Creation of health opportunities according to the needs of the population.
+      Efficacy: Ability to achieve the proposed objectives.
+      Efficiency: Ability to do what is proposed at the lowest cost in the use of resources.
+      Quality: Ability to maintain a certain standard in the provision of services.
+      Transparency: Manage internal resources and procedures in accordance with ethical standards and free access to
+      information available to all actors.
+      Warmth: Maintenance of a pleasant, cozy and familiar work environment for all users.
+      Social responsibility: Contribute to the sustainable and sustainable development of the environment, the family
+      and the vulnerable segments of society, without compromising the resources of future generations.</p>
+  </div>
+
+</div>
+
+{%- endblock content %}

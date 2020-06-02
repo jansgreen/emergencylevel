@@ -27,6 +27,7 @@
           </div>
           <form action="/mainLog" method="POST">
             <div class="col s12 m6 l6">
+              {% if 'Username' not in session %}
               <div class="card darken-1">
                 <div class="card-content">
                   <span class="card-title">My account</span>
@@ -41,6 +42,8 @@
 
                 </div>
               </div>
+              {% endif%}
+
             </div>
           </form>
           <div class="col s12 m6 l3">

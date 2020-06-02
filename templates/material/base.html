@@ -51,6 +51,16 @@
               </ul>
             </div>
           </nav>
+          {% if 'Username' in session %}
+          <div class="row">
+            <div class="card-panel white">
+          <a class="waves-effect waves-light btn" href="{{url_for('logout')}}">LogOut</a>
+          <a class="btn MedicalNote" href="/dashBar/{{id}}">DashBoard</a>
+          </div>
+          </div>
+          {% endif %}
+
+
           {%- endblock navbar %}
           {% block content -%}
           {%- endblock content %}

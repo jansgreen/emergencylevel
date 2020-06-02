@@ -19,15 +19,13 @@ client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-aji
 db = client["userRecord"]
 dbColl = db["userRecord"]
 
-# STRIPE API KEY
-secreKey = 'sk_test_RTba6nZ1WHPp4rAX65VasJL600Uc7R8pg2'
-publicKey = 'pk_test_0p4jqeiFYPzrkeRsn0iQdaSO00VNNlhS7K'
-stripe.api_key = secreKey
-
 # SETTING
 app.secret_key = 'mysecretkey'
 imgFolder = os.path.join('static','img')
 app.config['UPLOAD_FOLDER']=imgFolder
+
+
+ 
 
 
 @app.route('/')
@@ -38,6 +36,19 @@ def index():
     return render_template("index.html", homeImg=homeImg)
 
 #======================================================================================= PATIENT AREA
+
+@app.route("/dashBar/<string:id>")
+def dashBar(id):
+    if 'Username' in session:
+        pass
+        return redirect(url_for('board', id=id))
+
+@app.route("/logout")
+def logout():
+    if 'Username' in session:
+        session.pop('Username', None)
+        return redirect(url_for('index'))
+
 @app.route('/PatientScreem')
 def PatientScreem():
     UserLog = mainClass.UserLog(request.form)
@@ -79,7 +90,7 @@ def addRegister(id):
             Email = request.form['email']
             numPhone = request.form['telephone']
             try:
-                Category = request.form.get('Category')
+                Category = request.form['Category']
                 specialty = request.form['specialty']
             except:
                 Category = 'Patient'
@@ -104,13 +115,16 @@ def addRegister(id):
             return redirect(url_for("AutoEmail", id=TicketID))          
         return redirect(url_for("ticket", id=TicketID))
 
-@app.route('/AutoEmail/<string:id>')
+#=============================================================================================================================
+# API 
+#=============================================================================================================================
+@app.route('/AutoEmail/<string:id>') 
 def AutoEmail(id):
     if 'Username' in session:
         for user in dbColl.find({'_id': ObjectId(id)}):
             print(user)
         if user:
-            EmailMessage = user['FirstName']+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'https://emergencylevel.herokuapp.com/singup/'+id
+            EmailMessage = 'Username' +" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'https://emergencylevel.herokuapp.com/singup/'+id
             subject= 'Emergency, Continue your singup'
             Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
             EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
@@ -118,7 +132,6 @@ def AutoEmail(id):
             EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
             EmailSystem.sendmail('emergencylebel@gmail.com', user['Email'], Email)
             EmailSystem.quit()
-        print("Felicidades")
     return redirect(url_for("index"))
 
 @app.route('/singup/<string:id>')
@@ -157,14 +170,8 @@ def ticket(id):
     return render_template("ticket.html", FullTickets=FullTicket)
 #======================================================================================= EMPLOYEE AREA
 #========================================================= DOCTOR AREA
-@app.route('/doctorList')
-def doctorList():
-    DoctorForm = mainClass.DoctorList(request.form)
-    DoctorsList = dbColl.find({'Category': 'staff'}).skip(1).limit(1)
-    name = DoctorsList
-    return render_template("doctorList.html", Name=name, form = DoctorForm)
 
-@app.route('/room')
+@app.route('/about')
 def room():
     return render_template("doctorList.html")
 
@@ -184,9 +191,6 @@ def board(id):
     else:
         print("You are not user register")
         return redirect(url_for("index"))
-    #======================================
-    #Prueba
-    #======================================
     return render_template("board.html", id = id)
 
 
@@ -207,15 +211,15 @@ def EmergencyStaff(id):
             if staff['Category'] == 'Nurse':
                 Category = staff['Category']
                 flash(" ", Category)
-                return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
+                return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page, id=id )
             elif staff['Category'] == 'Doctor':
                 Category = staff['Category']
                 flash(" ", Category)
-                return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
+                return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page, id=id)
             elif staff['Category'] == 'DirectorDoctor':
                 Category = staff['Category']
                 flash(" ", Category)
-                return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page)
+                return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page, id=id)
             else:
                 print("hubo un error usted no esta autorizado a esta area")
                 return redirect(url_for("index"))
@@ -242,46 +246,13 @@ def mainLog():
                 Category = userLog['Category']
                 id = userLog['_id']
                 flash(" ", Category)
-                return redirect(url_for("board", id =id) )
+                return redirect(url_for("dashBar", id =id) )
             else:
                 print('Error')
         else:
             print('Usuario no encontrado')
     return render_template("staff.html", form=UserLog )
-
-#========================================================= REGISTER STAFF AREA
-
-@app.route('/addStaff', methods=['POST'])
-def addStaff():
-    if 'Username' in session:
-        if request.method == 'POST':
-            name = request.form['first_name'].istittle()
-            lastName = request.form['last_name'].istittle()
-            BOD = request.form['BOB']
-            Address = request.form['address'].istittle()
-            Email = request.form['email'].islow()
-            numPhone = request.form['icon_telephone']
-            language = request.form['language'].istittle()
-            Tabnumber = dbColl.count()
-            rooms = request.form['rooms']
-            Position = request.form.get('Position').istittle()
-            Category = "staff"
-            dataPost = {
-                "Category": Category,
-                "FirstName": name,
-                "LastName": lastName,
-                "BOD": BOD,
-                "Address": Address,
-                "Email": Email,
-                "Phone": numPhone,
-                "language": language,
-                "Tabnumber": Tabnumber,
-                "rooms": rooms,
-                "Position": Position
-            }
-        dbColl.insert_one(dataPost)
-    return render_template("staff.html")
-
+   
 
 #========================================================= Nurse STAFF AREA
 
@@ -479,31 +450,9 @@ def Seach():
     return render_template("PatientScreem.html", PatientDataOut=data, Seach=seachup, form = UserLog)
 
 
-#============================================================================================== BOARD  AREA
-
-@app.route('/bill', methods=['POST'])
-def bill():
-    if 'Username' in session:
-        print(request.form)
-        Crecustomer = stripe.Customer.create(
-            email=request.form['stripeEmail'], source=request.form['stripeToken'])
-        chargeData = stripe.Charge.create(
-            customer=Crecustomer.id,
-            amount=9.99,
-            currency='usd',
-            description='The Producto'
-    )
-        print(chargeData)
-    return render_template("/facture.html")
-
-#========================================================= Nurse STAFF AREA
-
-
-@app.route('/MedicalRecord/<string:id>')
-def MedicalRecord(id):
-    if 'Username' in session:
-        Profile = dbColl.find_one({'_id': ObjectId(id)})
-    return render_template("/MedicalRecord.html", MedicalRecord = Profile)
+#==============================================================================================
+# BOARD  AREA
+#==============================================================================================
 
 
 #========================================================= Nurse STAFF AREA
@@ -572,21 +521,13 @@ def delete(myid):
         pass
     return redirect(url_for('board', id=myid))
 
-
-@app.route('/facture/<string:id>')
-def facture(id):
-    if 'Username' in session:
-        pass
-    return render_template("/facture.html", id=id)
-
-
 @app.route('/myProfile/<string:id>')
 def myProfile(id):
     if 'Username' in session:
         Profile = dbColl.find_one({'_id': ObjectId(id)})
         if Profile:
-            return render_template("/myProfile.html", Profile = Profile)
-        return render_template("/myProfile.html", Profile = Profile)
+            return render_template("/myProfile.html", Profile = Profile, id=id)
+        return render_template("/myProfile.html", Profile = Profile, id=id)
 
 
 
