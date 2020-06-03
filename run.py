@@ -25,7 +25,6 @@ imgFolder = os.path.join('static','img')
 app.config['UPLOAD_FOLDER']=imgFolder
 
 
- 
 
 
 @app.route('/')
@@ -37,11 +36,12 @@ def index():
 
 #======================================================================================= PATIENT AREA
 
-@app.route("/dashBar/<string:id>")
-def dashBar(id):
+@app.route("/dashBar")
+def dashBar():
     if 'Username' in session:
-        pass
-        return redirect(url_for('board', id=id))
+        data = dbColl.find_one({},{'userAccount.Username':session['Username']})
+        userId= data['_id']
+    return redirect(url_for('board', id=userId))
 
 @app.route("/logout")
 def logout():
@@ -59,44 +59,64 @@ def PatientScreem():
 @app.route('/PatientRegister')
 def PatientRegister():
     Register = mainClass.Register(request.form)
-    return render_template("register.html", form=Register)
+    id = '5ec950782c626e45e172z777'
+    return render_template("register.html", form=Register, id = id)
 
 @app.route('/register/<string:id>', methods = ['GET'])
 def register(id):
+    Seach = mainClass.AllSeach(request.form)
     Register = mainClass.Register(request.form)
     user = dbColl.find_one({'_id':ObjectId(id)})
     if user:
         if user['Category']== 'DirectorDoctor':
             Category = user['Category']
             flash(" ",Category)
-            return render_template("register.html", form=Register, id = id)
+            return render_template("register.html", form=Register, seach=Seach, id = id)
         elif user['Category']== 'Patient':
             redirect(url_for('board'))
             pass
     else:
-        string = 'Patient'
-        return render_template("register.html", form=Register, string = string, id = id)
+        return render_template("register.html", form=Register, id = id)
     return render_template("index.html")
 
-@app.route('/addRegister/<string:id>', methods=['GET', 'POST'])
+@app.route('/addRegister/<string:id>', methods = ['GET', 'POST'])
 def addRegister(id):
-    if 'Username' in session:
-        Register = mainClass.Register(request.form)
-        if request.method == 'POST' and Register.validate:
-            name = request.form['firstname']
-            lastName = request.form['LastName']
-            BOD = request.form['BOD']
-            Address = request.form['address']
-            Email = request.form['email']
-            numPhone = request.form['telephone']
-            try:
-                Category = request.form['Category']
-                specialty = request.form['specialty']
-            except:
-                Category = 'Patient'
-                specialty = 'N/A'
-            finally:
-                dataPost = {
+    Register = mainClass.Register(request.form)
+    if request.method == 'POST' and Register.validate:
+        name = request.form['firstname']
+        lastName = request.form['LastName']
+        BOD = request.form['BOD']
+        Address = request.form['address']
+        Email = request.form['email']
+        numPhone = request.form['telephone']
+        if 'Username' in session:
+            data = dbColl.find_one({},{'userAccount.Username':session['Username']})
+            userId= data['_id']
+            Userdata = dbColl.find_one({'_id':ObjectId(userId)})
+            if Userdata:
+                Category = Userdata['Category']
+                if Category=="DirectorDoctor":
+                    Category = request.form['SeachSelect']
+                    specialty = request.form['specialty']
+                    dataPost = {
+                        "Category": Category,
+                        "FirstName": name,
+                        "LastName": lastName,
+                        "BOD": BOD,
+                        "Address": Address,
+                        "Email": Email,
+                        "Phone": numPhone,
+                        "userAccount": " ",
+                        "Specialty"   : specialty
+                        
+                    }
+                    _id = dbColl.insert_one(dataPost)
+                    id = _id.inserted_id
+                    if id: 
+                        return redirect(url_for("AutoEmail", id=id))
+        else:
+            Category = 'Patient'
+            dataPost = {
                 "Category": Category,
                 "FirstName": name,
                 "LastName": lastName,
@@ -105,33 +125,53 @@ def addRegister(id):
                 "Email": Email,
                 "Phone": numPhone,
                 "userAccount": " ",
-                "Specialty"   : specialty
-                
             }
-                pass
-                _id = dbColl.insert_one(dataPost)
-        TicketID = _id.inserted_id
-        if TicketID: 
-            return redirect(url_for("AutoEmail", id=TicketID))          
-        return redirect(url_for("ticket", id=TicketID))
+            _id = dbColl.insert_one(dataPost)
+            TicketID = _id.inserted_id
+            if TicketID: 
+                return redirect(url_for("ticket", id=TicketID))
+    return redirect(url_for("index", id=TicketID))
+
+        
 
 #=============================================================================================================================
 # API 
 #=============================================================================================================================
 @app.route('/AutoEmail/<string:id>') 
 def AutoEmail(id):
-    if 'Username' in session:
-        for user in dbColl.find({'_id': ObjectId(id)}):
-            print(user)
-        if user:
-            EmailMessage = 'Username' +" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process."+'https://emergencylevel.herokuapp.com/singup/'+id
-            subject= 'Emergency, Continue your singup'
-            Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
-            EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
-            EmailSystem.starttls()
-            EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
-            EmailSystem.sendmail('emergencylebel@gmail.com', user['Email'], Email)
-            EmailSystem.quit()
+    for user in dbColl.find({'_id': ObjectId(id)}):
+        pass
+        patienFirstName = user['FirstName']
+        patienLastName = user['LastName']
+        patienEmail = user['Email']
+    if patienFirstName:
+        if 'Username' in session:
+            data = dbColl.find_one({},{'userAccount.Username':session['Username']})
+            userId= data['_id']
+            Userdata = dbColl.find_one({'_id':ObjectId(userId)})
+            Userid = Userdata['_id']
+            if Userdata:
+                Category = Userdata['Category']
+                if Category=="DirectorDoctor":
+                    EmailMessage = patienFirstName +" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
+                    subject= 'Emergency, Continue your singup'
+                    Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
+                    EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
+                    EmailSystem.starttls()
+                    EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
+                    EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
+                    EmailSystem.quit()
+                    return redirect(url_for("board", id=Userid ))
+                else:
+                    EmailMessage = patienFirstName+" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
+                    subject= 'Emergency, Continue your singup'
+                    Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
+                    EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
+                    EmailSystem.starttls()
+                    EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
+                    EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
+                    EmailSystem.quit()
+                    return redirect(url_for("index"))
     return redirect(url_for("index"))
 
 @app.route('/singup/<string:id>')
@@ -177,8 +217,12 @@ def room():
 
 @app.route('/staff')
 def staff():
-    StaffTeam = mainClass.UserLog(request.form)
-    return render_template("staff.html", form=StaffTeam)
+    if 'Username' in session:
+        StaffTeam = mainClass.UserLog(request.form)
+        return render_template("staff.html", form=StaffTeam)
+    else:
+        StaffTeam = mainClass.UserLog(request.form)
+        return render_template("staff.html", form=StaffTeam)
 
 @app.route('/board/<string:id>')
 def board(id):
@@ -234,12 +278,6 @@ def mainLog():
         UserName = request.form['Username']
         password = request.form['Password']
         userLog = dbColl.find_one({'userAccount.UserName': UserName})
-        print(UserName)
-        print("===================================")
-        print(password)
-        print("===================================")
-        print(userLog['userAccount']['Password'])
-
         if userLog:
             if bcrypt.hashpw(password.encode('utf-8'), userLog['userAccount']['Password']) == userLog['userAccount']['Password']:
                 session['Username'] = request.form['Username']
@@ -262,15 +300,15 @@ def Nourse(Cid, id):
         Nourse = mainClass.Nourse(request.form)
         if request.method == 'POST'and Nourse.validate():
             DrInfo = dbColl.find_one({"_id": ObjectId(Cid)})
-            AllergiesV = request.form['Mets'],
-            MetsV = request.form['BldPressure'],
-            DiagnosisV = request.form['Allergies'],
-            BldPressureV = request.form['Diagnosis'],
-            BreathingV = request.form['Breathing'],
-            PulseV = request.form['Pulse'],
-            BdTemperatureV = request.form['BdTemperature'],
-            NrsObservationV = request.form['NrsObservation'],
-            MdlIssuesV = request.form['MdlIssues'],
+            AllergiesV = request.form['Mets']
+            MetsV = request.form['BldPressure']
+            DiagnosisV = request.form['Allergies']
+            BldPressureV = request.form['Diagnosis']
+            BreathingV = request.form['Breathing']
+            PulseV = request.form['Pulse']
+            BdTemperatureV = request.form['BdTemperature']
+            NrsObservationV = request.form['NrsObservation']
+            MdlIssuesV = request.form['MdlIssues']
             InttServiceV = request.form['InttService']
             
             now = datetime.now()

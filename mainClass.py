@@ -156,7 +156,6 @@ class Register(Form):
     telephone = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)]) 
     email = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)])
     specialty = StringField(' ', validators=[InputRequired(), Length(min=4, max=25)])
-    Category = SelectField('Choose ', choices=['I wants to see all ...','Doctor', 'Patient', 'Nurse', 'DirectorDoctor']) 
 
 
 
@@ -170,6 +169,6 @@ class Seach(Form):
 # ALL SEACH
 #==============================================
 class AllSeach(FlaskForm):
-    SeachSelect = SelectField('Choose ', choices=['I wants to see all ...','Doctor', 'Patient', 'Nurse', 'DirectorDoctor']) 
+    SeachSelect = SelectField('Choose', choices=['I wants to see all ...','Doctor', 'Patient', 'Nurse', 'DirectorDoctor']) 
 
     

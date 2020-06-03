@@ -12,6 +12,19 @@
         <div class="row">
           <form action="/addRegister/{{id}}" method="POST" class="col s12">
             <div class="row">
+              {% with messages = get_flashed_messages(category_filter=['DirectorDoctor']) %}
+              {% if messages %}
+              <div class="col s12 m6 l6">
+                {{ seach.csrf_token }}
+                {{ seach.SeachSelect }}
+                
+              </div>
+              <div class="input-field col s12 m6 l6">
+              <label id="icon_telephone" >Specialty</label><br>
+              {{ render_field(form.specialty, class="validate", id="specialty") }}
+            </div>
+              {% endif %}
+              {% endwith %}
               <div class="input-field col s12 m6 l6">
                 <label for="firstname">First Name:</label> <br>
                 {{ render_field(form.firstname, class="validate", id="firstname") }}
@@ -42,18 +55,6 @@
             <label id="icon_telephone">Number Phone</label><br>
             {{ render_field(form.telephone, class="validate", id="telephone") }}
           </div>
-          {% with messages = get_flashed_messages(category_filter=['DirectorDoctor']) %}
-          {% if messages %}
-          <div class="input-field col s12 m6 l6">
-            {{ form.csrf_token }}
-            {{ form.Category }}
-          </div>
-          <div class="input-field col s12 m6 l6">
-          <label id="icon_telephone" >Specialty</label><br>
-          {{ render_field(form.specialty, class="validate", id="specialty") }}
-        </div>
-          {% endif %}
-          {% endwith %}
         </div>
       </div>
       <div class="center">
