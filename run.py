@@ -9,22 +9,26 @@ from pymongo import MongoClient
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_materialize import Material  
 from datetime import datetime, timedelta
-from bson.objectid import ObjectId
+
 
 app = Flask(__name__)
 Material(app)
 
-# MONGODB CONNECTION
-client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
+client = os.environ.get("MONGODB_URI")
 db = client["userRecord"]
 dbColl = db["userRecord"]
+
+
+
+# MONGODB CONNECTION
+#client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
+#db = client["userRecord"]
+#dbColl = db["userRecord"]
 
 # SETTING
 app.secret_key = 'mysecretkey'
 imgFolder = os.path.join('static','img')
 app.config['UPLOAD_FOLDER']=imgFolder
-
-
 
 
 @app.route('/')
@@ -39,9 +43,14 @@ def index():
 @app.route("/dashBar")
 def dashBar():
     if 'Username' in session:
-        data = dbColl.find_one({},{'userAccount.Username':session['Username']})
+        print("==============================================")
+        print(session['Username'])
+        data = dbColl.find_one({'userAccount.Username':session['Username']})
         userId= data['_id']
+        print(userId)
     return redirect(url_for('board', id=userId))
+
+
 
 @app.route("/logout")
 def logout():
@@ -174,23 +183,6 @@ def AutoEmail(id):
                     return redirect(url_for("index"))
     return redirect(url_for("index"))
 
-@app.route('/singup/<string:id>')
-def singup(id):
-    Register = mainClass.UserLog(request.form)
-    return render_template("singup.html", form = Register, id= id)
-
-@app.route('/addsingup/<string:id>', methods = ['POST'])
-def addsingup(id):
-    Register = mainClass.UserLog(request.form)
-    if request.method == 'POST' and Register.validate:
-        newUser = request.form['Username']
-        passcoded = bcrypt.hashpw(request.form['Password'].encode('utf-8'), bcrypt.gensalt())
-
-        dbColl.update({'_id': ObjectId(id)}, {
-                '$set': {'userAccount':{"UserName":newUser, "Password":passcoded}}})
-        session['Username']= request.form['Username']    
-    return redirect(url_for("index"))    
-
 #======================================================================================= GENERATOR TICKET
 @app.route('/ticket/<string:id>')
 def ticket(id):
@@ -271,20 +263,40 @@ def EmergencyStaff(id):
 
 
 #========================================================= Login AREA
+@app.route('/singup/<string:id>')
+def singup(id):
+    Register = mainClass.UserLog(request.form)
+    return render_template("singup.html", form = Register, id= id)
+
+@app.route('/addsingup/<string:id>', methods = ['POST'])
+def addsingup(id):
+    Register = mainClass.UserLog(request.form)
+    if request.method == 'POST' and Register.validate:
+        newUser = request.form['Username']
+        password = request.form['Password']
+        dbColl.update({'_id': ObjectId(id)}, {
+                '$set': {'userAccount':{"UserName":newUser, "Password":password}}})
+        session['Username']= request.form['Username']    
+    return redirect(url_for("board", id = id))    
+
+
 @app.route('/mainLog', methods=['GET','POST'])
 def mainLog():
     UserLog = mainClass.UserLog(request.form)
     if request.method == 'POST' and UserLog.validate:
         UserName = request.form['Username']
-        password = request.form['Password']
+        PassUser = request.form['Password']
         userLog = dbColl.find_one({'userAccount.UserName': UserName})
+        PassDb = userLog['userAccount']['Password']
         if userLog:
-            if bcrypt.hashpw(password.encode('utf-8'), userLog['userAccount']['Password']) == userLog['userAccount']['Password']:
+            print(PassUser)
+            print(PassDb)
+            if PassDb == PassUser:
                 session['Username'] = request.form['Username']
                 Category = userLog['Category']
                 id = userLog['_id']
                 flash(" ", Category)
-                return redirect(url_for("dashBar", id =id) )
+                return redirect(url_for("board", id =id) )
             else:
                 print('Error')
         else:
