@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 Material(app)
 
-client = os.environ["MONGODB_URI"]
+client = os.environ['MONGODB_URI']
 db = client["userRecord"]
 dbColl = db["userRecord"]
 
