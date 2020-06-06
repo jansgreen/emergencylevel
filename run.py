@@ -10,7 +10,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_materialize import Material  
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
-from flask-PyMongo import PyMongo  
+from flask_PyMongo import PyMongo  
 
 
 
