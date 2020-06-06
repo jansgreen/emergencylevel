@@ -10,6 +10,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_materialize import Material  
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
+from flask_pymongo import PyMongo
+
 
 app = Flask(__name__)
 Material(app)
@@ -19,11 +21,13 @@ client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-aji
 db = client["userRecord"]
 dbColl = db["userRecord"]
 
-# SETTING
+# SETTING 
 app.secret_key = 'mysecretkey'
 imgFolder = os.path.join('static','img')
 app.config['UPLOAD_FOLDER']=imgFolder
 
+#dbColl = os.environ.get('dbColl')
+#print(dbColl)
 
 @app.route('/')
 def index():
@@ -472,25 +476,16 @@ def addDoctor(idD, id):
 
 @app.route('/Seach', methods=['POST'])
 def Seach():
-    if 'Username' in session:
-        Seach = mainClass.Seach(request.form)
-        UserLog = mainClass.UserLog(request.form)
-        if request.method == 'POST' and Seach.validate:
-            PatientSeachD = request.form['Seach']
-            PatientData = dbColl.find_one(
-                {'Email': PatientSeachD, 'Category': 'Patient'})
-            if PatientData:
-                if PatientData['Email'] == PatientSeachD:
-                    data = PatientData
-                    seachup = Seach
-                    print(data)
-                else:
-                    seachup = Seach
-                    data = 'Patient no found'
-            else:
-                seachup = Seach
-                data = 'Patient no found'
-    return render_template("PatientScreem.html", PatientDataOut=data, Seach=seachup, form = UserLog)
+    UserLog = mainClass.UserLog(request.form)
+    Seach = mainClass.Seach(request.form)
+    if request.method == 'POST' and Seach.validate:
+        PatientSeachD = request.form['Seach']
+        PatientData = dbColl.find_one(
+            {'Email': PatientSeachD, 'Category': 'Patient'})
+        if PatientData:
+            if PatientData['Email'] == PatientSeachD:
+                return render_template("PatientScreem.html", PatientDataOut=PatientData, form=UserLog, Seach=Seach)            
+        return render_template("PatientScreem.html", PatientDataOut=PatientData, form=UserLog, Seach=Seach)
 
 
 #==============================================================================================
