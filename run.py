@@ -449,18 +449,18 @@ def addDoctor(idD, id):
                 Category = DrPasientsID['Category']
                 flash(" ", Category)
                 patientData = dbColl.find_one({'_id': ObjectId(id)})
-                return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
+                return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, id=patientData, form=validatorForms)
             elif DrPasientsID['Category'] == 'Nurse':
                 Category = DrPasientsID['Category']
                 flash(" ", Category)
                 patientData = dbColl.find_one({'_id': ObjectId(id)})
-                return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
+                return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, id=patientData, form=validatorForms)
 
             elif DrPasientsID['Category'] == 'DirectorDoctor':
                 Category = DrPasientsID['Category']
                 flash(" ", Category)
                 patientData = dbColl.find_one({'_id': ObjectId(id)})
-                return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, form=validatorForms)
+                return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, id=patientData, form=validatorForms)
             else:
                 print('Usted no tiene acceso aqui, hubo un error')
                 return redirect(url_for("index"))
