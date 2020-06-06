@@ -9,21 +9,15 @@ from pymongo import MongoClient
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_materialize import Material  
 from datetime import datetime, timedelta
-
+from bson.objectid import ObjectId
 
 app = Flask(__name__)
 Material(app)
 
-client = os.environ['MONGODB_URI']
+# MONGODB CONNECTION
+client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
 db = client["userRecord"]
 dbColl = db["userRecord"]
-
-
-
-# MONGODB CONNECTION
-#client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
-#db = client["userRecord"]
-#dbColl = db["userRecord"]
 
 # SETTING
 app.secret_key = 'mysecretkey'
@@ -33,9 +27,9 @@ app.config['UPLOAD_FOLDER']=imgFolder
 
 @app.route('/')
 def index():
-    if 'Username' in session:
-        print("congratulation")
     homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
+    if 'Username' in session:
+        pass
     return render_template("index.html", homeImg=homeImg)
 
 #======================================================================================= PATIENT AREA
@@ -43,12 +37,14 @@ def index():
 @app.route("/dashBar")
 def dashBar():
     if 'Username' in session:
-        print("==============================================")
+        for userLog in dbColl.find({'userAccount.Username': session['Username']}):
+            print(userLog)
+            if userLog:
+                id = userLog['_id']
+                print(id)
+                return redirect(url_for('board', id=id))
         print(session['Username'])
-        data = dbColl.find_one({'userAccount.Username':session['Username']})
-        userId= data['_id']
-        print(userId)
-    return redirect(url_for('board', id=userId))
+    return redirect(url_for('index'))
 
 
 
@@ -67,9 +63,16 @@ def PatientScreem():
 
 @app.route('/PatientRegister')
 def PatientRegister():
+    Seach = mainClass.Seach(request.form)
     Register = mainClass.Register(request.form)
-    id = '5ec950782c626e45e172z777'
-    return render_template("register.html", form=Register, id = id)
+    visit = {
+        "Category":"Patient",
+        "FirstName": "name",
+        "userAccount": " ",
+        }
+    _id = dbColl.insert_one(visit)
+    id = _id.inserted_id    
+    return render_template("register.html", form=Register, seach=Seach, id = id)
 
 @app.route('/register/<string:id>', methods = ['GET'])
 def register(id):
@@ -82,7 +85,7 @@ def register(id):
             flash(" ",Category)
             return render_template("register.html", form=Register, seach=Seach, id = id)
         elif user['Category']== 'Patient':
-            redirect(url_for('board'))
+            return render_template("register.html", form=Register, id = id)
             pass
     else:
         return render_template("register.html", form=Register, id = id)
@@ -124,22 +127,11 @@ def addRegister(id):
                     if id: 
                         return redirect(url_for("AutoEmail", id=id))
         else:
-            Category = 'Patient'
-            dataPost = {
-                "Category": Category,
-                "FirstName": name,
-                "LastName": lastName,
-                "BOD": BOD,
-                "Address": Address,
-                "Email": Email,
-                "Phone": numPhone,
-                "userAccount": " ",
-            }
-            _id = dbColl.insert_one(dataPost)
-            TicketID = _id.inserted_id
-            if TicketID: 
-                return redirect(url_for("ticket", id=TicketID))
-    return redirect(url_for("index", id=TicketID))
+            _id = dbColl.update({"_id":ObjectId(id)}, {'$set':{"FirstName": name, "LastName": lastName, "BOD": BOD, "Address": Address, "Email": Email, "Phone": numPhone }})
+            patientId = id
+            if patientId: 
+                return redirect(url_for("ticket", id=patientId))
+    return redirect(url_for("index", id=patientId))
 
         
 
@@ -288,6 +280,7 @@ def mainLog():
         PassUser = request.form['Password']
         userLog = dbColl.find_one({'userAccount.UserName': UserName})
         PassDb = userLog['userAccount']['Password']
+         
         if userLog:
             print(PassUser)
             print(PassDb)
@@ -296,7 +289,7 @@ def mainLog():
                 Category = userLog['Category']
                 id = userLog['_id']
                 flash(" ", Category)
-                return redirect(url_for("board", id =id) )
+                return redirect(url_for("board", id =id ) )
             else:
                 print('Error')
         else:

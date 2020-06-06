@@ -45,17 +45,21 @@
             </div>
             <div class="nav-content">
               <ul class="tabs tabs-transparent">
+                {% if 'Username' not in session %}
                 <li class="tab"><a href="{{url_for('PatientScreem')}}">I'm Patient</a></li>
                 <li class="tab"><a href="{{url_for('staff')}}">I'm Employee</a></li>
                 <li class="tab"><a href="{{url_for('room')}}">About</a></li>
+                {% endif %}
+
               </ul>
             </div>
           </nav>
           {% if 'Username' in session %}
+
           <div class="row">
             <div class="card-panel white">
           <a class="waves-effect waves-light btn" href="{{url_for('logout')}}">LogOut</a>
-          <a class="btn MedicalNote" href="/dashBar">DashBoard</a>
+          <a class="btn MedicalNote" href="/board/{{id}}">DashBoard</a>
           </div>
           </div>
           {% endif %}
