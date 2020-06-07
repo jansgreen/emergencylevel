@@ -115,10 +115,10 @@ def addRegister(id):
             if Userdata:
                 Category = Userdata['Category']
                 if Category=="DirectorDoctor":
-                    Category = request.form['SeachSelect']
+                    New_Category = request.form['SeachSelect']
                     specialty = request.form['specialty']
                     dataPost = {
-                        "Category": Category,
+                        "Category": New_Category,
                         "FirstName": name,
                         "LastName": lastName,
                         "BOD": BOD,
