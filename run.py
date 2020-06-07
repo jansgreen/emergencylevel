@@ -42,6 +42,13 @@ def index():
 
 #======================================================================================= PATIENT AREA
 
+@app.route('/testing')
+def testing():
+    mainLog()
+    print(mainLog.id())
+    return redirect(url_for('board'))
+
+
 @app.route("/dashBar")
 def dashBar():
     if 'Username' in session:
@@ -98,7 +105,7 @@ def register(id):
         return render_template("register.html", form=Register, id = id)
     return render_template("index.html")
 
-@app.route('/addRegister/<string:id>', methods = ['POST'])
+@app.route('/addRegister/<string:id>', methods = ['GET', 'POST'])
 def addRegister(id):
     Register = mainClass.Register(request.form)
     if request.method == 'POST' and Register.validate:
@@ -109,12 +116,17 @@ def addRegister(id):
         Email = request.form['email']
         numPhone = request.form['telephone']
         if 'Username' in session:
-            data = dbColl.find_one({},{'userAccount.Username':session['Username']})
-            userId= data['_id']
-            Userdata = dbColl.find_one({'_id':ObjectId(userId)})
+            Userdata = dbColl.find_one({'_id':ObjectId(id)})
+            print("Profundidad 1")
+            print(Userdata)
             if Userdata:
+                print(Userdata)
                 Category = Userdata['Category']
+                print("Profundidad 2")
+                print(Userdata)
                 if Category=="DirectorDoctor":
+                    print("Profundidad 3")
+                    print(Userdata)
                     New_Category = request.form['SeachSelect']
                     specialty = request.form['specialty']
                     dataPost = {
@@ -152,35 +164,51 @@ def AutoEmail(id):
         patienFirstName = user['FirstName']
         patienLastName = user['LastName']
         patienEmail = user['Email']
+        patienCategory = user['Category']
     if patienFirstName:
-        if 'Username' in session:
-            data = dbColl.find_one({},{'userAccount.Username':session['Username']})
-            userId= data['_id']
-            Userdata = dbColl.find_one({'_id':ObjectId(userId)})
-            Userid = Userdata['_id']
-            if Userdata:
-                Category = Userdata['Category']
-                if Category=="DirectorDoctor":
-                    EmailMessage = patienFirstName +" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
-                    subject= 'Emergency, Continue your singup'
-                    Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
-                    EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
-                    EmailSystem.starttls()
-                    EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
-                    EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
-                    EmailSystem.quit()
-                    return redirect(url_for("board", id=Userid ))
-                else:
-                    EmailMessage = patienFirstName+" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
-                    subject= 'Emergency, Continue your singup'
-                    Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
-                    EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
-                    EmailSystem.starttls()
-                    EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
-                    EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
-                    EmailSystem.quit()
-                    return redirect(url_for("index"))
+        if patienCategory == "Patient":
+            EmailMessage = patienFirstName+" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
+            subject= 'Emergency, Continue your singup'
+            Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
+            EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
+            EmailSystem.starttls()
+            EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
+            EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
+            EmailSystem.quit()
+            return redirect(url_for("index"))
+        else:
+            EmailMessage = patienFirstName +" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
+            subject= 'Emergency, Continue your singup'
+            Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
+            EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
+            EmailSystem.starttls()
+            EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
+            EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
+            EmailSystem.quit()
+            return redirect(url_for("redirecting"))
     return redirect(url_for("index"))
+
+@app.route('/redirecting', methods=['GET','POST'])
+def redirecting():
+    UserLog = mainClass.UserLog(request.form)
+    if 'Username' in session:
+        UserName = session['Username']
+        userLog = dbColl.find_one({'userAccount.UserName': UserName})
+        id = userLog['_id']
+        print(id)
+        if userLog:
+            session['Username'] = UserName
+            Category = userLog['Category']
+            id = userLog['_id']
+            flash(" ", Category)
+            return redirect(url_for("board", id =id ) )
+        else:
+            print('Error')
+    else:
+        print('Usuario no encontrado')
+    return redirect(url_for("index"))
+
+
 
 #======================================================================================= GENERATOR TICKET
 @app.route('/ticket/<string:id>')
@@ -273,9 +301,15 @@ def addsingup(id):
     if request.method == 'POST' and Register.validate:
         newUser = request.form['Username']
         password = request.form['Password']
-        dbColl.update({'_id': ObjectId(id)}, {
-                '$set': {'userAccount':{"UserName":newUser, "Password":password}}})
-        session['Username']= request.form['Username']    
+        CheckUser = dbColl.find_one({'userAccount.UserName': newUser})
+        if CheckUser:
+            if CheckUser == newUser:
+                return redirect(url_for("singup", id = id))  
+            else:  
+                dbColl.update({'_id': ObjectId(id)}, {
+                        '$set': {'userAccount':{"UserName":newUser, "Password":password}}})
+                session['Username']= request.form['Username'] 
+                return redirect(url_for("board", id = id))    
     return redirect(url_for("board", id = id))    
 
 
@@ -289,12 +323,14 @@ def mainLog():
         PassDb = userLog['userAccount']['Password']
          
         if userLog:
-            print(PassUser)
             print(PassDb)
             if PassDb == PassUser:
                 session['Username'] = request.form['Username']
                 Category = userLog['Category']
                 id = userLog['_id']
+                FirstName = userLog['FirstName']
+                print(FirstName)
+                print(id)
                 flash(" ", Category)
                 return redirect(url_for("board", id =id ) )
             else:
@@ -302,7 +338,7 @@ def mainLog():
         else:
             print('Usuario no encontrado')
     return render_template("staff.html", form=UserLog )
-   
+
 
 #========================================================= Nurse STAFF AREA
 
