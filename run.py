@@ -136,9 +136,9 @@ def addRegister(id):
         else:
             _id = dbColl.update({"_id":ObjectId(id)}, {'$set':{"FirstName": name, "LastName": lastName, "BOD": BOD, "Address": Address, "Email": Email, "Phone": numPhone }})
             patientId = id
-            if patientId: 
+            if patientId:
                 return redirect(url_for("ticket", id=patientId))
-    return redirect(url_for("index", id=patientId))
+    return redirect(url_for("board", id=id))
 
         
 
