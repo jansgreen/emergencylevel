@@ -94,12 +94,11 @@ def register(id):
             return render_template("register.html", form=Register, seach=Seach, id = id)
         elif user['Category']== 'Patient':
             return render_template("register.html", form=Register, id = id)
-            pass
     else:
         return render_template("register.html", form=Register, id = id)
     return render_template("index.html")
 
-@app.route('/addRegister/<string:id>', methods = ['GET', 'POST'])
+@app.route('/addRegister/<string:id>', methods = ['POST'])
 def addRegister(id):
     Register = mainClass.Register(request.form)
     if request.method == 'POST' and Register.validate:
