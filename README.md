@@ -14,6 +14,10 @@ External API (smtp.gmail.com) This has an API that uses the email of the app and
 
 this application is made with the programming languages ​​HTML, CSS, JavaScript, Python + Flask and the design is based on materialcss, and it has a Json format database in mongodb and hosted in heroku
 
+The Director Doctor you can test
+UserName: Jansgreen
+Password: L123456789
+
 ##materialcss
 https://materializecss.com/
 Materialize. Availible at https://github.com/Dogfalo/materialize
