@@ -49,20 +49,6 @@ def testing():
     return redirect(url_for('board'))
 
 
-@app.route("/dashBar")
-def dashBar():
-    if 'Username' in session:
-        for userLog in dbColl.find({'userAccount.Username': session['Username']}):
-            print(userLog)
-            if userLog:
-                id = userLog['_id']
-                print(id)
-                return redirect(url_for('board', id=id))
-        print(session['Username'])
-    return redirect(url_for('index'))
-
-
-
 @app.route("/logout")
 def logout():
     if 'Username' in session:
@@ -572,6 +558,60 @@ def See(id):
 
 #======================================================================================= USER AREA
 
+@app.route('/edit/<string:id>', methods = ['GET', 'POST'])
+def edit(id):
+    UserLog = mainClass.UserLog(request.form)
+    if 'Username' in session:
+        AllSeach = mainClass.AllSeach(request.form)
+        Register = mainClass.Register(request.form)
+        UserName = session['Username']
+        userLog = dbColl.find_one({'userAccount.UserName': UserName})
+        if userLog:
+            session['Username'] = UserName
+            Category = userLog['Category']
+            flash(" ", Category)
+        return render_template("edit.html", seach = AllSeach, form=Register, id = id,)
+
+
+@app.route('/sumit_edit/<string:id>', methods = ['GET', 'POST'])
+def sumit_edit(id):
+    UserLog = mainClass.UserLog(request.form)
+    Register = mainClass.Register(request.form)
+    if 'Username' in session:
+        if request.method == 'POST' and Register.validate:
+            name = request.form['firstname']
+            lastName = request.form['LastName']
+            BOD = request.form['BOD']
+            Address = request.form['address']
+            Email = request.form['email']
+            numPhone = request.form['telephone']
+            Category = request.form['SeachSelect']
+            specialty = request.form['specialty']
+            dataPost = {
+                "Category": Category,
+                "FirstName": name,
+                "LastName": lastName,
+                "BOD": BOD,
+                "Address": Address,
+                "Email": Email,
+                "Phone": numPhone,
+                "Specialty"   : specialty
+            }
+            dbColl.update({"_id":ObjectId(id)}, {'$set': dataPost})
+        UserName = session['Username']
+        userLog = dbColl.find_one({'userAccount.UserName': UserName})
+        if userLog:
+            session['Username'] = UserName
+            Category = userLog['Category']
+            AdmId = userLog['_id']
+            flash(" ", Category)
+            return redirect(url_for("board", id =AdmId ) )
+        else:
+            print('Error')
+    else:
+        return redirect(url_for("index") )
+
+        
 @app.route('/MyDoctor/<string:id>', methods = ['GET', 'POST'])
 def MyDoctor(id):
     if 'Username' in session:
@@ -596,8 +636,26 @@ def delete(myid):
     if 'Username' in session:
         dbColl.update({"_id":ObjectId(myid)}, {'$unset':{'myDoctors':{'$exists':'true'}}})
         pass
-    return redirect(url_for('board', id=myid))
+    return redirect(url_for('board', id=myid)) 
 
+@app.route('/deleteDoc/<string:myid>')
+def deleteDoc(myid):
+    UserLog = mainClass.UserLog(request.form)
+    if 'Username' in session:
+        dbColl.delete_one({"_id":ObjectId(myid)})
+        UserName = session['Username']
+        userLog = dbColl.find_one({'userAccount.UserName': UserName})
+        if userLog:
+            session['Username'] = UserName
+            Category = userLog['Category']
+            AdmId = userLog['_id']
+            flash(" ", Category)
+            return redirect(url_for("board", id =AdmId ) )
+        else:
+            print('Error')
+    else:
+        return redirect(url_for("index") )
+        
 @app.route('/myProfile/<string:id>')
 def myProfile(id):
     if 'Username' in session:
