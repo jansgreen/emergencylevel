@@ -136,7 +136,7 @@ def addRegister(id):
             _id = dbColl.update({"_id":ObjectId(id)}, {'$set':{"FirstName": name, "LastName": lastName, "BOD": BOD, "Address": Address, "Email": Email, "Phone": numPhone }})
             patientId = id
             if patientId:
-                return redirect(url_for("ticket", id=patientId))
+                return redirect(url_for("AutoEmail", id=id))
     return redirect(url_for("board", id=id))
 
         
@@ -152,8 +152,9 @@ def AutoEmail(id):
         patienLastName = user['LastName']
         patienEmail = user['Email']
         patienCategory = user['Category']
+
     if patienFirstName:
-        if patienCategory == "Patient":
+        if patienCategory == "Patient": 
             EmailMessage = patienFirstName+" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
             subject= 'Emergency, Continue your singup'
             Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
@@ -162,7 +163,7 @@ def AutoEmail(id):
             EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
             EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
             EmailSystem.quit()
-            return redirect(url_for("index"))
+            return redirect(url_for("ticket", id=id))
         else:
             EmailMessage = patienFirstName +" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
             subject= 'Emergency, Continue your singup'
@@ -288,15 +289,15 @@ def addsingup(id):
     if request.method == 'POST' and Register.validate:
         newUser = request.form['Username']
         password = request.form['Password']
-        CheckUser = dbColl.find_one({'userAccount.UserName': newUser})
+        CheckUser = dbColl.find_one({'_id': ObjectId(id)})
         if CheckUser:
-            if CheckUser == newUser:
+            if 'userAccount.UserName' == newUser:
                 return redirect(url_for("singup", id = id))  
-            else:  
+            else:
                 dbColl.update({'_id': ObjectId(id)}, {
                         '$set': {'userAccount':{"UserName":newUser, "Password":password}}})
                 session['Username']= request.form['Username'] 
-                return redirect(url_for("board", id = id))    
+                return redirect(url_for("board", id = id))
     return redirect(url_for("board", id = id))    
 
 
