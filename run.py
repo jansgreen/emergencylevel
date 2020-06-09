@@ -18,13 +18,11 @@ app = Flask(__name__)
 Material(app)
 
 # MONGODB CONNECTION
-#client = os.environ.get('MONGODB_URI')
-#app.config["MONGO_URI"] = os.environ.get('MONGO_URI', 'mongodb://localhost')
-#dbColl = PyMongo(app)
+client = os.environ.get('MONGODB_URI')
+app.config["MONGO_URI"] = os.environ.get('MONGO_URI', 'mongodb://localhost')
+dbColl = PyMongo(app)
 
-client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
-db = client["userRecord"]
-dbColl = db["userRecord"]
+
 
 
 # SETTING 
@@ -330,84 +328,102 @@ def mainLog():
 
 #========================================================= Nurse STAFF AREA
 
-@app.route('/Nourse/<string:Cid>/<string:id>', methods=['POST'])
-def Nourse(Cid, id):
+@app.route('/Nourse/<string:id>', methods=['GET', 'POST'])
+def Nourse(id):
+    UserLog = mainClass.UserLog(request.form)
+    Nourse = mainClass.Nourse(request.form)
     if 'Username' in session:
-        Nourse = mainClass.Nourse(request.form)
-        if request.method == 'POST'and Nourse.validate():
-            DrInfo = dbColl.find_one({"_id": ObjectId(Cid)})
-            AllergiesV = request.form['Mets']
-            MetsV = request.form['BldPressure']
-            DiagnosisV = request.form['Allergies']
-            BldPressureV = request.form['Diagnosis']
-            BreathingV = request.form['Breathing']
-            PulseV = request.form['Pulse']
-            BdTemperatureV = request.form['BdTemperature']
-            NrsObservationV = request.form['NrsObservation']
-            MdlIssuesV = request.form['MdlIssues']
-            InttServiceV = request.form['InttService']
-            
-            now = datetime.now()
-            MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
-            try:
-                NewFieldIssuesV = request.form['NewFieldIssues'],
-                newFieldtServiceV = request.form['newFieldtService'],
-                MedicalData={
-                    "Date" : MedicalDate, 
-                    "Nurse": DrInfo,
-                    "Diagnosis":DiagnosisV,
-                    "BloodPressure":BldPressureV,
-                    "Breathing":BreathingV,
-                    "Allergies":AllergiesV,
-                    "Mets":MetsV,
-                    "Pulse":PulseV,
-                    "BodyTemperature":BdTemperatureV,
-                    "NurseObservation":NrsObservationV,
-                    "MedicalIssues":MdlIssuesV,
-                    "IntensityService":InttServiceV,
-                    "OtherIssues":NewFieldIssuesV,
-                    "OtherService":newFieldtServiceV,
-                    "Date": MedicalDate,
+        UserName = session['Username']
+        userLog = dbColl.find_one({'userAccount.UserName': UserName})
+        if userLog:
+            NurId = userLog['_id']
+            if request.method == 'POST'and Nourse.validate:
+                AllergiesV = request.form['Mets']
+                MetsV = request.form['BldPressure']
+                DiagnosisV = request.form['Allergies']
+                BldPressureV = request.form['Diagnosis']
+                BreathingV = request.form['Breathing']
+                PulseV = request.form['Pulse']
+                BdTemperatureV = request.form['BdTemperature']
+                NrsObservationV = request.form['NrsObservation']
+                MdlIssuesV = request.form['MdlIssues']
+                InttServiceV = request.form['InttService']
+                now = datetime.now()
+                MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
+                try:
+                    NewFieldIssuesV = request.form['NewFieldIssues']
+                    newFieldtServiceV = request.form['newFieldtService']
+                    MedicalData={
+                            "Date" : MedicalDate, 
+                            "Nurse": userLog,
+                            "Diagnosis":DiagnosisV,
+                            "BloodPressure":BldPressureV,
+                            "Breathing":BreathingV,
+                            "Allergies":AllergiesV,
+                            "Mets":MetsV,
+                            "Pulse":PulseV,
+                            "BodyTemperature":BdTemperatureV,
+                            "NurseObservation":NrsObservationV,
+                            "MedicalIssues":MdlIssuesV,
+                            "IntensityService":InttServiceV,
+                            "OtherIssues":NewFieldIssuesV,
+                            "OtherService":newFieldtServiceV,
+                            "Date": MedicalDate,
                     }
-                pass
-            except:
-                MedicalData={
-                    "Date" : MedicalDate, 
-                    "Nurse": DrInfo,
-                    "Breathing":BreathingV,
-                    "Allergies":AllergiesV,
-                    "Mets":MetsV,
-                    "Pulse":PulseV,
-                    "BodyTemperature":BdTemperatureV,
-                    "NurseObservation":NrsObservationV,
-                    "MedicalIssues":MdlIssuesV,
-                    "IntensityService":InttServiceV,
-                    "OtherIssues":NewFieldIssuesV,
-                    "OtherService":newFieldtServiceV,
-                    "Date": MedicalDate,
+                    checkedField = dbColl.find_one({"_id": ObjectId(id)})
+                    if checkedField:
+                        if "NurseNote":
+                            dbColl.update_one({"_id": ObjectId(id)}, {'$push':  {'NurseNote':MedicalData}})
+                            print("eL CAMPO MedicalNote EXISTE")
+                            return redirect(url_for('EmergencyStaff', id = NurId))
+                        else:
+                            dbColl.update_one({"_id": ObjectId(id)}, {'$set': {'NurseNote':MedicalData}})
+                            print("El campo MedicalNote no existe y fue creado")
+                            return redirect(url_for("EmergencyStaff", id=NurId))
+                    pass
+                except:
+                    MedicalData={
+                            "Date" : MedicalDate, 
+                            "Nurse": userLog,
+                            "Breathing":BreathingV,
+                            "Allergies":AllergiesV,
+                            "Mets":MetsV,
+                            "Pulse":PulseV,
+                            "BodyTemperature":BdTemperatureV,
+                            "NurseObservation":NrsObservationV,
+                            "MedicalIssues":MdlIssuesV,
+                            "IntensityService":InttServiceV,
+                            "Date": MedicalDate,
                     }
-            finally:
-                checkedField = dbColl.find_one({"_id": ObjectId(id)})
-                print("Escribiendo documentos")
-                if checkedField:
-                    if "NurseNote":
-                        dbColl.update_one({"_id": ObjectId(id)}, {'$push':  {'NurseNote':MedicalData}})
-                        print("eL CAMPO MedicalNote EXISTE")
-                        return redirect(url_for('EmergencyStaff', id = Cid))
-                    else:
-                        dbColl.update_one({"_id": ObjectId(id)}, {'$set': {'NurseNote':MedicalData}})
-                        print("El campo MedicalNote no existe y fue creado")
-                        return redirect(url_for("EmergencyStaff", id=Cid))
-    return redirect(url_for("emergencyTeam"))
+                    checkedField = dbColl.find_one({"_id": ObjectId(id)})
+                    print("Escribiendo documentos")
+                    if checkedField:
+                        if "NurseNote":
+                            dbColl.update_one({"_id": ObjectId(id)}, {'$push':  {'NurseNote':MedicalData}})
+                            print("eL CAMPO MedicalNote EXISTE")
+                            return redirect(url_for('EmergencyStaff', id = NurId))
+                        else:
+                            dbColl.update_one({"_id": ObjectId(id)}, {'$set': {'NurseNote':MedicalData}})
+                            print("El campo MedicalNote no existe y fue creado")
+                            return redirect(url_for("EmergencyStaff", id=NurId))
+                    pass
+        return redirect(url_for("board", id=NurId))
 
 
-@app.route('/addNourse/<string:id>')
-def addNourse(id):
+@app.route('/addNourse/<string:P_id>')
+def addNourse(P_id):
+    UserLog = mainClass.UserLog(request.form)
+    NourseForm = mainClass.Nourse(request.form)
     if 'Username' in session:
-        DrPasientsID = id
-        NourseForm = mainClass.Nourse(request.form)
-        patientData = dbColl.find({'_id': ObjectId(DrPasientsID)})
-    return render_template("/Nourse.html", PatientId=patientData, DrPasientID=DrPasientsID, form=NourseForm)
+        UserName = session['Username']
+        userLog = dbColl.find_one({'userAccount.UserName': UserName})
+        if userLog:
+            patientData = dbColl.find_one({'_id': ObjectId(P_id)})
+            return render_template("/Nourse.html", PatientId=patientData, NurID=userLog, form=NourseForm)
+        else:
+            print('Error')
+    else:
+        return redirect(url_for("index") )
 
 #========================================================= DOCTOR STAFF AREA
 
@@ -417,20 +433,20 @@ def Doctor(Cid, id):
         DrInfo = dbColl.find_one({"_id": ObjectId(Cid)})
         validatorForms = mainClass.validatorForm(request.form)
         if request.method == 'POST' and validatorForms.validate:
-            Prescription = request.form['Prescription'],
-            Referencia = request.form['Referencia'],
-            Note = request.form['Note'],
-            AssigMed = request.form['assigMed'],
-            Indications = request.form['Indications'],
-            TestName = request.form['TestName'],
-            DoBefore = request.form['DoBefore'],
+            Prescription = request.form['Prescription']
+            Referencia = request.form['Referencia']
+            Note = request.form['Note']
+            AssigMed = request.form['assigMed']
+            Indications = request.form['Indications']
+            TestName = request.form['TestName']
+            DoBefore = request.form['DoBefore']
             now = datetime.now()
             MedicalDate = now.strftime('Date: %d-%m-%Y Hours: %H:%M:%S')
             try:
-                newMed = request.form['newMed'],
-                newInd = request.form['newInd'],
-                readyTestName = request.form['readyTestName'],
-                readyDoBefore = request.form['readyDoBefore'],
+                newMed = request.form['newMed']
+                newInd = request.form['newInd']
+                readyTestName = request.form['readyTestName']
+                readyDoBefore = request.form['readyDoBefore']
                 MedicalData={
                     "Date" : MedicalDate, 
                     "Doctor": DrInfo,
@@ -466,9 +482,6 @@ def Doctor(Cid, id):
                         print("El campo MedicalNote no existe y fue creado")
                         return redirect(url_for("EmergencyStaff", id=Cid))
     return redirect(url_for("EmergencyStaff", id=Cid))
-
-
-
 
 @app.route('/addDoctor/<string:idD>/<string:id>', methods = ['GET'])
 def addDoctor(idD, id):
@@ -513,8 +526,6 @@ def Seach():
             if PatientData['Email'] == PatientSeachD:
                 return render_template("PatientScreem.html", PatientDataOut=PatientData, form=UserLog, Seach=Seach)            
         return render_template("PatientScreem.html", PatientDataOut=PatientData, form=UserLog, Seach=Seach)
-
-
 #==============================================================================================
 # BOARD  AREA
 #==============================================================================================

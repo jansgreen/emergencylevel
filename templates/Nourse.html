@@ -10,49 +10,48 @@
 
             <form action="/addNourse/{{PatientId}}" method="POST" class="col s12">
               <div class="row">
-                {% for patientData in PatientId %}
                 <div class="row card-content">
-                  {% for RecNum in patientData.Emergincy %}
+                  {% for RecNum in PatientId.Emergincy %}
                   <h5>Emergincy Record Number: <div name="EmReNu">{{RecNum}}</div>
                   </h5>
                   {% endfor %}
-                  <h5>{{patientData.FirstName}}, {{patientData.LastName}}</h5>
-                  <h5>BOD: {{patientData.BOD}}</h5>
-                  <h5>Language: {{patientData.language}}</h5>
+                  <h5>{{PatientId.FirstName}}, {{PatientId.LastName}}</h5>
+                  <h5>BOD: {{PatientId.BOD}}</h5>
+                  <h5>Language: {{PatientId.language}}</h5>
                 </div>
               </div>
           </div>
           <div class="row  center">
-            <h4 class="header">Days:</h4>
-            {% for Medical in patientData["MedicalNote"] %}
+            <h4 class="header">Recordby Days:</h4>
+            {% for Medical in PatientId.DoctorNote %}
             <br>
-            <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical[0].MedicalDate}}</a>
+            <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical.Date}}</a>
             <ul id="List" Class='dropdown-content'>
-              {% for Medical in Medical[0].Prescription %}
+              {% for Medical in Medical.Prescription %}
               <li><a href="#!">
                   <h6>Prescription: {{Medical}}</h6>
                 </a></li>
               {% endfor %}
               <hr>
               <li><a href="#!">
-                  {% for Medical in Medical[0].Referencia %}
+                  {% for Medical in Medical.Referencia %}
                   <h6>Referencia: {{Medical}}</h6>
                   {% endfor %}
                 </a></li>
               <hr>
               <li><a href="#!">
-                  <h6>Note: {{Medical[0].Note}}</h6>
+                  <h6>Note: {{Medical.Note}}</h6>
                 </a></li>
               <hr>
               <li><a href="#!">
-                  {% for Medical in Medical[0].Medication %}
-                  <h6>Medication: {{Medical[0]}}</h6>
+                  {% for Medical in Medical.Medication %}
+                  <h6>Medication: {{Medical}}</h6>
                   {% endfor %}
                 </a></li>
               <hr>
               <li><a href="#!">
-                  {% for Medical in Medical[0].Test %}
-                  <h6>Test: {{Medical[0]}}</h6>
+                  {% for Medical in Medical.Test %}
+                  <h6>Test: {{Medical}}</h6>
                   {% endfor %}
                 </a></li>
             </ul>
@@ -65,55 +64,54 @@
     <div>
       <div class="row  center">
         <h4 class="header">Medical Treatment:</h4>
-        {% for Medical in patientData["MedicalNote"] %}
+        {% for Medical in PatientId.NurseNote %}
         <br>
-        <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical[0].MedicalDate}}</a>
+        <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical.Date}}</a>
         <ul id="List" Class='dropdown-content'>
-          {% for Medical in Medical[0].Prescription %}
+          {% for Medical in Medical.Prescription %}
           <li><a href="#!">
               <h6>Prescription: {{Medical}}</h6>
             </a></li>
           {% endfor %}
           <hr>
           <li><a href="#!">
-              {% for Medical in Medical[0].Referencia %}
+              {% for Medical in Medical.Referencia %}
               <h6>Referencia: {{Medical}}</h6>
               {% endfor %}
             </a></li>
           <hr>
           <li><a href="#!">
-              <h6>Note: {{Medical[0].Note}}</h6>
+              <h6>Note: {{Medical.Note}}</h6>
             </a></li>
           <hr>
           <li><a href="#!">
-              {% for Medical in Medical[0].Medication %}
-              <h6>Medication: {{Medical[0]}}</h6>
+              {% for Medical in Medical.Medication %}
+              <h6>Medication: {{Medical}}</h6>
               {% endfor %}
             </a></li>
           <hr>
           <li><a href="#!">
-              {% for Medical in Medical[0].Test %}
-              <h6>Test: {{Medical[0]}}</h6>
+              {% for Medical in Medical.Test %}
+              <h6>Test: {{Medical}}</h6>
               {% endfor %}
             </a></li>
         </ul>
 
         {% endfor %}
       </div>
-      {% endfor %}
 
     </div>
   </div>
  
   <div class="col s12 m6 l8">
-    <h2 class="header">By Nourse:</h2>
+    <h2 class="header">By: {{NurID.Category}} {{NurID.FirstName}} {{NurID.LastName}}:</h2>
     <div><a href="" class="btn">patient profile</a></div>
     <div class="card horizontal">
       <div class="card-stacked">
         <div class="card-content">
           <div class="row">
             <h2 class="header"></h2>
-            <form action="/addDoctor/{{data._id}}/{{ List._id }}" method="POST" class="col s12">
+            <form action="/Nourse/{{ PatientId._id }}" method="POST" class="col s12">
               {% from "macro.html" import render_field %}
               <div class="row">
                 <div class="input-field col s12 m6 l6">
