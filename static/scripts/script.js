@@ -11,6 +11,8 @@ $(document).ready(function(){
     LIST DROPDOWN
 ====================================================*/
 $('.dropdown-trigger').dropdown();
+$('.dropdown-trigger-0').dropdown();
+
 
 
 /*============================BACKGROUND INDEX*/

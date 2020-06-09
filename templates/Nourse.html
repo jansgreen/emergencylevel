@@ -1,108 +1,111 @@
 {% extends "material/base.html" %}
 {% block content -%}
 <div class="row">
-  <div class="col s12 m6 l4">
-    <h2 class="header">Patient Info</h2>
+  <div class="col s12 m4 18">
+    <h4 class="header">Info: {{PatientId.FirstName}} {{PatientId.LastName}}</h4>
     <div class="card horizontal">
       <div class="card-stacked">
         <div class="card-content">
-          <div class="row">
-
-            <form action="/addNourse/{{PatientId}}" method="POST" class="col s12">
-              <div class="row">
-                <div class="row card-content">
-                  {% for RecNum in PatientId.Emergincy %}
-                  <h5>Emergincy Record Number: <div name="EmReNu">{{RecNum}}</div>
-                  </h5>
-                  {% endfor %}
-                  <h5>{{PatientId.FirstName}}, {{PatientId.LastName}}</h5>
-                  <h5>BOD: {{PatientId.BOD}}</h5>
-                  <h5>Language: {{PatientId.language}}</h5>
-                </div>
-              </div>
-          </div>
-          <div class="row  center">
-            <h4 class="header">Recordby Days:</h4>
+          {% for RecNum in PatientId.Emergincy %}
+          <h5>Emergincy Record Number: <div name="EmReNu">{{RecNum}}</div>
+          </h5>
+          {% endfor %}
+          <h5>BOD: {{PatientId.BOD}}</h5>
+          <h5>Language: {{PatientId.language}}</h5>
+          <!--SHOW A INFO ABOUT THE DAY PATIENT HAVE IN EMERGENCY-->
+          <div class="row ">
+            <h5 class="header center">Record by Days:</h5> 
+            {% if PatientId.DoctorNote %}
             {% for Medical in PatientId.DoctorNote %}
             <br>
-            <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical.Date}}</a>
-            <ul id="List" Class='dropdown-content'>
-              {% for Medical in Medical.Prescription %}
-              <li><a href="#!">
-                  <h6>Prescription: {{Medical}}</h6>
-                </a></li>
-              {% endfor %}
-              <hr>
-              <li><a href="#!">
-                  {% for Medical in Medical.Referencia %}
-                  <h6>Referencia: {{Medical}}</h6>
-                  {% endfor %}
-                </a></li>
-              <hr>
-              <li><a href="#!">
-                  <h6>Note: {{Medical.Note}}</h6>
-                </a></li>
-              <hr>
-              <li><a href="#!">
-                  {% for Medical in Medical.Medication %}
-                  <h6>Medication: {{Medical}}</h6>
-                  {% endfor %}
-                </a></li>
-              <hr>
-              <li><a href="#!">
-                  {% for Medical in Medical.Test %}
-                  <h6>Test: {{Medical}}</h6>
-                  {% endfor %}
-                </a></li>
-            </ul>
+            <table>
+              <thead>
+                <tr>
+                  <th>{{Medical.Date}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>by: {{Medical.Doctor.Category}} {{Medical.Doctor.FirstName}} {{Medical.Doctor.LastName}}</td>
+                </tr>
+                <tr>
+                  <td>Prescription: {{Medical.Prescription[0] }}</td>
+                </tr>
+                <tr>
+                  <td>Referencia: {{Medical.Referencia[0] }}</td>
+                </tr>
+                <tr>
+                  <td>Note: {{Medical.Note}}</td>
+                </tr>
+                <tr>
+                  <td>Medication: {{Medical.Medication[0][0] }} {{Medical.Medication[1][0]}}</td>
+                </tr>
+                <tr>
+                  <td>Test: {{Medical.Test[0][0] }} {{Medical.Test[1][0] }}</td>
+                </tr>
+                <tr>
+                  <td class="breakLine"></td>
+                </tr>
+
+              </tbody>
+            </table>
             {% endfor %}
+            {% endif %}
+          </div>
+          <!--SHOW A INFO ABOUT THE DAY PATIENT HAVE IN EMERGENCY-->
+          <div class="row ">
+            <h5 class="header">Medical Treatment by day:</h5>
+            {% if PatientId.NurseNote %}
+            {% for Medical in PatientId.NurseNote %}
+            <table>
+              <thead>
+                <tr>
+                  <th>{{Medical.Date}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>by: {{Medical.Nurse.Category}} {{Medical.Nurse.FirstName}} {{Medical.Nurse.LastName}}</td>
+                </tr>
+                <tr>
+                  <td>Breathing: {{Medical.Breathing }}</td>
+                </tr>
+                <tr>
+                  <td>Allergies: {{Medical.Allergies }}</td>
+                </tr>
+                <tr>
+                  <td>Mets: {{Medical.Mets}}</td>
+                </tr>
+                <tr>
+                  <td>Breathing: {{Medical.Pulse }}</td>
+                </tr>
+                <tr>
+                  <td>BodyTemperature: {{Medical.BodyTemperature }}</td>
+                </tr>
+                <tr>
+                  <td>NurseObservation: {{Medical.NurseObservation }}</td>
+                </tr>
+                <tr>
+                  <td>MedicalIssues: {{Medical.MedicalIssues }}</td>
+                </tr>
+                <tr>
+                  <td>IntensityService: {{Medical.IntensityService }}</td>
+                </tr>
+                <tr>
+                  <td class="breakLine"></td>
+                </tr>
+
+              </tbody>
+            </table>
+            {% endfor %}
+            {% endif %}
           </div>
         </div>
       </div>
-      </form>
-    </div>
-    <div>
-      <div class="row  center">
-        <h4 class="header">Medical Treatment:</h4>
-        {% for Medical in PatientId.NurseNote %}
-        <br>
-        <a class="dropdown-trigger btn" href="#" data-target="List">{{Medical.Date}}</a>
-        <ul id="List" Class='dropdown-content'>
-          {% for Medical in Medical.Prescription %}
-          <li><a href="#!">
-              <h6>Prescription: {{Medical}}</h6>
-            </a></li>
-          {% endfor %}
-          <hr>
-          <li><a href="#!">
-              {% for Medical in Medical.Referencia %}
-              <h6>Referencia: {{Medical}}</h6>
-              {% endfor %}
-            </a></li>
-          <hr>
-          <li><a href="#!">
-              <h6>Note: {{Medical.Note}}</h6>
-            </a></li>
-          <hr>
-          <li><a href="#!">
-              {% for Medical in Medical.Medication %}
-              <h6>Medication: {{Medical}}</h6>
-              {% endfor %}
-            </a></li>
-          <hr>
-          <li><a href="#!">
-              {% for Medical in Medical.Test %}
-              <h6>Test: {{Medical}}</h6>
-              {% endfor %}
-            </a></li>
-        </ul>
-
-        {% endfor %}
-      </div>
-
     </div>
   </div>
- 
+
+
   <div class="col s12 m6 l8">
     <h2 class="header">By: {{NurID.Category}} {{NurID.FirstName}} {{NurID.LastName}}:</h2>
     <div><a href="" class="btn">patient profile</a></div>
