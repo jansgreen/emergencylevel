@@ -19,13 +19,10 @@ Material(app)
 
 # MONGODB CONNECTION
 
-#client = os.environ.get('MONGODB_URI')
-#app.config["MONGO_URI"] = os.environ.get('MONGO_URI', 'mongodb://localhost')
-#dbColl = PyMongo(app)
+client = os.environ.get('MONGODB_URI')
+app.config["MONGO_URI"] = os.environ.get('MONGO_URI', 'mongodb://localhost')
+dbColl = PyMongo(app)
 
-client = pymongo.MongoClient("mongodb+srv://jansgreen:Lmongogreen07@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
-db = client["userRecord"]
-dbColl = db["userRecord"]
 
 # SETTING 
 app.secret_key = 'mysecretkey'
@@ -573,6 +570,23 @@ def See(id):
         return render_template("/SeeAll.html", seach=seach, AlluserCat=[], id=id)
 
 #======================================================================================= USER AREA
+
+@app.route('/Discharge/<string:id>', methods = ['GET', 'POST'])
+def Discharge(id):
+    UserLog = mainClass.UserLog(request.form)
+    if 'Username' in session:
+        AllSeach = mainClass.AllSeach(request.form)
+        Register = mainClass.Register(request.form)
+        UserName = session['Username']
+        userLog = dbColl.find_one({'userAccount.UserName': UserName})
+        if userLog:
+            session['Username'] = UserName
+            Category = userLog['Category']
+            DrId = userLog['_id']
+            flash(" ", Category)
+            emerdelete= dbColl.update({"_id":ObjectId(id)}, {'$unset':{"Emergincy":{'$exists':'true'}}})
+            print(emerdelete)
+            return redirect(url_for("EmergencyStaff", id = DrId))
 
 @app.route('/edit/<string:id>', methods = ['GET', 'POST'])
 def edit(id):
