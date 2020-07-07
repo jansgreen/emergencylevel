@@ -18,10 +18,11 @@ app = Flask(__name__)
 Material(app)
 
 # MONGODB CONNECTION
-
-client = os.environ.get('MONGODB_URI')
-app.config["MONGO_URI"] = os.environ.get('MONGO_URI', 'mongodb://localhost')
-dbColl = PyMongo(app)
+s1_handler = os.environ['User_key']
+s2_handler = os.environ['Access_key']
+client = pymongo.MongoClient("mongodb+srv://"+s1_handler+":"+s2_handler+"@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
+db = client["userRecord"]
+dbColl = db["userRecord"]
 
 
 # SETTING 
