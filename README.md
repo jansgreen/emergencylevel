@@ -1,6 +1,6 @@
 # Emergencylevel
 
-https://emergencylevel.herokuapp.com/
+[open in heroku](https://emergencylevel.herokuapp.com/):
 
 emergency level is an application that seeks to manage the information of patients who enter the emergency room by generating a number of tickets to speed up the quality of care, the interns will be able to complete their information in liena or the nurse will be able to fill in the missing data.
 
@@ -14,9 +14,15 @@ External API (smtp.gmail.com) This has an API that uses the email of the app and
 
 this application is made with the programming languages ​​HTML, CSS, JavaScript, Python + Flask and the design is based on materialcss, and it has a Json format database in mongodb and hosted in heroku
 
-The Director Doctor you can test
-UserName: Jansgreen
-Password: L123456789
+## The Director Doctor you can test
+# Defaul Director Doctor
+- UserName: Jansgreen
+- Password: L123456789
+    * Only the ManagerDoctor can add and delate other Doctor and Nurse.
+
+# Defaul Doctor
+
+
 
 ##  The CRUD Operations Work
 
@@ -29,17 +35,17 @@ Then when the user creates, the user creates her account in our application and 
 
 Only with these conditions we have complied with The CRUD Operations Work.
 
-- [C] The in the tab I'm patient; the patient can Create a database, in the option Register, it is a form with the patient data and afther it will print a Tickets.
+- [C](https://): The in the tab I'm patient; the patient can Create a database, in the option Register, it is a form with the patient data and afther it will print a Tickets.
 ![Screenshot](createCRUD.png)
 
-- [R] In the Options My Doctor/Add a Doctor, the patient can choose and read informations about doctor and nurse.
+- [R](https://): In the Options My Doctor/Add a Doctor, the patient can choose and read informations about doctor and nurse.
 ![Screenshot](readCRUD.png)
 
-- [U] In this area the patient can READ and UPDATE from mongodb, when the user clic in ADD THIS DOCTOR.
+- [U](https://): In this area the patient can READ and UPDATE from mongodb, when the user clic in ADD THIS DOCTOR.
 it is posible in MyDoctor option, clic in Add a Doctor and select a Doctor options and clic CHOOSE; for other options the patient can only read.
 ![Screenshot](updateCRUD.png)
 
-- [D] In MyDoctor the patient can READ and DELETE the doctor.
+- [D](https://): In MyDoctor the patient can READ and DELETE the doctor.
 ![Screenshot](deleteCRUD.png)
 
 
@@ -57,6 +63,14 @@ it is posible in MyDoctor option, clic in Add a Doctor and select a Doctor optio
 
  * python-decouple: like the os library, this allows us to extract data from a external file in our environment, we apply it to sensitive information.
 
+## Lenguage Used
+- HTML
+- Javascripts
+- Cascading Style Sheets -CSS
+- Python 3.7.7
+
+## Template base
+- Materialize. Availible at [github](https://github.com/Dogfalo/materialize):
 
 
 ## materialcss

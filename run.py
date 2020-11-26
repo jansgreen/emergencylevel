@@ -320,29 +320,21 @@ def addsingup(id):
 
 @app.route('/mainLog', methods=['GET','POST'])
 def mainLog():
-    UserLog = mainClass.UserLog(request.form)
-    if request.method == 'POST' and UserLog.validate:
+    UserLog_class = mainClass.UserLog(request.form)
+    if request.method == 'POST' and UserLog_class.validate:
         UserName = request.form['Username']
         PassUser = request.form['Password']
         userLog = dbColl.find_one({'userAccount.UserName': UserName})
         PassDb = userLog['userAccount']['Password']
-         
-        if userLog:
-            print(PassDb)
-            if PassDb == PassUser:
-                session['Username'] = request.form['Username']
-                Category = userLog['Category']
-                id = userLog['_id']
-                FirstName = userLog['FirstName']
-                print(FirstName)
-                print(id)
-                flash(" ", Category)
-                return redirect(url_for("board", id =id ) )
-            else:
-                print('Error')
-        else:
-            print('Usuario no encontrado')
-    return render_template("staff.html", form=UserLog )
+        print(PassDb)
+        print(PassUser)
+        if PassDb == PassUser:
+            session['Username'] = request.form['Username']
+            Category = userLog['Category']
+            id = userLog['_id']
+            flash(" ", Category)
+            return redirect(url_for("board", id =id ) )
+    return render_template("staff.html", form=UserLog_class )
 
 
 #========================================================= Nurse STAFF AREA
