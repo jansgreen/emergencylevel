@@ -1,5 +1,4 @@
 import pymongo
-import stripe
 import mainClass
 import json
 import os
@@ -11,6 +10,7 @@ from flask_materialize import Material
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 from flask_pymongo import PyMongo  
+from decouple import config
 
 
 
@@ -18,15 +18,24 @@ app = Flask(__name__)
 Material(app)
 
 # MONGODB CONNECTION
-s1_handler = os.environ['User_key']
-s2_handler = os.environ['Access_key']
+if 'ENVIROMENT' in os.environ:
+    s1_handler = os.environ['User_key']
+    s2_handler = os.environ['Access_key']
+else:
+    s1_handler = config('User_key')
+    s2_handler = config('Access_key')
+
 client = pymongo.MongoClient("mongodb+srv://"+s1_handler+":"+s2_handler+"@cluster0-ajilk.mongodb.net/test?retryWrites=true&w=majority")
 db = client["userRecord"]
 dbColl = db["userRecord"]
 
 
 # SETTING 
-app.secret_key = 'mysecretkey'
+if 'ENVIROMENT' in os.environ:
+    app.secret_key = os.environ.get('SECRET_KEY')
+else:
+    app.secret_key = config('SECRET_KEY')
+
 imgFolder = os.path.join('static','img')
 app.config['UPLOAD_FOLDER']=imgFolder
 
@@ -157,20 +166,29 @@ def AutoEmail(id):
             EmailMessage = patienFirstName+" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
             subject= 'Emergency, Continue your singup'
             Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
-            EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
+
+            EmailSystem = smtplib.SMTP('smtp.googlemail.com', 587)
             EmailSystem.starttls()
-            EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
-            EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
+            if 'ENVIROMENT' in os.environ:
+                EmailSystem.login('emergencylebel@gmail.com', os.environ.get('GMAIL_PASS'))
+                EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
+            else:
+                EmailSystem.login('emergencylebel@gmail.com', config('GMAIL_PASS'))
+                EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)   
             EmailSystem.quit()
             return redirect(url_for("ticket", id=id))
         else:
             EmailMessage = patienFirstName +" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
             subject= 'Emergency, Continue your singup'
             Email = 'Subject: {}\n\n{}'.format(subject, EmailMessage)
-            EmailSystem = smtplib.SMTP('smtp.gmail.com', 587)
+            EmailSystem = smtplib.SMTP('smtp.googlemail.com', 587)
             EmailSystem.starttls()
-            EmailSystem.login('emergencylebel@gmail.com', 'Lemergencylebel07')
-            EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
+            if 'ENVIROMENT' in os.environ:
+                EmailSystem.login('emergencylebel@gmail.com', os.environ.get('GMAIL_PASS'))
+                EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)
+            else:
+                EmailSystem.login('emergencylebel@gmail.com', config('GMAIL_PASS'))
+                EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email) 
             EmailSystem.quit()
             return redirect(url_for("redirecting"))
     return redirect(url_for("index"))

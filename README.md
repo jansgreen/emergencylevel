@@ -18,12 +18,22 @@ The Director Doctor you can test
 UserName: Jansgreen
 Password: L123456789
 
+##  The CRUD Operations Work
+
+* The [Mongodb](https://cloud.mongodb.com/v2/): we are usin the Mongo database Atlas, we are using the Mongo database system, to store user data; where it can create, update, read, delete, at will.
+
+## how do we apply this?
+The regular patient in [MyDoctor](https://emergencylevel.herokuapp.com/MyDoctor): The User can add the doctor he wants, he can read the information about the doctors that he has in his profile, he can eliminate any doctor from his list.
+
+Then when the user creates, the user creates her account in our application and also when she creates a ticket for the waiting shift in the emergency room.
+
+Only with these conditions we have complied with The CRUD Operations Work
 ## materialcss
 https://materializecss.com/
 Materialize. Availible at https://github.com/Dogfalo/materialize
 Flask-Materialize. Available at https://bitbucket.org/cyberspy/flask_materialize
 
-Youtube
+## Youtube
 https://www.youtube.com/watch?v=3ZS7LEH_XBg
 https://www.youtube.com/watch?v=4o7C4JMGLe4&t=374s
 https://www.youtube.com/watch?v=iIhAfX4iek0&t=239s
