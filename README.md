@@ -29,9 +29,33 @@ Then when the user creates, the user creates her account in our application and 
 
 Only with these conditions we have complied with The CRUD Operations Work.
 
-![Alt text](static\img\read_data.png "ADD")
-![Screenshot](read_data.png)
+- [C] The in the tab I'm patient; the patient can Create a database, in the option Register, it is a form with the patient data and afther it will print a Tickets.
+![Screenshot](createCRUD.png)
 
+- [R] In the Options My Doctor/Add a Doctor, the patient can choose and read informations about doctor and nurse.
+![Screenshot](readCRUD.png)
+
+- [U] In this area the patient can READ and UPDATE from mongodb, when the user clic in ADD THIS DOCTOR.
+it is posible in MyDoctor option, clic in Add a Doctor and select a Doctor options and clic CHOOSE; for other options the patient can only read.
+![Screenshot](updateCRUD.png)
+
+- [D] In MyDoctor the patient can READ and DELETE the doctor.
+![Screenshot](deleteCRUD.png)
+
+
+
+## Library used
+ * Flask 1.1.2: flask a library especially for small applications like this, although this app seems to be powerful. the flask library allows us to use Jinja2==2.11.2 to have data communication enter the server with python and html.
+
+ * Flask-WTF 0.14.3: allows us to have a better handling of the forms and a better visualization of it.
+
+ * Pymongo 3.11.1: Is a Python library to connect to a MongoDB database.
+ 
+ * bcrypt 3.2.0: Is a library that allows you to encrypt sensitive data so that it cannot be interpreted by a third party
+
+ * Gunicorn: Is to serve all the dynamics of a project on a server. and in this application we use it for Heroku.
+
+ * python-decouple: like the os library, this allows us to extract data from a external file in our environment, we apply it to sensitive information.
 
 
 
