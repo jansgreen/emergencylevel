@@ -29,7 +29,7 @@ Then when the user creates, the user creates her account in our application and 
 
 Only with these conditions we have complied with The CRUD Operations Work.
 
-![Alt text](..\static\img\ambulance.jpg "ADD")
+![Alt text](static\img\ambulance.jpg "ADD")
 
 
 
