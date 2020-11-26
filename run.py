@@ -195,7 +195,7 @@ def AutoEmail(id):
 
 @app.route('/redirecting', methods=['GET','POST'])
 def redirecting():
-    UserLog = mainClass.UserLog(request.form)
+    userLog = mainClass.UserLog(request.form)
     if 'Username' in session:
         UserName = session['Username']
         userLog = dbColl.find_one({'userAccount.UserName': UserName})
@@ -349,12 +349,12 @@ def mainLog():
 
 @app.route('/Nourse/<string:id>', methods=['GET', 'POST'])
 def Nourse(id):
-    UserLog = mainClass.UserLog(request.form)
+    userLogs = mainClass.UserLog(request.form)
     Nourse = mainClass.Nourse(request.form)
     if 'Username' in session:
         UserName = session['Username']
         userLog = dbColl.find_one({'userAccount.UserName': UserName})
-        if userLog:
+        if userLogs:
             NurId = userLog['_id']
             if request.method == 'POST'and Nourse.validate:
                 AllergiesV = request.form['Mets']
@@ -372,7 +372,7 @@ def Nourse(id):
                 try:
                     NewFieldIssuesV = request.form['NewFieldIssues']
                     newFieldtServiceV = request.form['newFieldtService']
-                    MedicalData={
+                    MedicalData = {
                             "Date" : MedicalDate, 
                             "Nurse": userLog,
                             "Diagnosis":DiagnosisV,
@@ -401,7 +401,7 @@ def Nourse(id):
                             return redirect(url_for("EmergencyStaff", id=NurId))
                     pass
                 except:
-                    MedicalData={
+                    MedicalData = {
                             "Date" : MedicalDate, 
                             "Nurse": userLog,
                             "Breathing":BreathingV,
@@ -431,7 +431,6 @@ def Nourse(id):
 
 @app.route('/addNourse/<string:P_id>')
 def addNourse(P_id):
-    UserLog = mainClass.UserLog(request.form)
     NourseForm = mainClass.Nourse(request.form)
     if 'Username' in session:
         UserName = session['Username']
@@ -439,9 +438,6 @@ def addNourse(P_id):
         if userLog:
             patientData = dbColl.find_one({'_id': ObjectId(P_id)})
             return render_template("/Nourse.html", PatientId=patientData, NurID=userLog, form=NourseForm)
-        else:
-            print('Error')
-    else:
         return redirect(url_for("index") )
 
 #========================================================= DOCTOR STAFF AREA
@@ -592,10 +588,7 @@ def See(id):
 
 @app.route('/Discharge/<string:id>', methods = ['GET', 'POST'])
 def Discharge(id):
-    UserLog = mainClass.UserLog(request.form)
     if 'Username' in session:
-        AllSeach = mainClass.AllSeach(request.form)
-        Register = mainClass.Register(request.form)
         UserName = session['Username']
         userLog = dbColl.find_one({'userAccount.UserName': UserName})
         if userLog:
@@ -609,7 +602,6 @@ def Discharge(id):
 
 @app.route('/edit/<string:id>', methods = ['GET', 'POST'])
 def edit(id):
-    UserLog = mainClass.UserLog(request.form)
     if 'Username' in session:
         AllSeach = mainClass.AllSeach(request.form)
         Register = mainClass.Register(request.form)
@@ -624,7 +616,6 @@ def edit(id):
 
 @app.route('/sumit_edit/<string:id>', methods = ['GET', 'POST'])
 def sumit_edit(id):
-    UserLog = mainClass.UserLog(request.form)
     Register = mainClass.Register(request.form)
     if 'Username' in session:
         if request.method == 'POST' and Register.validate:
@@ -689,7 +680,6 @@ def delete(myid):
 
 @app.route('/deleteDoc/<string:myid>')
 def deleteDoc(myid):
-    UserLog = mainClass.UserLog(request.form)
     if 'Username' in session:
         dbColl.delete_one({"_id":ObjectId(myid)})
         UserName = session['Username']
