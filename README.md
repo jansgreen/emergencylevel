@@ -15,12 +15,20 @@ External API (smtp.gmail.com) This has an API that uses the email of the app and
 this application is made with the programming languages ​​HTML, CSS, JavaScript, Python + Flask and the design is based on materialcss, and it has a Json format database in mongodb and hosted in heroku
 
 ## The Director Doctor you can test
-# Defaul Director Doctor
+# Demo Director Doctor
 - UserName: Jansgreen
 - Password: L123456789
     * Only the ManagerDoctor can add and delate other Doctor and Nurse.
 
-# Defaul Doctor
+# Demo Doctor
+- Username: XelohimGreen
+- Password: L123456789
+# Demo Nurse (all nurse can be add by Director Doctro)
+- Username: xewisgreen
+- Password: X123456789
+# Demo Patient
+- you can create the patient
+
 
 
 

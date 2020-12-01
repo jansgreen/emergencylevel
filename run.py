@@ -51,12 +51,6 @@ def index():
 
 #======================================================================================= PATIENT AREA
 
-@app.route('/testing')
-def testing():
-    mainLog()
-    print(mainLog.id())
-    return redirect(url_for('board'))
-
 
 @app.route("/logout")
 def logout():
@@ -112,16 +106,11 @@ def addRegister(id):
         numPhone = request.form['telephone']
         if 'Username' in session:
             Userdata = dbColl.find_one({'_id':ObjectId(id)})
-            print("Profundidad 1")
-            print(Userdata)
+
             if Userdata:
-                print(Userdata)
                 Category = Userdata['Category']
-                print("Profundidad 2")
-                print(Userdata)
+
                 if Category=="DirectorDoctor":
-                    print("Profundidad 3")
-                    print(Userdata)
                     New_Category = request.form['SeachSelect']
                     specialty = request.form['specialty']
                     dataPost = {
@@ -326,8 +315,6 @@ def mainLog():
         PassUser = request.form['Password']
         userLog = dbColl.find_one({'userAccount.UserName': UserName})
         PassDb = userLog['userAccount']['Password']
-        print(PassDb)
-        print(PassUser)
         if PassDb == PassUser:
             session['Username'] = request.form['Username']
             Category = userLog['Category']
