@@ -5,15 +5,14 @@
   <h2 class="header">Register</h2>
   <div class="card horizontal">
     <div class="card-image hide-on-med-and-down">
-      <img src="{{url_for('static', filename = '/img/verticalBarraAzul2.jpg')}}">
+      <img src="{{url_for('static', filename = 'img/verticalBarraAzul2.jpg')}}">
     </div>
     <div class="card-stacked">
       <div class="card-content">
         <div class="row">
           <form action="/addRegister/{{id}}" method="POST" class="col s12">
             <div class="row">
-              {% with messages = get_flashed_messages(category_filter=['DirectorDoctor']) %}
-              {% if messages %}
+              {% if User.Category == 'DirectorDoctor' %}
               <div class="col s12 m6 l6">
                 {{ seach.csrf_token }}
                 {{ seach.SeachSelect }}
@@ -24,7 +23,6 @@
               {{ render_field(form.specialty, class="validate", id="specialty") }}
             </div>
               {% endif %}
-              {% endwith %}
               <div class="input-field col s12 m6 l6">
                 <label for="firstname">First Name:</label> <br>
                 {{ render_field(form.firstname, class="validate", id="firstname") }}
@@ -32,7 +30,8 @@
               </div>
               <div class="input-field col s12 m6 l6">
                 <label for="last_name">Last Name</label><br>
-                {{ render_field(form.LastName, class="validate", id="LastName") }}
+                {{ render_field(form.LastName, class="validate", id="LastName") }}  
+
               </div>
             </div>
             <div class="row">

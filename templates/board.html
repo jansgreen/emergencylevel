@@ -21,24 +21,21 @@
     <div class="col s12 m8 ">
         <div>
             <div class="row ">
-                {% with messages = get_flashed_messages(category_filter=['Patient', 'Doctor', 'Nurse', 'DirectorDoctor']) %}
-                {% if messages %}
+
                 <a href="/myProfile/{{data._id}}">
                     <div class="col 12 m6 l3 optionIcon z-depth-5">
                         <i class="Medium material-icons">person</i>
                         <p class="row">My Profile</p>
                     </div>
                 </a>
-                {% with messages = get_flashed_messages(category_filter=['Doctor', 'Nurse', 'DirectorDoctor']) %}
-                {% if messages %}
-                <a href="/EmergencyStaff/{{data._id}}">
+                {% if userlog.category != "Patient" %}
+                    <a href="/EmergencyStaff/{{data._id}}">
                     <div class="col s12 m6 l3 optionIcon z-depth-5">
                         <i class="Medium material-icons">contact_mail</i>
                         <p>Emergency Room</p>
                     </div>
                 </a>
                 {% endif %}
-                {% endwith %}
             </div>
             <div class="row">
                 <a href="/MyDoctor/{{data._id}}">
@@ -53,8 +50,6 @@
                         <p>See All</p>
                     </div>
                 </a>
-                {% endif %}
-                {% endwith %}
            </div>
           </div>
         </div>

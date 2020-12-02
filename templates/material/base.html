@@ -28,7 +28,15 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
         <link href="{{url_for('static', filename = 'allcss/main.css')}}" rel="stylesheet" type="text/css">
-
+        <!-- FLASK TOASTR -->
+        {{ toastr.include_jquery() }}
+        {{ toastr.include_toastr_css() }}
+        {{ toastr.message() }}
+        <!-- FLASK TOASTR -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.6.0/jasmine.css" integrity="sha512-XKXP02aeSNI5HsDB3+4MM0tSDXJTBFZpt99xL7PvMz3+A3aRy0F0Ne/CATK+Z72ckE/4Ev9OiosWQr5LtU284Q==" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.6.0/boot.min.js" integrity="sha512-uVTH4+dZ7oHLKN3wMAPltsPuVOgfORZSUelvr7HWJmSsazBJKgUNTRSm+bUJ3IfKkG4Y1nLFr0qRX8oFS2fbZg==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.6.0/jasmine-html.js" integrity="sha512-bqig44hBpNuvBzxsqbHiqwRximGm4UfJAvOeNQHjB7++0D2u/3bcw4ZwmVsqrooii2UJ91oDI/6aANdp3BwcQQ==" crossorigin="anonymous"></script>        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.6.0/jasmine.js" integrity="sha512-dqL4nYnbiMiNNy/V2zRK55QXSRVyu26KCuGoL8Zf5lDfKRRf8pBFW8RXe8at36QlB8s8bnOjKP6b5YTalHO6wQ==" crossorigin="anonymous"></script>
         {%- endblock styles %}
         {%- endblock head %}
       </head>
@@ -41,7 +49,7 @@
           <nav class="nav-extended">
             <div class="nav-wrapper">
               <a href="{{url_for('index')}}" class="brand-logo"><img
-                  src="{{url_for('static', filename = '/img/logo.jpg')}}"></a>
+                  src="{{url_for('static', filename = 'img/logo.jpg')}}"></a>
             </div>
             <div class="nav-content">
               <ul class="tabs tabs-transparent">
@@ -54,16 +62,18 @@
               </ul>
             </div>
           </nav>
+
           {% if 'Username' in session %}
 
           <div class="row">
             <div class="card-panel white">
-          <a class="waves-effect waves-light btn" href="{{url_for('logout')}}">LogOut</a>
-          <a class="btn MedicalNote" href="{{url_for('redirecting')}}">DashBoard</a>
-          </div>
+              <a class="waves-effect waves-light btn" href="{{url_for('logout')}}">LogOut</a>
+              <a class="btn MedicalNote" href="{{url_for('redirecting')}}">DashBoard</a>
+            </div>
           </div>
           {% endif %}
 
+            {{toastr.include_toastr_js ()}}
 
           {%- endblock navbar %}
           {% block content -%}
@@ -88,7 +98,7 @@
                     <a class="grey-text text-lighten-3"
                       href="https://dsnp.uhccommunityplan.com/call/ny?WT.mc_id=8016938&gclid=CjwKCAjw7-P1BRA2EiwAXoPWA19nxlTTKtT6VsuI6Nc1WwoDvWqlRQO2ZJuOIqOd-OtknOe5N-wt8hoCOHIQAvD_BwE&gclsrc=aw.ds"></a>
                     <i class="large material-icons footerIcon">beach_access</i></a>
-                      <p class="center">Be Safe</p>
+                  <p class="center">Be Safe</p>
                 </div>
                 <div class="col l6 s12">
                   <ul>

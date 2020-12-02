@@ -213,5 +213,12 @@ function RemuveFieldNsInt(id) {
 	}
 }
 
+/*============================*/
+/*     TOAST MATERIAL */
+
+
+$(document).ready(function(){
+	$('.messages').hide(2000);
+});
 
 

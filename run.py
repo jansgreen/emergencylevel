@@ -11,11 +11,14 @@ from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 from flask_pymongo import PyMongo  
 from decouple import config
+from flask_toastr import Toastr
 
 
 
 app = Flask(__name__)
 Material(app)
+toastr = Toastr(app)
+
 
 # MONGODB CONNECTION
 if 'ENVIROMENT' in os.environ:
@@ -45,8 +48,6 @@ app.config['UPLOAD_FOLDER']=imgFolder
 @app.route('/')
 def index():
     homeImg= os.path.join(app.config['UPLOAD_FOLDER'], 'homeimg.jpg')
-    if 'Username' in session:
-        pass
     return render_template("index.html", homeImg=homeImg)
 
 #======================================================================================= PATIENT AREA
@@ -56,6 +57,7 @@ def index():
 def logout():
     if 'Username' in session:
         session.pop('Username', None)
+        flash(u'you did logout success', 'info')
         return redirect(url_for('index'))
 
 @app.route('/PatientScreem')
@@ -75,8 +77,9 @@ def PatientRegister():
         "userAccount": " ",
         }
     _id = dbColl.insert_one(visit)
-    id = _id.inserted_id    
-    return render_template("register.html", form=Register, seach=Seach, id = id)
+    id = _id.inserted_id 
+    user = dbColl.find({'_id':id})   
+    return render_template("register.html", form=Register, seach=Seach, id = id, User=user)
 
 @app.route('/register/<string:id>', methods = ['GET'])
 def register(id):
@@ -85,10 +88,9 @@ def register(id):
     user = dbColl.find_one({'_id':ObjectId(id)})
     if user:
         if user['Category']== 'DirectorDoctor':
-            Category = user['Category']
-            flash(" ",Category)
-            return render_template("register.html", form=Register, seach=Seach, id = id)
+            return render_template("register.html", form=Register, seach=Seach, id = id, User=user)
         elif user['Category']== 'Patient':
+            flash(u'you did singup success', 'info')
             return render_template("register.html", form=Register, id = id)
     else:
         return render_template("register.html", form=Register, id = id)
@@ -165,6 +167,7 @@ def AutoEmail(id):
                 EmailSystem.login('emergencylebel@gmail.com', config('GMAIL_PASS'))
                 EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email)   
             EmailSystem.quit()
+            flash(u'Please check your Email, you need to confirm', 'success')
             return redirect(url_for("ticket", id=id))
         else:
             EmailMessage = patienFirstName +" "+patienLastName+" We have information that you have registered at the emergency level, if you have been your favor, visit the following url to continue with the registration process. "+'https://emergencylevel.herokuapp.com/singup/'+id
@@ -180,6 +183,7 @@ def AutoEmail(id):
                 EmailSystem.sendmail('emergencylebel@gmail.com', patienEmail, Email) 
             EmailSystem.quit()
             return redirect(url_for("redirecting"))
+    flash(u'Please check your Email, you need to confirm', 'success')
     return redirect(url_for("index"))
 
 @app.route('/redirecting', methods=['GET','POST'])
@@ -189,17 +193,16 @@ def redirecting():
         UserName = session['Username']
         userLog = dbColl.find_one({'userAccount.UserName': UserName})
         id = userLog['_id']
-        print(id)
         if userLog:
-            session['Username'] = UserName
-            Category = userLog['Category']
+            session['Username'] = UserName #=========================================================================================================
             id = userLog['_id']
-            flash(" ", Category)
-            return redirect(url_for("board", id =id ) )
+            flash(u'you added success', 'success')
+            return redirect(url_for("board", id =id, userlog=userLog ) )
         else:
-            print('Error')
+            flash(u'User not exist', 'error')
+            return redirect(url_for("index"))
     else:
-        print('Usuario no encontrado')
+        flash(u'User not found', 'error')
     return redirect(url_for("index"))
 
 
@@ -212,15 +215,19 @@ def ticket(id):
     now = datetime.now()
     ticketNumData = now.strftime('%d%m%YE%H%M%S')
     dateTicket = now.strftime('%d/%m/%Y %H:%M')
-    flash(ticketNumData)
-    print(FullTicket)
-    Ticketquery = {"_id": ObjectId(id)}
-    newvalues = {"$set": {
-        "Emergincy."+ticketNumData: {'Date': dateTicket}
-    }
-    }
-    dbColl.update(Ticketquery, newvalues)
-    return render_template("ticket.html", FullTickets=FullTicket)
+    flash(u'Please print your ticket', 'success')
+    try:
+        Ticketquery = {"_id": ObjectId(id)}
+        newvalues = {"$set": {
+            "Emergincy."+ticketNumData: {'Date': dateTicket}
+        }
+        }
+        dbColl.update_one(Ticketquery, newvalues)
+    except:
+        flash(u'We can not print your ticket', 'error')
+        return redirect(url_for("index"))
+    ticketNumDatas = now.strftime('%d%m%YE%H%M%S')
+    return render_template("ticket.html", FullTickets=FullTicket, ticket = ticketNumDatas )
 #======================================================================================= EMPLOYEE AREA
 #========================================================= DOCTOR AREA
 
@@ -242,14 +249,12 @@ def board(id):
     if 'Username' in session:
         datadb = dbColl.find_one({"_id":ObjectId(id)})
         if datadb:
-           Category = datadb['Category']
-           flash(" ",Category)
-        return render_template("board.html", id = id, data = datadb)
+            return render_template("board.html", id = id, data = datadb, userlog =datadb)
     else:
-        print("You are not user register")
+        flash(u'You are not user register', 'error')
         return redirect(url_for("index"))
-    return render_template("board.html", id = id)
-
+    flash(u'You are not logged or user register', 'error')
+    return redirect(url_for("index"))
 
 #========================================================= EMERGENCY AREA
 @app.route('/EmergencyStaff/<string:id>')
@@ -278,7 +283,7 @@ def EmergencyStaff(id):
                 flash(" ", Category)
                 return render_template("emergencyTeam.html", data=staff, ListBD = patientListBD, num=page, id=id)
             else:
-                print("hubo un error usted no esta autorizado a esta area")
+                flash(u'You are not autorizated', 'warning')
                 return redirect(url_for("index"))
     return redirect(url_for("index"))
 
@@ -314,14 +319,21 @@ def mainLog():
         UserName = request.form['Username']
         PassUser = request.form['Password']
         userLog = dbColl.find_one({'userAccount.UserName': UserName})
-        PassDb = userLog['userAccount']['Password']
-        if PassDb == PassUser:
-            session['Username'] = request.form['Username']
-            Category = userLog['Category']
-            id = userLog['_id']
-            flash(" ", Category)
-            return redirect(url_for("board", id =id ) )
-    return render_template("staff.html", form=UserLog_class )
+        if userLog:
+            PassDb = userLog['userAccount']['Password']
+            if PassDb == PassUser:
+                session['Username'] = request.form['Username']
+                Category = userLog['Category']
+                id = userLog['_id']
+                flash(u'You are logged success', 'success')
+                return redirect(url_for("board", id =id, userlog = userLog ) )
+            else:
+                flash(u'The password not match', 'error')
+                return render_template("staff.html", form=UserLog_class)
+        else:
+            flash(u'The username not match', 'error')
+            return render_template("staff.html", form=UserLog_class)
+    return render_template("staff.html", form=UserLog_class)
 
 
 #========================================================= Nurse STAFF AREA
@@ -372,11 +384,9 @@ def Nourse(id):
                     if checkedField:
                         if "NurseNote":
                             dbColl.update_one({"_id": ObjectId(id)}, {'$push':  {'NurseNote':MedicalData}})
-                            print("eL CAMPO MedicalNote EXISTE")
                             return redirect(url_for('EmergencyStaff', id = NurId))
                         else:
                             dbColl.update_one({"_id": ObjectId(id)}, {'$set': {'NurseNote':MedicalData}})
-                            print("El campo MedicalNote no existe y fue creado")
                             return redirect(url_for("EmergencyStaff", id=NurId))
                     pass
                 except:
@@ -394,15 +404,12 @@ def Nourse(id):
                             "Date": MedicalDate,
                     }
                     checkedField = dbColl.find_one({"_id": ObjectId(id)})
-                    print("Escribiendo documentos")
                     if checkedField:
                         if "NurseNote":
                             dbColl.update_one({"_id": ObjectId(id)}, {'$push':  {'NurseNote':MedicalData}})
-                            print("eL CAMPO MedicalNote EXISTE")
                             return redirect(url_for('EmergencyStaff', id = NurId))
                         else:
                             dbColl.update_one({"_id": ObjectId(id)}, {'$set': {'NurseNote':MedicalData}})
-                            print("El campo MedicalNote no existe y fue creado")
                             return redirect(url_for("EmergencyStaff", id=NurId))
                     pass
         return redirect(url_for("board", id=NurId))
@@ -465,15 +472,12 @@ def Doctor(Cid, id):
                     }
             finally:
                 checkedField = dbColl.find_one({"_id": ObjectId(id)})
-                print("Escribiendo documentos")
                 if checkedField:
                     if "DoctorNote":
                         dbColl.update_one({"_id": ObjectId(id)}, {'$push':{'DoctorNote':MedicalData}})
-                        print("eL CAMPO MedicalNote EXISTE")
                         return redirect(url_for('EmergencyStaff', id = Cid))
                     else:
                         dbColl.update_one({"_id": ObjectId(id)}, {'$set': {'DoctorNote':MedicalData}})
-                        print("El campo MedicalNote no existe y fue creado")
                         return redirect(url_for("EmergencyStaff", id=Cid))
     return redirect(url_for("EmergencyStaff", id=Cid))
 
@@ -500,10 +504,10 @@ def addDoctor(idD, id):
                 patientData = dbColl.find_one({'_id': ObjectId(id)})
                 return render_template("/Doctor.html", DrPasientID=DrPasientsID, patientsData=patientData, id=patientData, form=validatorForms)
             else:
-                print('Usted no tiene acceso aqui, hubo un error')
+                flash(u'You are not autorizated', 'warning')
                 return redirect(url_for("index"))
         else:
-            print('No se encontro la informacion de quien requiere')
+            flash(u'we not found', 'error')
             return redirect(url_for("index"))
             
 #============================================================================================== Seach  AREA
@@ -518,7 +522,7 @@ def Seach():
             {'Email': PatientSeachD, 'Category': 'Patient'})
         if PatientData:
             if PatientData['Email'] == PatientSeachD:
-                return render_template("PatientScreem.html", PatientDataOut=PatientData, form=UserLog, Seach=Seach)            
+                return render_template("PatientScreem.html", PatientDataOut=PatientData, form=UserLog, Seach=Seach)        
         return render_template("PatientScreem.html", PatientDataOut=PatientData, form=UserLog, Seach=Seach)
 #==============================================================================================
 # BOARD  AREA
@@ -576,7 +580,6 @@ def Discharge(id):
             DrId = userLog['_id']
             flash(" ", Category)
             emerdelete= dbColl.update({"_id":ObjectId(id)}, {'$unset':{"Emergincy":{'$exists':'true'}}})
-            print(emerdelete)
             return redirect(url_for("EmergencyStaff", id = DrId))
 
 @app.route('/edit/<string:id>', methods = ['GET', 'POST'])
@@ -626,8 +629,10 @@ def sumit_edit(id):
             flash(" ", Category)
             return redirect(url_for("board", id =AdmId ) )
         else:
-            print('Error')
+            flash(u'we not found', 'error')
+            return redirect(url_for("index") )
     else:
+        flash(u'we not found the user', 'error')
         return redirect(url_for("index") )
 
         
@@ -682,6 +687,12 @@ def myProfile(id):
             return render_template("/myProfile.html", Profile = Profile, id=id)
         return render_template("/myProfile.html", Profile = Profile, id=id)
 
+@app.route('/deleteAccount/<string:myid>')
+def deleteAccount(myid):
+    if 'Username' in session:
+        dbColl.delete_one({"_id":ObjectId(myid)})
+        flash(u'you delete your account success', 'sucess')
+        return redirect(url_for('index')) 
 
 
 if __name__ == '__main__':

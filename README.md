@@ -29,7 +29,65 @@ this application is made with the programming languages ​​HTML, CSS, JavaScr
 # Demo Patient
 - you can create the patient
 
+# Design
+    - Colour Scheme
+        Three colors predominate: fuchsia pink, light blue and white, the buttons of some functions have a bluish green fill.
+# Typography
+    - https://fonts.googleapis.com/css?family=Roboto:400,700, We have used this font because we want to create the environment in which information is being used and data is being dealt with.
+# Icons
+    We using the icons of Material in the foother, to give a better graphical display to the user
 
+# Imagery
+    We have placed an image in each of the following paragraphs that we show on the frontend of our website, to illustrate the message to each of our patients.
+    1. Index
+        - Cut the waiting time
+        - Pregnant women should receive the right care at the right time.
+        - When consumers choose health care
+    2. I'm Employee
+        - We Work
+        - We are the hospital of the future
+        - QUALITY CARE BEGINS WITH QUALITY PEOPLE
+
+    3. About
+        - Organizational and Functional Levels
+        - Mission and Vision.
+        - Institutional values
+
+# Heroku
+We have to follow the following steps
+    - Create a user on Heroku
+    - Create me a user in heroku at https://www.heroku.com/, create the application and assign it a name emergencylevel; After my application is ready, download Heroku CLI, and perform the following steps:
+* These are the following Vars config in heroku:
+    Access_key
+    GMAIL_EMAIL
+    GMAIL_PASS
+    SECRET_KEY
+    User_key
+* Buildpacks
+heroku / python
+
+* Deploy to heroku
+    (ready git init and inside the directory of my local repository)
+    $ heroku login
+    $ heroku git: remote -a emergencylevel
+    git add.
+    git commit -m "deploy to heroku"
+    git push heroku master
+
+
+
+# Testing 
+    - main.css [W3C Markup Validator](http://jigsaw.w3.org/css-validator/check/referer): we used W3C for test all css code in this project
+     ![¡CSS Válido!](http://jigsaw.w3.org/css-validator/check/referer):
+    
+    ![Screenshot](<img style="border:0;width:88px;height:31px"
+                src="http://jigsaw.w3.org/css-validator/images/vcss"
+                alt="¡CSS Válido!" />):
+
+    - Flask unittest, We using the FlaskTest, to test all template html and python code, in the file test.py
+
+# Defensive Design
+  Flask-Toastr: shows a message to the user, accessible to the categories of flask, Error, info, warning and success 
 
 
 ##  The CRUD Operations Work
@@ -53,7 +111,10 @@ Only with these conditions we have complied with The CRUD Operations Work.
 it is posible in MyDoctor option, clic in Add a Doctor and select a Doctor options and clic CHOOSE; for other options the patient can only read.
 ![Screenshot](updateCRUD.png)
 
-- [D](https://): In MyDoctor the patient can READ and DELETE the doctor.
+- [D](https://): In MyDoctor the patient can READ and DELETE the doctorNote Field. and My account you can delete a record from mongodb, Delete my Account
+
+![Screenshot](deleteCRUD2.png)
+
 ![Screenshot](deleteCRUD.png)
 
 

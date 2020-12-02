@@ -8,7 +8,7 @@ margin-left: 20px;
 #patButton{
   width: 10rem;
   background-color: #4e6cf5;
-  color: solid #ffffff;
+  color: #ffffff;
   
 }
 
@@ -50,24 +50,17 @@ BUTTONS
   background: rgb(240, 89, 172);
   width: 200px;
   height: 150px;
-  -webkit-border-radius:0;
-  -moz-border-radius:0;
-  -ms-border-radius:0;
-  -o-border-radius:0;
+
 }
 
 
 .backgrounImg {
-  display: flexbox;
   float: left;
   transform: translate3d(-0%, 0px, 0px);
   background-size: cover;
   background-attachment: fixed;
   max-width: 1440px;
-  -webkit-transform: translate3d(-0%, 0px, 0px);
-  -moz-transform: translate3d(-0%, 0px, 0px);
-  -ms-transform: translate3d(-0%, 0px, 0px);
-  -o-transform: translate3d(-0%, 0px, 0px);
+
 }
 
 .footerInfo{
@@ -85,9 +78,6 @@ BUTTONS
     padding-top: 5%;
     padding-bottom: 5%;
 
-}
-.ilike-blue-container {
-  @extend .blue-text, .text-lighten-4;
 }
 
 .optionIcon{
@@ -112,4 +102,14 @@ margin: 20px;
 .breakLine{
   background-color: teal;
   width: 100%;
+}
+
+.messages{
+  margin-top: 100px;
+  overflow: hidden;
+  background-color: #000000;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9;
 }
