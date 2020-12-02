@@ -77,14 +77,15 @@ heroku / python
 
 
 # Testing 
-    - main.css [W3C Markup Validator](http://jigsaw.w3.org/css-validator/check/referer): we used W3C for test all css code in this project
+1. main.css 
+    [W3C Markup Validator](http://jigsaw.w3.org/css-validator/check/referer): we used W3C for test all css code in this project
      ![¡CSS Válido!](http://jigsaw.w3.org/css-validator/check/referer):
     
     ![Screenshot](<img style="border:0;width:88px;height:31px"
                 src="http://jigsaw.w3.org/css-validator/images/vcss"
                 alt="¡CSS Válido!" />):
 
-    - Flask unittest, We using the FlaskTest, to test all template html and python code, in the file test.py
+2. Flask unittest, We using the FlaskTest, to test all template html and python code, in the file test.py
 
 # Defensive Design
   Flask-Toastr: shows a message to the user, accessible to the categories of flask, Error, info, warning and success 
