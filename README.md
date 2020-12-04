@@ -54,38 +54,46 @@ this application is made with the programming languages ​​HTML, CSS, JavaScr
         - Institutional values
 
 # Heroku
-We have to follow the following steps
-    - Create a user on Heroku
-    - Create me a user in heroku at https://www.heroku.com/, create the application and assign it a name emergencylevel; After my application is ready, download Heroku CLI, and perform the following steps:
-* These are the following Vars config in heroku:
-    Access_key
-    GMAIL_EMAIL
-    GMAIL_PASS
-    SECRET_KEY
-    User_key
-* Buildpacks
-heroku / python
+- Create a user on heroku at https://www.heroku.com/, create the application and assign it a name "Emergency Level"; Once my application is ready, create the variables
+* These are the variables in the heroku settings:
 
-* Deploy to heroku
-    (ready git init and inside the directory of my local repository)
-    $ heroku login
-    $ heroku git: remote -a emergencylevel
-    git add.
-    git commit -m "deploy to heroku"
-    git push heroku master
+**Access_key**: This is the variable that stores the access key that we use for mongodb connection.
+
+**User_key**: This is the variable that stores the username in mongo db, in combination with the Access_key plus the link (mongodb + srv: // "+ s1_handler +": "+ s2_handler +" @ cluster0-ajilk.mongodb.net / test ? retryWrites = true & w = majority), makes connection to mongodb Atlas possible.
+
+**GMAIL_EMAIL**: this is the variable that saves the sender's email, for sending mail to emails, which we use to create the username and password through the unique link.
+     
+**GMAIL_PASS**: Like GMAIL_EMAIL, this variable saves the sender's email password, this is the password for Gmail applications.
+
+**SECRET_KEY**: This is the variable that my python secret key has.
+
+* Buildpacks
+heroku / python (with this I specify to heroku that the programming language I will use is python)
+
+After having configured the variables, I created my procfile (Procfile) file in my local application with the following web configuration: gunicorn run: app, thus telling heroku to run the gunicorn server for this application. and then download Heroku CLI.
+as I had already done git init in the folder of my application and within it I did the following steps to deploy in Heroku:
+      $ heroku login
+      $ heroku git: remote -an emergency level
+      git add.
+      git commit -m "implement in heroku"
+      git push heroku master
 
 
 
 # Testing 
-1. main.css 
-    [W3C Markup Validator](http://jigsaw.w3.org/css-validator/check/referer): we used W3C for test all css code in this project
-     ![¡CSS Válido!](http://jigsaw.w3.org/css-validator/check/referer):
-    
-    ![Screenshot](<img style="border:0;width:88px;height:31px"
-                src="http://jigsaw.w3.org/css-validator/images/vcss"
-                alt="¡CSS Válido!" />):
+1. main.css; I uploaded my main.css file to jigsaw.w3.org and did the validation test.    
 
-2. Flask unittest, We using the FlaskTest, to test all template html and python code, in the file test.py
+    <p>we used W3C for test all css code in this project
+<a href="http://jigsaw.w3.org/css-validator/check/referer">
+    <img style="border:0;width:88px;height:31px"
+        src="http://jigsaw.w3.org/css-validator/images/vcss-blue"
+        alt="¡CSS Válido!" />
+    </a>
+</p>
+
+I loaded each of the HTML files located in the templates directory at [validator.w3.org](https://validator.w3.org/#validate_by_upload), to validate it
+
+2. Flask unittest, We using the FlaskTest, to test (in the terminal writhe python test.py to see the test) all template html and python code, in the file test.py
 
 # Defensive Design
   Flask-Toastr: shows a message to the user, accessible to the categories of flask, Error, info, warning and success 
@@ -102,21 +110,21 @@ Then when the user creates, the user creates her account in our application and 
 
 Only with these conditions we have complied with The CRUD Operations Work.
 
-- [C](https://): The in the tab I'm patient; the patient can Create a database, in the option Register, it is a form with the patient data and afther it will print a Tickets.
-![Screenshot](createCRUD.png)
+**C**: The in the tab I'm patient; the patient can Create a database, in the option Register, it is a form with the patient data and afther it will print a Tickets.
+![Screenshot](readmeImg/createCRUD.png)
 
-- [R](https://): In the Options My Doctor/Add a Doctor, the patient can choose and read informations about doctor and nurse.
-![Screenshot](readCRUD.png)
+**R**: In the Options My Doctor/Add a Doctor, the patient can choose and read informations about doctor and nurse.
+![Screenshot](readmeImg/readCRUD.png)
 
-- [U](https://): In this area the patient can READ and UPDATE from mongodb, when the user clic in ADD THIS DOCTOR.
+**U**: In this area the patient can READ and UPDATE from mongodb, when the user clic in ADD THIS DOCTOR.
 it is posible in MyDoctor option, clic in Add a Doctor and select a Doctor options and clic CHOOSE; for other options the patient can only read.
-![Screenshot](updateCRUD.png)
+![Screenshot](readmeImg/updateCRUD.png)
 
-- [D](https://): In MyDoctor the patient can READ and DELETE the doctorNote Field. and My account you can delete a record from mongodb, Delete my Account
+**D**: In MyDoctor the patient can READ and DELETE the doctorNote Field. and My account you can delete a record from mongodb, Delete my Account
 
-![Screenshot](deleteCRUD2.png)
+![Screenshot](readmeImg/deleteCRUD2.png)
 
-![Screenshot](deleteCRUD.png)
+![Screenshot](readmeImg/deleteCRUD.png)
 
 
 

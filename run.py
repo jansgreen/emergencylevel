@@ -42,8 +42,6 @@ else:
 imgFolder = os.path.join('static','img')
 app.config['UPLOAD_FOLDER']=imgFolder
 
-#dbColl = os.environ.get('dbColl')
-#print(dbColl)
 
 @app.route('/')
 def index():
@@ -548,7 +546,6 @@ def See(id):
                 if userid['Category']=='Patient' and showData == 'Patient':
                     Category = userid['Category']
                     flash(" ", Category )
-                    print("usted no tiene permiso para ver a todos los"+showData)
                     return render_template("/SeeAll.html", seach=seach, AlluserCat=[], id=id)
                 elif userid['Category']=='Patient':
                     data= dbColl.find({'Category':showData})
@@ -561,10 +558,10 @@ def See(id):
                     flash(" ", Category )
                     return render_template("/SeeAll.html", seach=seach, AlluserCat=data, id=id)
             else:
-                print("Hubo un error comuniquese con soporte tecnico")
+                flash(u'Plase call support', 'error')
                 return redirect(url_for('/index'))
         else:
-            print("Seleccione una opcion")
+            flash(u'Please select a options', 'error')
         return render_template("/SeeAll.html", seach=seach, AlluserCat=[], id=id)
 
 #======================================================================================= USER AREA
@@ -675,8 +672,10 @@ def deleteDoc(myid):
             flash(" ", Category)
             return redirect(url_for("board", id =AdmId ) )
         else:
-            print('Error')
+            flash(u'We can not delete', 'error')
+            return redirect(url_for("index") )
     else:
+        flash(u'We can not delete', 'error')
         return redirect(url_for("index") )
         
 @app.route('/myProfile/<string:id>')
@@ -690,8 +689,12 @@ def myProfile(id):
 @app.route('/deleteAccount/<string:myid>')
 def deleteAccount(myid):
     if 'Username' in session:
+        session.pop('Username', None)
         dbColl.delete_one({"_id":ObjectId(myid)})
         flash(u'you delete your account success', 'sucess')
+        return redirect(url_for('index')) 
+    else:
+        flash(u'do you login?', 'sucess')
         return redirect(url_for('index')) 
 
 
