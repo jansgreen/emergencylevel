@@ -10,6 +10,7 @@ class FlaskTestCase(unittest.TestCase):
         response = test.get('/mainLog', content_type='html/text')
         self.assertEqual(response.status_code, 200)
     
+    
     #Testin the logout
     def test_index_patient(self):
         test = app.test_client(self)

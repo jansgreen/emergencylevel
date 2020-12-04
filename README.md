@@ -14,6 +14,19 @@ External API (smtp.gmail.com) This has an API that uses the email of the app and
 
 this application is made with the programming languages ​​HTML, CSS, JavaScript, Python + Flask and the design is based on materialcss, and it has a Json format database in mongodb and hosted in heroku
 
+## Git and Github
+
+# Github
+    - I created a github repository in github
+    - I get a name "emergencylevel"
+    - I keep public repository
+# Git
+    - Before start the app, I created the directory emergencylevel, in this directory I created the viltual envieroment (venv venv), I activate source venv/Scritps/activate, in the directory emergencylevel I did pip install python 3 and I star my app.
+    - I did git init to start my website.
+    - I created my file readme.md
+    - I did git remote add origin https://github.com/jansgreen/emergencylevel.git to add the repository remote.
+    - Afther my app is ready I make a git push origin master. to save in github repository.
+
 ## The Director Doctor you can test
 # Demo Director Doctor
 - UserName: Jansgreen
@@ -39,19 +52,19 @@ this application is made with the programming languages ​​HTML, CSS, JavaScr
 
 # Imagery
     We have placed an image in each of the following paragraphs that we show on the frontend of our website, to illustrate the message to each of our patients.
-    1. Index
-        - Cut the waiting time
-        - Pregnant women should receive the right care at the right time.
-        - When consumers choose health care
-    2. I'm Employee
-        - We Work
-        - We are the hospital of the future
-        - QUALITY CARE BEGINS WITH QUALITY PEOPLE
+1. Index
+    - Cut the waiting time
+    - Pregnant women should receive the right care at the right time.
+    - When consumers choose health care
+2. I'm Employee
+    - We Work
+    - We are the hospital of the future
+    - QUALITY CARE BEGINS WITH QUALITY PEOPLE
 
-    3. About
-        - Organizational and Functional Levels
-        - Mission and Vision.
-        - Institutional values
+3. About
+    - Organizational and Functional Levels
+    - Mission and Vision.
+    - Institutional values
 
 # Heroku
 - Create a user on heroku at https://www.heroku.com/, create the application and assign it a name "Emergency Level"; Once my application is ready, create the variables
